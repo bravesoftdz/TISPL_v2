@@ -3640,7 +3640,9 @@ void Cvykresli::vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiStri
 				float zAA=1.0;if(F->antialiasing)zAA=3.0;
 				TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 				long x,y;
-				short h=canv->TextHeight(T);short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
+				short w=canv->TextWidth(T);
+				short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC");
+				//pozn. pro 180° neobracím text vzhůru nohama
 				if(rotace==0 || rotace==180)//lze používat i drawRectText(canv,zakladna,T);//nefunguje správně při rotaci //pro po orototování o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
 		  	{
 		  		x=m.round(X-w/2.0);
@@ -3849,7 +3851,9 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		  	if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
 				TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 				long x,y;
-		  	short h=canv->TextHeight(T);short w=canv->TextWidth(T);   //pozn. pro 180° neobracím text vzhůru nohama
+				short w=canv->TextWidth(T);
+				short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC");
+				//pozn. pro 180° neobracím text vzhůru nohama
 		  	if(rotace90==0 || rotace90==180)
 		  	{
 		  		x=m.round(X-w/2.0);
@@ -3976,7 +3980,8 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,short scena,long X,long Y,AnsiString
 				if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 				{
 					if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
-					short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC"); short w=canv->TextWidth(T);
+					short w=canv->TextWidth(T);
+					short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC");
 					float zAA=1.0;if(F->antialiasing)zAA=3.0;
 					TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 					long x,y;
@@ -4105,8 +4110,8 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 
 				TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 				AnsiString Text=short_name;/*if(Z>4*3) */Text=name;//odstaveno
-				int w=canv->TextWidth(Text);
-				int h=canv->TextHeight(Text);
+				short w=canv->TextWidth(Text);
+				short h=canv->TextHeight(Text);if(Text=="")h=canv->TextHeight("NIC");
 
 				//rotace textu
 				long x,y;short K=0.25*Z;//pouze grafická korekce, text aby se nezohledňovalo zarovnání na diakritiku, vypadá to dinvě
