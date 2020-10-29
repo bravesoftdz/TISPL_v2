@@ -881,7 +881,7 @@ void TForm1::DesignSettings()
 			case 11:text="V";break;
 			case 12:text="S";break;
 			case 13:text="Přesunem dojde k překrytí pracovních oblastí, chcete element přesunout?";break;
-			case 14:text="Vložením dojde k překrytí pracovních oblastí, chcete element vložit?";break;
+			case 14:text="  Rozmístit tabulky";break;
 			case 15:text="Zobrazit všechny objekty";break;
       case 16:text="Předchozí pohled";break;
 			case 17:text="Pauza simulace";break;
@@ -1847,8 +1847,9 @@ void TForm1::startUP()
 			vytvoreni_tab_knihovna();//vytvoření knihovny objektů
 			scButton_zamek_layoutu->ImageIndex=68;
   		Schema->ImageIndex=78;
-  		scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
-  	}
+			scButton_zamek_layoutu->Hint=ls->Strings[43];//"Zamknout layout";
+		}
+		if(scSplitView_OPTIONS->Opened)scSplitView_OPTIONS->Open();//pokud bylo nastavení otevřeno nastavení pro editaci podkladu, nutné znova otevřít po vytvoření tabulky objektů
 		if(d.v.OBJEKTY->dalsi==NULL)
     {
 			TIP=ls->Strings[304];
@@ -1857,31 +1858,6 @@ void TForm1::startUP()
 		SB(ls->Strings[378]+" ");
 		akutalizace_stavu_prichytavani_vSB();
 		if(volat_parametry_linky)Button_dopravnik_parametryClick(this);//zavolání formáláře pro prvotní vyplnění či potvzení hodnot parametrů linky, testovací pozice
-		//pokud je v PP raster, ale nelze ho najít vypíše se dotaz na aktualizaci cesty k souboru
-		if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename))
-		{
-			//extrakce názvu souboru
-			String name=d.v.PP.raster.filename;
-			unsigned int i=name.Length();
-			while(i>0)
-			{
-				if(name[i]==92)break;//pokud sem na lomítku znamená to, že sem prošel přes kompletní název souboru, ukončit
-				else i--;//zpětný průchod
-			}
-			name=name.SubString(i+1,name.Length()-i+1);
-			//kontrola adresáře s EXE, zda neobsahuje podklad
-			name=ExtractFilePath(Application->ExeName).c_str()+name;
-			if(FileExists(name))d.v.PP.raster.filename=name;
-      //nenalezen ani v adresáři EXE, dotaz na uživatele
-			else if(mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
-			{
-		  	//otevření okna s dotazem na načtení podkladu
-		  	OpenDialog1->Title="Načíst podklad";
-		  	OpenDialog1->DefaultExt="*.bmp";
-		  	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
-		  	if(OpenDialog1->Execute())Nacist_podklad(OpenDialog1->FileName,true);//pouze aktualizace cesty k souboru
-			}
-		}
 		vytvor_obraz();//vytvoření prvotního obrazu
 		d.v.update_akt_zakazky();//pokud je uživatelská provede aktualizace, pokud ne aktualizuje defaultní
 	}
@@ -6896,22 +6872,11 @@ void TForm1::add_element (int X, int Y)
 			vypocet_WT(E);
 			if(E->dalsi!=NULL && E->eID==0 && E->dalsi->eID==0)design_element(E->dalsi,false);//aktualizace počtů pozic, pokud je stopka vložena do oblasti jiné stopky
 			if(E->eID==5 || E->eID==6)FormX->validace_max_voziku();//přidána otoč do kabiny, aktualizace validace
-      if(d.v.vrat_druh_elementu(E)==0 && E->eID!=0)FormX->validace_PT(E);//validace PT podle RT, u S&G elementů (kromě stopky)
+			if(d.v.vrat_druh_elementu(E)==0 && E->eID!=0)FormX->validace_PT(E);//validace PT podle RT, u S&G elementů (kromě stopky)
 			FormX->validace_aRD();//metoda kontroluje zda exituje PmG, nenulový pohon a režim objektu == 1 ... pokud platí provede validaci
 			//bylo vloženo předávací místo
 			if(E->eID==200)
-			{          ///zakomentovaná konstukce slouží k nastavení pohonu za vkládáným PM do dalšího PM na NULL
-//   			Cvektory::TElement *E_temp=E->dalsi;//posunutí se za předávací místo
-//   			while(E_temp!=NULL && E_temp->objekt_n==OBJEKT_akt->n)//odmazání pohonu za zarážkou
-//   			{
-//   				E_temp->pohon=NULL;
-//					set_enabled_mGrid(E_temp);
-//					if(E_temp->eID==200)break;
-//					else E_temp=E_temp->dalsi;
-//				}
-//        if(E_temp!=NULL)FormX->update_hodnot_vyhybky_PM(E_temp);//update hodnot následující výhybky
-//   			E_temp=NULL;delete E_temp;
-//				vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nemá být na konec kabiny vloženo předávací místo
+			{
 				design_element(E,false);//nutno předesignovat!! tabulka PM má v druhém sloupci totožný pohon jako v prvním, tento pohon byl z dalších elementů odstraněn v cyklu výše
    			//byla vložena pohonová tabulka, není třeba mít default poh tabulku
    			if(PmG!=NULL)//pokud je zobrazená default tabulka, smazat
@@ -6925,7 +6890,7 @@ void TForm1::add_element (int X, int Y)
 			if(E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID<200 && vkladani_stred && E->geo.delka>=delka_objektu/2.0-delka_objektu*0.2 && E->geo.delka<=delka_objektu/2.0+delka_objektu*0.2 && mrYes==MB(ls->Strings[457],MB_YESNO))//"Chcete umístit element do středu objektu?"
 			{
 				d.v.posun_element(E,delka_objektu/2.0);
-      }
+			}
 			//pokud má element mGrid .. napozicuj
 			if(E->eID!=100 && E->eID!=MaxInt /*&& E->eID!=200*/ && E->mGrid!=NULL)//pokud je alokovaná paměť pro mGrid element bude mít tabulku, pokud není element nebude mít tabulku
 	  	{
@@ -12700,23 +12665,7 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
 }
 //---------------------------------------------------------------------------
 //přeposílá událost na form
-void __fastcall TForm1::DrawGrid_knihovnaMouseWheelDown(TObject *Sender, TShiftState Shift,
-					TPoint &MousePos, bool &Handled)
-{
-  log(__func__);//logování
-	//SB("down");
-	FormMouseWheelDown(Sender,Shift,MousePos,Handled);
-}
-//---------------------------------------------------------------------------
 //přeposílá událost na form
-void __fastcall TForm1::DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftState Shift,
-					TPoint &MousePos, bool &Handled)
-{
-  log(__func__);//logování
-	//SB("up");
-	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
-}
-//---------------------------------------------------------------------------
 void __fastcall TForm1::RzSizePanel_knihovna_objektu_OLDMouseEnter(TObject *Sender)
 {
 	log(__func__);//logování
@@ -14152,7 +14101,6 @@ void __fastcall TForm1::Toolbar_OtevritClick(TObject *Sender)
 	}
   else
 	Otevrit_soubor();
-	if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename) && mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))scButton_nacist_podkladClick(this);//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
 }
 //---------------------------------------------------------------------------
 void TForm1::Otevrit_soubor()//realizuje otevření opendialogu s následným voláním realizace samotného otevření souboru
@@ -14242,6 +14190,24 @@ unsigned short int TForm1::Otevrit_soubor(UnicodeString soubor)//realizuje samot
 			if(scButton_zamek_layoutu->ImageIndex!=67 && d.v.PP.zamek_layoutu)scButton_zamek_layoutuClick(this);
 			d.SCENA=vychozi_stav_sceny;
 			vytvor_statickou_scenu();
+      //pokud je v PP raster, ale nelze ho najít vypíše se dotaz na aktualizaci cesty k souboru
+			if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename))
+	  	{
+	  		//extrakce názvu souboru
+	  		String name=d.v.PP.raster.filename;
+	  		unsigned int i=name.Length();
+	  		while(i>0)
+	  		{
+	  			if(name[i]==92)break;//pokud sem na lomítku znamená to, že sem prošel přes kompletní název souboru, ukončit
+	  			else i--;//zpětný průchod
+	  		}
+	  		name=name.SubString(i+1,name.Length()-i+1);
+	  		//kontrola adresáře s EXE, zda neobsahuje podklad
+	  		name=ExtractFilePath(Application->ExeName).c_str()+name;
+	  		if(FileExists(name))d.v.PP.raster.filename=name;
+			}
+			if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename))REFRESH();
+			if(d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename) && mrYes==MB(ls->Strings[424]+" "+d.v.PP.raster.filename+ls->Strings[425],MB_YESNO))Nacist_podklad();//"Nepodařilo se načíst podklad filename, zkontrolujte jeho existenci, nebo proveďte nové načtení."
 		}break;
 		case 2:case 3://jiná chyba pravděpodbně špatný formát souboru + neshodné verze projektu a binárky
 		{
@@ -15190,7 +15156,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //  e_posledni=NULL;delete e_posledni;
 //	Memo("");
 	Cvektory::TElement *E=OBJEKT_akt->element;
-	Memo(E->data.RT);
+	d.v.reserve_time(E);
   E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
@@ -16422,19 +16388,24 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 	scSplitView_MENU->Opened=false;
 	if(d.v.PP.raster.filename=="" || (d.v.PP.raster.filename!="" && FileExists(d.v.PP.raster.filename) && MB(ls->Strings[496],MB_YESNO)==mrYes))//"Podklad již existuje, přejete si načíst nový?"
 	{
-  	OpenDialog1->Title="Načíst podklad";
-		OpenDialog1->DefaultExt="*.bmp";
-  	OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
-  	if(OpenDialog1->Execute())
-  	{
-  		//načtení podkladu
-  		Nacist_podklad(OpenDialog1->FileName);
-  		edice();
-		}
+    Nacist_podklad();
 	}
   scButton_nacist_podklad->Down=false;
 }
 //---------------------------------------------------------------------------
+void TForm1::Nacist_podklad()
+ {
+   OpenDialog1->Title="Načíst podklad";
+	 OpenDialog1->DefaultExt="*.bmp";
+	 OpenDialog1->Filter="Soubory formátu bmp (*.bmp)|*.bmp";
+	 if(OpenDialog1->Execute())
+	 {
+		 //načtení podkladu
+		 Nacist_podklad(OpenDialog1->FileName);
+		 edice();
+	 }
+ }
+ //---------------------------------------------------------------------------
  unsigned short int  TForm1::Nacist_podklad(UnicodeString soubor,bool akt_filename)
  {
 	log(__func__);//logování
@@ -16445,16 +16416,16 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 		d.v.PP.raster.X=m.P2Lx(scSplitView_LEFTTOOLBAR->Width +10);d.v.PP.raster.Y=m.P2Ly(scGPPanel_mainmenu->Height + 10);//souřadnice v metrech
   	d.v.PP.raster.resolution=m2px;  //výpočet metry děleno počet PX, výchozí zobrazení v nativním rozlišení (bez usazení do metrického měřítka) je 0.1
   	scGPCheckBox_zobraz_podklad->Checked=true;
-  	scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
-  	auto_settings_open=false;
+		scButton_nacist_podklad->Down=false;  //ošetření proti tmavému vysvícení při dalším zobrazení mainmenu
+		auto_settings_open=false;
 		TIP=ls->Strings[303];//"Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu."
   //  if(mrOk==MB("Pro správné umístění a nastavení měřítka podkladu, využijte volbu v pravém horním menu. Přejít do nastavení?",MB_OKCANCEL))
   //  {
-  	auto_settings_open=true;
+		auto_settings_open=true;
 	 // scGPGlyphButton_OPTIONSClick();  //tohle nesežral
   	scSplitView_OPTIONS->Opened=true;
   	scGPCheckBox_zobraz_podklad->Enabled=true;
-  	scGPCheckBox_stupne_sedi->Enabled=true;
+		scGPCheckBox_stupne_sedi->Enabled=true;
   	scGPTrackBar_svetelnost_posuvka->Enabled=false; //prozatim zakazano
   	scLabel1_svetelnost->Enabled=false;        // prozatim zakazano
   	scGPButton_kalibrace->Enabled=true;
@@ -16678,54 +16649,6 @@ void __fastcall TForm1::scGPCheckBox_stupne_sediClick(TObject *Sender)
 	REFRESH();
 }
 //---------------------------------------------------------------------------
-void __fastcall TForm1::DrawGrid_ostatniMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled)
-{
-	log(__func__);//logování
-	FormMouseWheelDown(Sender,Shift,MousePos,Handled);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::DrawGrid_geometrieMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled)
-{
-	log(__func__);//logování
-	//FormMouseWheelDown(Sender,Shift,MousePos,Handled);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::DrawGrid_poznamkyMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled)
-{
-	log(__func__);//logování
-	FormMouseWheelDown(Sender,Shift,MousePos,Handled);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::DrawGrid_ostatniMouseWheelUp(TObject *Sender, TShiftState Shift,
-					TPoint &MousePos, bool &Handled)
-{
-  log(__func__);//logování
-	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::DrawGrid_geometrieMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled)
-{
-  log(__func__);//logování
-	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TForm1::DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled)
-{
-  log(__func__);//logování
-	FormMouseWheelUp(Sender,Shift,MousePos,Handled);
-}
-//---------------------------------------------------------------------------
-
 void __fastcall TForm1::Button_testClick(TObject *Sender)
 {
 	log(__func__);//logování
@@ -17764,7 +17687,6 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		scGPGlyphButton_odstran_cestu->Hint=ls->Strings[4];
 		N21->Caption=ls->Strings[5];
 		//zakomentované == volné
-//    ls->Strings[14];
 //		RzToolButton11->Hint=ls->Strings[15];
 //		RzToolButton12->Hint=ls->Strings[16];
 //		Button4->Caption=ls->Strings[17];
@@ -17905,7 +17827,8 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
     PopUPmenu->scLabel_oddálit->Caption=ls->Strings[180];
     PopUPmenu->scLabel_vybrat_oknem->Caption=ls->Strings[181];
 		PopUPmenu->scLabel_cely_pohled->Caption=ls->Strings[182];
-  	PopUPmenu->scLabel_poznamka->Caption=ls->Strings[183];
+		PopUPmenu->scLabel_poznamka->Caption=ls->Strings[183];
+		PopUPmenu->scLabel_rozmistit_mgridy->Caption=ls->Strings[14];
     myMessageBox->scGPGlyphButton_copy->Hint=ls->Strings[184];
 		myMessageBox->CheckBox_pamatovat->Caption=ls->Strings[189];
 		Form_katalog->scLabel_header->Caption=ls->Strings[192];
@@ -19152,10 +19075,9 @@ void TForm1::rozmisti_mGridy()
 //vypočíta WT pro PM, výhybku a spojku
 void TForm1::vypocet_WT(Cvektory::TElement *E)
 {
-	log(__func__);     
-	//defaultní hodnota
-	E->WT=0;
-	Cvektory::TElement *e_pom=NULL;//deklarace pom elementu
+	log(__func__);
+	//deklrace
+	Cvektory::TElement *e_pom=NULL;
 	bool error=false;
 
 	//naplnění poomcného elementu
@@ -19165,7 +19087,7 @@ void TForm1::vypocet_WT(Cvektory::TElement *E)
    	{
    		case 200:
    		{
-   			e_pom=E->dalsi;
+				e_pom=E->dalsi;
    			if(e_pom==NULL)e_pom=d.v.ELEMENTY->dalsi;
    			break;
    		}
@@ -19183,7 +19105,9 @@ void TForm1::vypocet_WT(Cvektory::TElement *E)
   		//první nastavování
   		case 0:default:
 			{    
-  			if(e_pom->pohon!=NULL)
+        //defaultní hodnota
+				E->WT=0;
+				if(e_pom->pohon!=NULL)
 				{       
 					if(e_pom->pohon==E->pohon)
 					{
@@ -19202,12 +19126,16 @@ void TForm1::vypocet_WT(Cvektory::TElement *E)
   		//nastaveno na první pohon
 			case 1:
 			{     
-  			if(E->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
+        //defaultní hodnota
+				E->WT=0;
+				if(E->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
   			break;
   		}
   		//nastaveno na druhý pohon
 			case 2:
 			{      
+        //defaultní hodnota
+				E->WT=0;
 				if(e_pom->pohon!=NULL)E->WT=m.cekani_na_palec(0,e_pom->pohon->roztec,e_pom->pohon->aRD,3);
   			break;
 			}

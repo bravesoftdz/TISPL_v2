@@ -8763,8 +8763,6 @@ object Form1: TForm1
         OnKeyUp = FormKeyUp
         OnMouseDown = DrawGrid_knihovnaMouseDown
         OnMouseLeave = DrawGrid_knihovnaMouseLeave
-        OnMouseWheelDown = DrawGrid_knihovnaMouseWheelDown
-        OnMouseWheelUp = DrawGrid_knihovnaMouseWheelUp
       end
     end
     object scListGroupPanel_hlavickaOstatni: TscListGroupPanel
@@ -8829,8 +8827,6 @@ object Form1: TForm1
         OnKeyDown = FormKeyDown
         OnKeyPress = FormKeyPress
         OnMouseDown = DrawGrid_ostatniMouseDown
-        OnMouseWheelDown = DrawGrid_ostatniMouseWheelDown
-        OnMouseWheelUp = DrawGrid_ostatniMouseWheelUp
       end
     end
     object scListGroupPanel_hlavickaOtoce: TscListGroupPanel
@@ -8894,8 +8890,6 @@ object Form1: TForm1
         OnKeyDown = FormKeyDown
         OnKeyPress = FormKeyPress
         OnMouseDown = DrawGrid_otoceMouseDown
-        OnMouseWheelDown = DrawGrid_knihovnaMouseWheelDown
-        OnMouseWheelUp = DrawGrid_knihovnaMouseWheelUp
       end
     end
     object scListGroupPanel_geometrie: TscListGroupPanel
@@ -8958,8 +8952,6 @@ object Form1: TForm1
         OnKeyDown = FormKeyDown
         OnKeyPress = FormKeyPress
         OnMouseDown = DrawGrid_geometrieMouseDown
-        OnMouseWheelDown = DrawGrid_geometrieMouseWheelDown
-        OnMouseWheelUp = DrawGrid_geometrieMouseWheelUp
       end
     end
     object scListGroupPanel_poznamky: TscListGroupPanel
@@ -9022,8 +9014,6 @@ object Form1: TForm1
         OnDrawCell = DrawGrid_poznamkyDrawCell
         OnKeyDown = FormKeyDown
         OnKeyPress = FormKeyPress
-        OnMouseWheelDown = DrawGrid_poznamkyMouseWheelDown
-        OnMouseWheelUp = DrawGrid_poznamkyMouseWheelUp
       end
     end
     object scGPLabel_roboti: TscGPLabel

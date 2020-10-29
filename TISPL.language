@@ -12,7 +12,7 @@ Chain merge;X;Spojka
 CS;X;V
 CM;X;S
 Moving overlaps work areas, do you want to move the element?;X;Pøesunem dojde k pøekrytí pracovních oblastí, chcete element pøesunout?
-Paste overlaps the work areas, do you want to insert the element?;X;Vložením dojde k pøekrytí pracovních oblastí, chcete element vložit?
+  Space out tables;X;  Rozmístit tabulky
 Show all objects;X;Zobrazit všechny objekty
 Previous view;X;Pøedchozí pohled
 Pause simulation;X;Pauza simulace

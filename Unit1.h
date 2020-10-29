@@ -305,10 +305,6 @@ __published:	// IDE-managed Components
           bool &Handled);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall DrawGrid_knihovnaMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-	void __fastcall DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
 	void __fastcall DrawGrid_knihovnaMouseLeave(TObject *Sender);
 	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
@@ -425,18 +421,6 @@ __published:	// IDE-managed Components
   void __fastcall scExPanel_podkladClick(TObject *Sender);
   void __fastcall scGPTrackBar_svetelnost_posuvkaChange(TObject *Sender);
   void __fastcall scGPCheckBox_stupne_sediClick(TObject *Sender);
-  void __fastcall DrawGrid_ostatniMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_geometrieMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_poznamkyMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_ostatniMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_geometrieMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
   void __fastcall Button_testClick(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
   void __fastcall scGPEdit1Change(TObject *Sender);
@@ -548,7 +532,7 @@ private:
 	void Otevrit_soubor();//realizuje otevøení opendialogu s následným voláním realizace samotného otevøení souboru
 	void Nacist_podklad();//realizuje otevøení opendialogu s následným voláním realizace samotného nacteni podkladu
 	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotné otevøení souboru
-  unsigned short int Nacist_podklad(UnicodeString soubor,bool akt_filename=false);//realizuje nacteni podkladu
+	unsigned short int Nacist_podklad(UnicodeString soubor,bool akt_filename=false);//realizuje nacteni podkladu
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void ulozit_historie_otevrenych();//ukládání 3 naposledy otevøených projektù do historie
 	void vse_odstranit();
