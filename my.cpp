@@ -688,7 +688,6 @@ bool Cmy::PtInStopka(double Ex,double Ey,double X,double Y,short uhel)
   //vhodno přesunout do globálních proměnných do Cvykresli
 	float size=7*F->Zoom;//stopka
 	short sklon=50;//stopka
-
 	//referenční bode ve špičce, špička je směrem dolu (při nulové rotaci)
 	float sizeX=size;float sizeY=size;
 	if(uhel==0 || uhel==180)sizeX/=2.0;

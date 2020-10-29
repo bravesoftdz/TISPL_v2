@@ -2648,27 +2648,32 @@ void Cvektory::rotace_elementu(TObjekt *Objekt,short rotace)
 	E=NULL;delete E;
 }
 ////---------------------------------------------------------------------------
-//zkontroluje, zda se nacházím v oblasti elemetu
-bool Cvektory::oblast_elementu(TElement *Element, double X, double Y)
+//zkontroluje, zda se nacházím v oblasti elemetu - 0 nenachází, 1 v oblasti elementu, 2 v oblasti popisku elementu, zatím se používá při využití metody jenom true či false
+//pozn. CreatePolygonRgn i PtInRect - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
+short Cvektory::oblast_elementu(TElement *Element, double X, double Y)
 {
 	float otoc_sirka=3.5;//ve skutečnosti poloměr
 	float otoc_tloustka=0.8;
-	bool ret=false;
+	short RET=0;
 	short rotace=Element->orientace;
+	//testování symbolu elementu včetně popisku
 	if(Element->eID==0)//STOPKY
 	{
 		rotace=m.Rt90(rotace+180);//stopka je o 180° orotovaná
-		if(m.PtInStopka(Element->X,Element->Y,X,Y,rotace) || Element->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))ret=true;//testování symbolu včetně popisku,pozn. CreatePolygonRgn i PtInRect - zahrnuje pouze vnitřní tvar, obrys tvaru je z oblasti vyloučen
+		if(Element->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))RET=2;//pokud se jedná o popisek
+		else if(obdelnikova_oblast_elementu(Element,X,Y) && m.PtInStopka(Element->X,Element->Y,X,Y,rotace))RET=1;//pokud se jedná přímo element
 	}
-	if(Element->eID==5 || Element->eID==6)//OTOČE
+	if(RET==0 && (Element->eID==5 || Element->eID==6))//OTOČE
 	{
-		if(m.PtInCircle(X,Y,Element->X,Element->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px) || Element->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))ret=true;//testování symbolu včetně popisku,pozn.
+		if(Element->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))RET=2;
+		else if(m.PtInCircle(X,Y,Element->X,Element->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))RET=1;
 	}
-	if(Element->eID==100)//ION tyč
+	if(RET==0 && Element->eID==100)//ION tyč
 	{
-		if(m.PtInIon(Element->X,Element->Y,X,Y,rotace) || Element->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))ret=true;
+		if(Element->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))RET=2;
+		else if(obdelnikova_oblast_elementu(Element,X,Y) && m.PtInIon(Element->X,Element->Y,X,Y,rotace))RET=1;
 	}
-	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18)//ROBOTI
+	if(RET==0 && (1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18) && obdelnikova_oblast_elementu(Element,X,Y))//ROBOTI
 	{
 		//hledání, zda leží v regionu, region se liší dle rotace
 		HRGN hreg;
@@ -2680,18 +2685,18 @@ bool Cvektory::oblast_elementu(TElement *Element, double X, double Y)
 			case 180:hreg=CreateRectRgn(m.L2Px(Element->X-F->d.Robot_delka_zakladny/2.0),m.L2Py(Element->Y+F->d.Robot_sirka_zakladny/2.0),m.L2Px(Element->X+F->d.Robot_delka_zakladny/2.0),m.L2Py(Element->Y-DoSkRB));DoSkRB*=-1;break;
 			case 270:hreg=CreateRectRgn(m.L2Px(Element->X-DoSkRB),m.L2Py(Element->Y+F->d.Robot_delka_zakladny/2.0),m.L2Px(Element->X+F->d.Robot_sirka_zakladny/2.0),m.L2Py(Element->Y-F->d.Robot_delka_zakladny/2.0));DoSkRB*=-1;break;
 		}
-		if(PtInRegion(hreg,m.L2Px(X),m.L2Py(Y)))ret=true;
+		if(PtInRegion(hreg,m.L2Px(X),m.L2Py(Y)))RET=true;
 		else//pokud nenalezeno, testuje ještě případně OTOČE ROBOTŮ
 		{
 			if(Element->eID==3 || Element->eID==4 || Element->eID==9 || Element->eID==10 || Element->eID==13 || Element->eID==14 || Element->eID==17 || Element->eID==18)
 			{
 				if(rotace==0 || rotace==180)
 				{
-					if(m.PtInCircle(X,Y,Element->X,Element->Y+DoSkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))ret=true;//ROBOTi s otočemi
+					if(m.PtInCircle(X,Y,Element->X,Element->Y+DoSkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))RET=true;//ROBOTi s otočemi
 				}
 				else//90°, 270°
 				{
-					if(m.PtInCircle(X,Y,Element->X+DoSkRB,Element->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))ret=true;//ROBOTi s otočemi
+					if(m.PtInCircle(X,Y,Element->X+DoSkRB,Element->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))RET=true;//ROBOTi s otočemi
 				}
 			}
 			else//ani mezi otočemi robotu nenalezeno, hledá mezi STOPKAMI ROBOTŮ
@@ -2700,61 +2705,121 @@ bool Cvektory::oblast_elementu(TElement *Element, double X, double Y)
 				{
 					if(rotace==0 || rotace==180)
 					{
-						if(m.PtInStopka(Element->X,Element->Y+DoSkRB,X,Y,rotace))ret=true;//ROBOTi se stopkami
+						if(m.PtInStopka(Element->X,Element->Y+DoSkRB,X,Y,rotace))RET=true;//ROBOTi se stopkami
 					}
 					else//90°, 270°
 					{
-						if(m.PtInStopka(Element->X+DoSkRB,Element->Y,X,Y,rotace))ret=true;//ROBOTi se stopkami
+						if(m.PtInStopka(Element->X+DoSkRB,Element->Y,X,Y,rotace))RET=true;//ROBOTi se stopkami
 					}
 				}
 			}
 		}
 	}
-	if(101<=Element->eID && Element->eID<=108)//ani roboti nanelezeny, hledá tedy mezi LIDSKÝMI ROBOTY
+	if(RET==0 && 101<=Element->eID && Element->eID<=108)//ani roboti nanelezeny, hledá tedy mezi OPERÁTORY
 	{
-		if(m.PtInClovek(Element->X,Element->Y,X,Y,rotace,Element->eID)|| Element->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))ret=true;
-		else //pokud nenalezeno, testuje ještě případně otoče lidských robotů
-		{
-			double DkRB=F->d.DkRB;if(rotace==180 || rotace==270)DkRB*=-1;
-			if(Element->eID==103 || Element->eID==104 || Element->eID==107 || Element->eID==108)//s otočemi
+		if(Element->citelna_oblast.rect3.PtInRect(TPoint(m.L2Px(X),m.L2Py(Y))))RET=2;//popisek
+		else if(obdelnikova_oblast_elementu(Element,X,Y))//hrubé otestování
+		{ //podrobné otestování
+			if(m.PtInClovek(Element->X,Element->Y,X,Y,rotace,Element->eID))RET=1;
+			else //pokud nenalezeno, testuje ještě případně otoče lidských robotů
 			{
-				if(rotace==0 || rotace==180)
-				{
-					if(m.PtInCircle(X,Y,Element->X,Element->Y+DkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))ret=true;
-				}
-				else//90°, 270°
-				{
-					if(m.PtInCircle(X,Y,Element->X+DkRB,Element->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))ret=true;
-				}
-			}
-			else//ani mezi otočemi lidských robotu nenalezeno, hledá mezi STOPKAMI LIDSKÝCH ROBOTŮ
-			{
-				if(Element->eID==102 || Element->eID==104 || Element->eID==106 || Element->eID==108)
+				double DkRB=F->d.DkRB;if(rotace==180 || rotace==270)DkRB*=-1;
+				if(Element->eID==103 || Element->eID==104 || Element->eID==107 || Element->eID==108)//s otočemi
 				{
 					if(rotace==0 || rotace==180)
 					{
-						if(m.PtInStopka(Element->X,Element->Y+DkRB,X,Y,rotace))ret=true;//ROBOTi se stopkami
+						if(m.PtInCircle(X,Y,Element->X,Element->Y+DkRB,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))RET=1;
 					}
 					else//90°, 270°
 					{
-						if(m.PtInStopka(Element->X+DkRB,Element->Y,X,Y,rotace))ret=true;//ROBOTi se stopkami
+						if(m.PtInCircle(X,Y,Element->X+DkRB,Element->Y,(otoc_sirka+otoc_tloustka/2.0)*F->m2px))RET=1;
+					}
+				}
+				else//ani mezi otočemi lidských robotu nenalezeno, hledá mezi STOPKAMI LIDSKÝCH ROBOTŮ
+				{
+					if(Element->eID==102 || Element->eID==104 || Element->eID==106 || Element->eID==108)
+					{
+						if(rotace==0 || rotace==180)
+						{
+							if(m.PtInStopka(Element->X,Element->Y+DkRB,X,Y,rotace))RET=true;//ROBOTi se stopkami
+						}
+						else//90°, 270°
+						{
+							if(m.PtInStopka(Element->X+DkRB,Element->Y,X,Y,rotace))RET=true;//ROBOTi se stopkami
+						}
 					}
 				}
 			}
 		}
 	}
-	if(Element->eID==MaxInt && F->Akce!=F->Takce::GEOMETRIE)//zarážka s S/K
+	if(RET==0 && Element->eID==MaxInt && F->Akce!=F->Takce::GEOMETRIE)//zarážka s S/K
 	{
-		if(Element->geo.HeightDepp!=0 && m.PtInCircle(X,Y,Element->X,Element->Y,0.3))ret=true;
-    else if(Element->dalsi!=NULL && Element->dalsi->geo.HeightDepp!=0 && m.PtInCircle(X,Y,Element->X,Element->Y,0.3))ret=true;
+		if(Element->geo.HeightDepp!=0 && m.PtInCircle(X,Y,Element->X,Element->Y,0.3))RET=1;
+		else if(Element->dalsi!=NULL && Element->dalsi->geo.HeightDepp!=0 && m.PtInCircle(X,Y,Element->X,Element->Y,0.3))RET=1;
 	}
-	if(Element->eID==MaxInt && F->Akce==F->Takce::GEOMETRIE)//zarážka při geometrii
+	if(RET==0 && Element->eID==MaxInt && F->Akce==F->Takce::GEOMETRIE)//zarážka při geometrii
 	{
-		if(m.PtInCircle(X,Y,Element->X,Element->Y,0.3))ret=true;
+		if(m.PtInCircle(X,Y,Element->X,Element->Y,0.3))RET=1;
 	}
-	if(Element->eID==200 && ((Element->orientace==0 || Element->orientace==180) && m.PtInRectangle(Element->X-0.1,Element->Y-0.25,Element->X+0.1,Element->Y+0.25,X,Y) || (Element->orientace==90 || Element->orientace==270) && m.PtInRectangle(Element->X-0.25,Element->Y-0.1,Element->X+.25,Element->Y+0.1,X,Y)))ret=true;
-	if((Element->eID==300 || Element->eID==301) && m.PtInCircle(X,Y,Element->X,Element->Y,0.2))ret=true;
-	return ret;
+	if(RET==0 && Element->eID==200 && ((Element->orientace==0 || Element->orientace==180) && m.PtInRectangle(Element->X-0.1,Element->Y-0.25,Element->X+0.1,Element->Y+0.25,X,Y) || (Element->orientace==90 || Element->orientace==270) && m.PtInRectangle(Element->X-0.25,Element->Y-0.1,Element->X+.25,Element->Y+0.1,X,Y)))RET=1;//předávací místo
+	if(RET==0 && (Element->eID==300 || Element->eID==301) && m.PtInCircle(X,Y,Element->X,Element->Y,0.2))RET=1;//výhybka či spojka
+	return RET;
+}
+////---------------------------------------------------------------------------
+//zkontroluje, zda se nacházím v oblasti obdelníku opsaného oblasti daného elemetu bez elementu, použito pouze pro stop, roboty, operatory a ion tyč
+//akceluruje celkové vyhledávací řešení při přejíždění myší přes layout, předchází přesnému vyhledávání, to nastavá až po navrácen true hodnoty touto metodou
+bool Cvektory::obdelnikova_oblast_elementu(TElement *Element, double X, double Y)
+{
+	bool RET=false;
+	TElement *E=Element;//pouze zkrácení zápisu
+	short rotace=m.Rt90(Element->orientace);
+	//STOPKY
+	if(Element->eID==0)
+	{
+		rotace=m.Rt90(rotace+180);//stopka je o 180° orotovaná
+		switch(rotace)
+		{
+			case 0: 	if(m.PtInRectangle(E->X-0.32,E->Y,E->X+0.32,E->Y+0.44,X,Y))RET=true;break;
+			case 180:	if(m.PtInRectangle(E->X-0.32,E->Y,E->X+0.32,E->Y-0.44,X,Y))RET=true;break;
+			case 90:	if(m.PtInRectangle(E->X,E->Y+0.32,E->X+0.48,E->Y-0.32,X,Y))RET=true;break;
+			case 270:	if(m.PtInRectangle(E->X,E->Y+0.32,E->X-0.48,E->Y-0.32,X,Y))RET=true;break;
+		}
+	}
+	//ION tyč
+	if(Element->eID==100)
+	{
+		switch(rotace)
+		{
+			case 0:	 if(m.PtInRectangle(E->X-0.25,E->Y-0.95,E->X+0.25,E->Y+0.95,X,Y))RET=true;break;
+			case 180:if(m.PtInRectangle(E->X-0.25,E->Y+0.95,E->X+0.25,E->Y-0.95,X,Y))RET=true;break;
+			case 90: if(m.PtInRectangle(E->X-0.95,E->Y+0.25,E->X+0.95,E->Y-0.25,X,Y))RET=true;break;
+			case 270:if(m.PtInRectangle(E->X-0.95,E->Y-0.25,E->X+0.95,E->Y+0.25,X,Y))RET=true;break;
+		}
+	}
+	//ROBOTI
+	if(1<=Element->eID && Element->eID<=4 || 7<=Element->eID && Element->eID<=18)
+	{
+		switch(rotace)
+		{
+			case 0:	 if(m.PtInRectangle(E->X-0.62,E->Y+2.1,E->X+0.62,E->Y-0.52,X,Y))RET=true;break;
+			case 180:if(m.PtInRectangle(E->X-0.62,E->Y+0.52,E->X+0.62,E->Y-2.1,X,Y))RET=true;break;
+			case 90: if(m.PtInRectangle(E->X-0.52,E->Y-0.62,E->X+2.1,E->Y+0.62,X,Y))RET=true;break;
+			case 270:if(m.PtInRectangle(E->X-2.1,E->Y-0.62,E->X+0.52,E->Y+0.62,X,Y))RET=true;break;
+		}
+	}
+	//OPERÁTOŘI
+	if(101<=Element->eID && Element->eID<=108)
+	{
+		switch(rotace)
+		{
+			case 0:	 if(m.PtInRectangle(E->X-0.58,E->Y-1.2,E->X+0.58,E->Y+0.25,X,Y))RET=true;break;
+			case 180:if(m.PtInRectangle(E->X-0.58,E->Y-0.25,E->X+0.58,E->Y+1.2,X,Y))RET=true;break;
+			case 90: if(m.PtInRectangle(E->X-0.25,E->Y-0.58,E->X+1.2,E->Y+0.58,X,Y))RET=true;break;
+			case 270:if(m.PtInRectangle(E->X-1.2,E->Y-0.58,E->X+0.25,E->Y+0.58,X,Y))RET=true;break;
+		}
+	}
+	E=NULL;delete E;
+	return RET;
 }
 ////---------------------------------------------------------------------------
 //hledá element v místě kurzoru pracuje v logických/metrických souradnicích
@@ -7315,7 +7380,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 			TZprava *Z=ZPRAVY->dalsi;
 			while(Z!=NULL)
 			{
-				if(Z->VID==tVID && Z->X==tzEx && Z->Y==tzEx)//pokud se jedná o stejnou zprávu jako původní (před přegenerováním seznamu zpráv) se zobrazeným rozšiřujícím textem
+				if(Z->VID==tVID && Z->X==tzEx && Z->Y==tzEy)//pokud se jedná o stejnou zprávu jako původní (před přegenerováním seznamu zpráv) se zobrazeným rozšiřujícím textem
 				{
 					F->d.zobrazit_celou_zpravu=Z->n;
 				}

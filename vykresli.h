@@ -58,13 +58,13 @@ class Cvykresli
 	void vykresli_jig(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig=clPurple,float Width=2);
 	void vykresli_vyrobky(TCanvas *canv,double X,double Y,double dJ,double sJ,double orientaceP,double rotaceJ,TColor clJig,float Width);
 	void vykresli_vyrobek(TCanvas *canv,double X,double Y,double Z=5,double rotace=0,TColor color=clRed,double prohloubeni=0.02);
-	void vykresli_elementy(TCanvas *canv,short scena);//scena 0 - vše do dynamické, scena 1 - implicitnì statické elementy do statické scény, scena 2 - implicitnì statické elementy do dynamické scény, scena 3 - implicitnì dynamické elementy do statické scény, scena 4 - implicitnì dynamické elementy do dynamické scény
+	void vykresli_elementy(TCanvas *canv,short scena);//cyklem prochází všechny elementy a ty následnì "selectí" dle: scena 0 - vše do dynamické, scena 1 - implicitnì statické elementy do statické scény, scena 2 - implicitnì statické elementy do dynamické scény, scena 3 - implicitnì dynamické elementy do statické scény, scena 4 - implicitnì dynamické elementy do dynamické scény
 	void vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID=0,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double LO_pozice=0,Cvektory::TElement *E=NULL);//celková vykreslovací metoda, vykreslí buï stopku, robota nebo otoè
-	void vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double aP=0,float TS=0,double LO_pozice=0);
-	void vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2);//vykresli siluetu èlovìk s pøípadnì pøidruženým elememntem, rotuje po smìru hodinových ruèièek, pro animaci slouží okolo hranièních stupòu 0,90,180,270, vždy rozsah -45° až +44°, napø. 45-134° je maximální pracovní rozsah pro èlovìka rotovaného na 90° atd.
-	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1);
-	void vykresli_otoc(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1);
-	void vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,float TS=0);
+	void vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID=1,short typ=0,double rotace=0,short stav=1,double LO1=1.5,double OTOC_delka=0,double LO2=0,double aP=0,float TS=0,double LO_pozice=0,Cvektory::TElement *E=NULL);
+	void vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,Cvektory::TElement *E=NULL);//vykresli siluetu èlovìk s pøípadnì pøidruženým elememntem, rotuje po smìru hodinových ruèièek, pro animaci slouží okolo hranièních stupòu 0,90,180,270, vždy rozsah -45° až +44°, napø. 45-134° je maximální pracovní rozsah pro èlovìka rotovaného na 90° atd.
+	void vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ=0, double rotace=0, short stav=1,Cvektory::TElement *E=NULL);
+	void vykresli_otoc(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,short eID=5,short typ=0,double rotace=0,short stav=1,Cvektory::TElement *E=NULL);
+	void vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,float TS=0,Cvektory::TElement *E=NULL);
 	void vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short eID,short typ,double rotace,short stav,Cvektory::TElement *Element);
 	void vykresli_zarazku(TCanvas *canv,long X,long Y,double orientace,unsigned long objekt_n,String name="");
 	void vykresli_predavaci_misto(TCanvas *canv,Cvektory::TElement *E,long X,long Y,AnsiString name,short typ=0,double rotace=0,short stav=1);
@@ -155,7 +155,7 @@ class Cvykresli
 	//short legenda_polozky[8];//zobrazení jednotlivých položek, 0 index je však poèet zobrazených (uložených) položek v poli, -1 stav je u daného atributu normál
 	//short Xofset;//zajistí správný poèátek prvního objektu dle šíøky nejdelší vypisované minuty v ROMA
 	short precision;//poèet desetinných míst èísel na èasové ose
-	TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uložení
+	//TRect aktOblast;//aktuální citelná oblast popisku elementu urèená k uložení již øešeno pøímo v elementu
 	int orientace_objektu;
 	short predchozi_oblast;
 	Cvektory::TGeometrie geoTemp;//pomocná struktura sloužicí na uchování (k pozdìjšímu uložení do geometrických elementù) aktuálnì vracených hodnot ze smart kurzoru

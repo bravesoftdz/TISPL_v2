@@ -2700,12 +2700,12 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 102:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x+1,Mouse->CursorPos.y);break;}
 		//ŠIPKA NAHORU
 		case 104:{Mouse->CursorPos=TPoint(Mouse->CursorPos.x,Mouse->CursorPos.y-1);break;}
-		//CTRL+D
-		case 68: if(ssCtrl)ShowMessage("ctrl + d");break;
-		//CTRL+M
+		//CTRL+d
+		//case 68: if(ssCtrl)ShowMessage("ctrl + d");break;
+		//CTRL+m
 		case 77: if(ssCtrl)Akce=MEASURE;kurzor(add_o);break;
 		//CTRL+u
-		case 85: if(ssCtrl)ShowMessage("ctrl + u");break;
+		//case 85: if(ssCtrl)ShowMessage("ctrl + u");break;
 		//+
 		case 107:if(!editace_textu)ZOOM_IN();break;
 		//-
@@ -3387,9 +3387,12 @@ void __fastcall TForm1::FormDblClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
+	if(X!=akt_souradnice_kurzoru_PX.X || Y!=akt_souradnice_kurzoru_PX.Y)//ošetření proti samovolným pulzům myši
+	{
 	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
 	akt_souradnice_kurzoru_PX=TPoint(X,Y);
 	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
+	//Memo(X);Memo(Y);
 	if(d.v.SIM!=NULL)//if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
 	{
 //		pocitadlo_doby_neaktivity=0;
@@ -3948,7 +3951,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				if(posledni_editovany_element==NULL)TIP="Přichyceno na začátek objektu";
 				else if(posledni_editovany_element->eID!=MaxInt)TIP="Přichyceno na "+posledni_editovany_element->name;
 				//////setjobid, při geometrii je třeba mít zjišťování jidů kolem kót elementu (editace přímek)
-		  	int puvJID=JID;//záloha původního JID
+				int puvJID=JID;//záloha původního JID
 				//////getjobid
 				JID=-1;
 				if(OBJEKT_akt->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
@@ -3993,7 +3996,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}break;
 		case GEOMETRIE_LIGHT://pouze editace z kót, nezobrazuje se smart kurzor
 		{
-      //////setjobid, při geometrii je třeba mít zjišťování jidů kolem kót elementu (editace přímek)
+			//////setjobid, při geometrii je třeba mít zjišťování jidů kolem kót elementu (editace přímek)
 		  int puvJID=JID;//záloha původního JID
 			//////getjobid
 			JID=-1;
@@ -4071,22 +4074,22 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					if(pom_element_temp->geo.HeightDepp!=0)
 		    	{
 						if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,velikost_citelne_oblasti_elementu))
-		    		{
+						{
 							pom_element->X=pom_element_temp->geo.X1;
 							pom_element->Y=pom_element_temp->geo.Y1;
 							TIP=ls->Strings[509];//"Přichyceno k začátku S/K"
               prichyceno=1;
 							pom_element->short_name=pom_element_temp->name;
-		    			break;
+							break;
 		    		}
 						if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,velikost_citelne_oblasti_elementu))
-		    		{
+						{
 							pom_element->X=pom_element_temp->geo.X4;
 							pom_element->Y=pom_element_temp->geo.Y4;
 							TIP=ls->Strings[510];//"Přichyceno ke konci S/K"
               prichyceno=1;
 							pom_element->short_name=pom_element_temp->name;
-		    			break;
+							break;
 		    		}
 					}
 					//pouze na geometrii
@@ -4095,7 +4098,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 						//přilepení souřadnic na geometrii
 						korekce=d.v.bod_na_geometrii(pom_element_temp);
 				   	pom_element->X=korekce.x;
-				   	pom_element->Y=korekce.y;
+						pom_element->Y=korekce.y;
 						prichyceno=2;
 					}
 					pom_element->geo.orientace=pom_element_temp->geo.orientace;//aktualizace orientace podle aktuálně přichyceného elementu
@@ -4104,7 +4107,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				}
 				pom_element_temp=d.v.dalsi_krok(VYH,pom_element_temp);
 			}
-      d.v.vymaz_seznam_VYHYBKY(VYH);
+			d.v.vymaz_seznam_VYHYBKY(VYH);
 			pom_element_temp=NULL;delete pom_element_temp;
 			//posun pokud není přichyceno
 			if(pom_element!=NULL && prichyceno==0)
@@ -4171,13 +4174,14 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 		}break;
 		default:break;
 	}
-    //fix na pridani 1 obj pro demo
+		//fix na pridani 1 obj pro demo
 //    if(EDICE==DEMO && MOD==LAYOUT)
 //    {
 //    if(d.v.OBJEKTY->predchozi->n >= 1) DrawGrid_knihovna->Visible=false;
 //    else   DrawGrid_knihovna->Visible=true;
 //    }
 //    if(MOD==EDITACE) DrawGrid_knihovna->Visible=true;
+	}
 }
 //---------------------------------------------------------------------------
 //vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
@@ -4786,8 +4790,8 @@ void TForm1::getJobID(int X, int Y)
   				{
   					pom_element=NULL;
   					if(OBJEKT_akt->uzamknout_nahled==false && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))pom_element=F->d.v.najdi_element(OBJEKT_akt,m.P2Lx(X),m.P2Ly(Y));//pouze pokud je možné měnit rozmístění a rozměry,nutné jako samostatná podmínka
-  					if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
-						{
+						if(pom_element!=NULL)//element nalezen, tzn. klik či přejetí myší přes elemement nikoliv tabulku
+						{                                      //volá se v oblast_elementu duplicitně také, toto by se dalo nahradit, protože oblast_elementu vrací v případě, že se jedná o název hodnotu 2
 							if(scGPCheckBox1_popisky->Checked && pom_element->citelna_oblast.rect3.PtInRect(TPoint(X,Y)))JID=1;//byl nalezen název elementu
 							else JID=0; //byl nálezen element nikoliv jeho název, určeno k smazání či posunu elementu
   					}
@@ -4921,7 +4925,7 @@ void TForm1::getJobID(int X, int Y)
 				O=NULL;delete O;
 			}
 		}
-  	if(MOD==LAYOUT && !d.v.PP.zamek_layoutu)//pro schéma, zjišťování jidů pro body a úsečky
+		if(MOD==LAYOUT && !d.v.PP.zamek_layoutu)//mod LAYOUT - stav odemčeno, zjišťování jidů
 		{
 			/////////////JID udává pouze akci, není třeba aby se k němu přičítalo i číslo bodu, bod je držen jako ukazatel pom_bod/////////////
   		//-102; citelná oblast zprávy
@@ -15187,6 +15191,21 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //MaKr testovací tlačítko
 void __fastcall TForm1::ButtonMaKrClick(TObject *Sender)
 {//vždy nechat tento komentář
+
+Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+		//Memo(E->name);
+		if(E->n==14)
+		{
+			Memo(String(E->citelna_oblast.rect3.left)+" "+String(E->citelna_oblast.rect3.top)+" "+String(E->citelna_oblast.rect3.right)+" "+String(E->citelna_oblast.rect3.bottom));
+			//Canvas->FillRect(TRect(E->citelna_oblast.rect3.left*3,E->citelna_oblast.rect3.top*3,E->citelna_oblast.rect3.right*3,E->citelna_oblast.rect3.bottom*3));
+			//REFRESH();
+		}
+		E=E->dalsi;
+	}
+	delete E;
+
 
 //	Cvektory::TPohon *P=d.v.POHONY->dalsi;
 //	while(P!=NULL)

@@ -1,6 +1,44 @@
 ﻿
 //MAKR - archiv
  //log(__func__);
+
+////  	//odeslání dat na FTP server
+//	TIdFTP *FTP=new TIdFTP(this);
+//	FTP->Host="lyzarskejihlavsko.cz";//FTP server
+//	FTP->Username="hojkov@lyzarskejihlavsko.cz";
+//	FTP->Password="modryextra";
+//	FTP->TransferType=ftBinary;
+//	FTP->Passive=true;//nutno
+//	FTP->Connect();
+//	//FTP->Put("C:\\Users\\Martin\\AppData\\Local\\Temp\\TISPL\\tispl_PrtScrMartin_MARTIN-NOTEBOOK.png");
+//
+//
+//	HANDLE h;
+//	WIN32_FIND_DATA wfd;
+//	String text;
+//	short pocet_souboru=-1;
+//
+//	h=FindFirstFile(L"*.*",&wfd);
+//	if(h!=INVALID_HANDLE_VALUE)
+//	{
+//		while(FindNextFile(h,&wfd))
+//		{
+//			//text+=String(wfd.cFileName)+"\t";
+//			if(++pocet_souboru>0)
+//			{
+//				FTP->Put(ExtractFilePath(Application->ExeName)+wfd.cFileName);
+//			}
+//		}
+//		FindClose(h);
+//	}
+////
+////	Memo(text);
+//
+//	FTP->Disconnect();
+//	delete FTP;
+
+
+
 // Form2->ShowModal();
 //	d.v.vytvor_retez(d.v.POHONY->dalsi);
 //	d.vykresli_retez(Canvas,d.v.POHONY->dalsi->retez);
