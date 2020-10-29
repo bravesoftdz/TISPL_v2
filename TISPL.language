@@ -12,7 +12,7 @@ Chain merge;X;Spojka
 CS;X;V
 CM;X;S
 Moving overlaps work areas, do you want to move the element?;X;Pøesunem dojde k pøekrytí pracovních oblastí, chcete element pøesunout?
-Paste overlaps the work areas, do you want to insert the element?;X;Vložením dojde k pøekrytí pracovních oblastí, chcete element vložit?
+  Space out tables;X;  Rozmístit tabulky
 Show all objects;X;Zobrazit všechny objekty
 Previous view;X;Pøedchozí pohled
 Pause simulation;X;Pauza simulace
@@ -301,7 +301,7 @@ TIP: You can also zoom out by pressing the - or F8 or CTRL key and turning the m
 TIP: You can also move the image by holding down the left mouse button and moving the mouse in the desired direction.;X;TIP: Posun obrazu lze také vykonat pomocí stisknutého levého tlaèítka myší a posunem myši požadovaným smìrem.
 TIP: You can also zoom in by pressing the CTRL key and selecting the desired area with the mouse while holding down the left mouse button.;X;TIP: Pøiblížení oknem je možné také realizovat pomocí stisknuté klávesy CTRL a výbìrem požadované oblasti pomocí myši pøi stisknutém levém tlaèítku.
 Downloading template ...;X;Probíhá stahování šablony...
-For correct positioning and scaling of the substrate, use the option in the top right menu.;X;Pro správné umístìní a nastavení mìøítka podkladu, využijte volbu v pravém horním menu.
+The correct place and scaling settings can be configured in Settings-> Background;X;Správné umístìní a nastavení mìøítka je možné konfigurovat v Nastavení->Podklad
 Click an object in the object library, drag, and then settle to add the object.;X;Kliknutím na objekt v knihovnì objektu, tažením a následným usazením pøidáte objekt.
 To draw the hall it is necessary to enter at least 3 points.;X;Pro zakreslení haly je nutné zadat minimálnì 3 body.
 Press ENTER or double-click to close the hall.;X;Pro uzavøení haly stisknìte ENTER nebo dvakrát kliknìte.
@@ -503,7 +503,7 @@ Click in the drive area to insert the start.;X;Kliknutím do oblasti pohonu vloží
 Drag the mouse and then click to insert an endpoint.;X;Tažením myši a následným kliknutím vložíte koncový bod.
 Drag the mouse to adjust the measurement area. Click to exit.;X;Tažením myši pøizpùsobujete oblast mìøení. Kliknutím ukonèíte.
 Grasp and drag in the drive area to reposition the thermometer.;X;Uchopením a tažením v oblasti pohonu zmìníte umístìní teplomìru.
-Rec. PT value is maximum;X;Dop. hodnota PT je maximálnì
+Recomm. PT value is maximum;X;Dop. hodnota PT je maximálnì
 Snapped to;X;Pøichyceno k
 Snapped to the edge of the cabin;X;Pøichyceno k hranì kabiny
 Snapped to wagon no.;X;Pøichyceno k vozíku è.

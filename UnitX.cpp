@@ -220,22 +220,22 @@ void TFormX::OnMouseMove(long Tag,long ID,int X,int Y,unsigned long Col,unsigned
 {
 	if(F->OBJEKT_akt!=NULL)
 	{
-  	//deklarace
-  	int puv=vykresli_vetev;
-  	vykresli_vetev=0;//nulování pøed testem
-  	if(F->pom_element==NULL && !F->OBJEKT_akt->uzamknout_nahled)F->pom_element=vrat_element_z_tabulky(ID);//pokud je pom_element je NULL naètení z tabulky
+		//deklarace
+		int puv=vykresli_vetev;
+		vykresli_vetev=0;//nulování pøed testem
+		if(F->pom_element==NULL && !F->OBJEKT_akt->uzamknout_nahled)F->pom_element=vrat_element_z_tabulky(ID);//pokud je pom_element je NULL naètení z tabulky
 
-  	//kontrola, zda se jedná o výhybku nebo spojku
-  	if(F->pom_element!=NULL && !F->OBJEKT_akt->uzamknout_nahled && (F->pom_element->eID==300 || F->pom_element->eID==301))
+		//kontrola, zda se jedná o výhybku nebo spojku
+		if(F->pom_element!=NULL && !F->OBJEKT_akt->uzamknout_nahled && (F->pom_element->eID==300 || F->pom_element->eID==301))
   	{
   		if(F->pom_element->eID==300)Col=Col-2;
-  		if(F->prohodit_sloupce_PM(F->pom_element))
+			if(F->prohodit_sloupce_PM(F->pom_element))
 			{
-  			if(Col==1)Col=2;
+				if(Col==1)Col=2;
   			else Col=1;
-  		}
-  		vykresli_vetev=Col;
-  	}
+			}
+			vykresli_vetev=Col;
+		}
 
 		//pokud došlo ke zmìnì, REFRESH
 		if(vykresli_vetev!=puv)F->REFRESH();
@@ -689,9 +689,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						TscGPComboBox *C=E->mGrid->getCombo(Col,Row);
 						if(C!=NULL)
 						{
-              if(C->ItemIndex==0)E->WT_index=0;
-							if(prvni==Col && C->ItemIndex==1)E->WT_index=1;
-							if(druhy==Col && C->ItemIndex==1)E->WT_index=2;
+							if(prvni==Col && C->ItemIndex==0)E->WT_index=2;
+							if(druhy==Col && C->ItemIndex==0)E->WT_index=1;
 						}
             C=NULL;delete C;
             F->zmena_editovanych_bunek(E);
@@ -712,8 +711,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 						if(C!=NULL)
 						{
               if(C->ItemIndex==0)E->WT_index=0;
-							if(Col==1 && C->ItemIndex==1)E->WT_index=1;
-							if(Col==2 && C->ItemIndex==1)E->WT_index=2;
+							if(Col==1 && C->ItemIndex==0)E->WT_index=2;
+							if(Col==2 && C->ItemIndex==0)E->WT_index=1;
 						}
             C=NULL;delete C;
 						F->zmena_editovanych_bunek(E);
@@ -997,7 +996,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				}break;
 				case 301://spojka
 				{
-					F->zmena_editovanych_bunek(E);
+					F->napln_comba_mGridu(E);
 				}break;
 			}
 			if(input_state==COMBO)F->set_enabled_mGrid(E);//pouze pøi zmìnì pohonu, jinak zbyteèné
@@ -1071,7 +1070,7 @@ void TFormX::aktualizace_tab_elementu_pOdebran ()
 				}break;
 				case 301://spojka
 				{
-					F->zmena_editovanych_bunek(E);
+					F->napln_comba_mGridu(E);
 				}break;
 				case 200:
 				case 300:
@@ -2466,8 +2465,8 @@ void TFormX::prirazeni_pohonu_defTab()
 	E=NULL;p=NULL;
 	delete E;delete p;
 
-  //vypsání upozornìní k používaným pohonùm
-	popisky_pouzivany_pohon=true;   
+	//vypsání upozornìní k používaným pohonùm
+	popisky_pouzivany_pohon=true;
 }
 //---------------------------------------------------------------------------
 //kontorla a dotaz zda mají být PM na stejném pohonu smazána
@@ -2531,7 +2530,7 @@ void TFormX::mazatPM(Cvektory::TElement *Element)
 	}
 
 	//kontrola zde ovlivnìné PM existuje + dotaz na mazání
-	if(nalezen && mazat_element && E!=NULL)
+	if(nalezen && E!=NULL)
 	{
 		if(E->dalsi!=NULL && E->dalsi->geo.delka==0)smaz=E->dalsi;
 		F->posun_na_element(E);
@@ -2654,15 +2653,15 @@ void TFormX::aktualizace_teplomeru()
 		Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
 		if(T!=NULL)
 		{
-      //mazání všech rádkù kromì hlavièky
-			for(unsigned int i=T->posledni->mGrid->RowCount-1;i>0;i--)
-			{
-				T->posledni->mGrid->DeleteRow(i,false);
-			}
+			//mazání tabulky
+			T->posledni->mGrid->Delete();
+			T->posledni->mGrid=NULL;
       ////existuje ... aktualizace øádkù
 			double cas=0,WT=0,delka=0;
 			int pocet_voziku=0;
 			bool prejezd=true;
+			F->data_teplomeru="";//slouží k uchování dat do buòìk, vyplnìní dat až na konci
+      F->radku_teplomeru=1;
 			//výpoèet èasu na zaèátku
 			if(T->prvni->sparovany->pohon!=NULL)
 			{

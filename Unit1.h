@@ -305,10 +305,6 @@ __published:	// IDE-managed Components
           bool &Handled);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
-	void __fastcall DrawGrid_knihovnaMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-	void __fastcall DrawGrid_knihovnaMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
 	void __fastcall DrawGrid_knihovnaMouseLeave(TObject *Sender);
 	void __fastcall FormMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
@@ -425,18 +421,6 @@ __published:	// IDE-managed Components
   void __fastcall scExPanel_podkladClick(TObject *Sender);
   void __fastcall scGPTrackBar_svetelnost_posuvkaChange(TObject *Sender);
   void __fastcall scGPCheckBox_stupne_sediClick(TObject *Sender);
-  void __fastcall DrawGrid_ostatniMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_geometrieMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_poznamkyMouseWheelDown(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_ostatniMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_geometrieMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
-  void __fastcall DrawGrid_poznamkyMouseWheelUp(TObject *Sender, TShiftState Shift,
-          TPoint &MousePos, bool &Handled);
   void __fastcall Button_testClick(TObject *Sender);
 	void __fastcall scGPButton_OKClick(TObject *Sender);
   void __fastcall scGPEdit1Change(TObject *Sender);
@@ -548,7 +532,7 @@ private:
 	void Otevrit_soubor();//realizuje otevøení opendialogu s následným voláním realizace samotného otevøení souboru
 	void Nacist_podklad();//realizuje otevøení opendialogu s následným voláním realizace samotného nacteni podkladu
 	unsigned short int Otevrit_soubor(UnicodeString soubor);//realizuje samotné otevøení souboru
-  unsigned short int Nacist_podklad(UnicodeString soubor,bool akt_filename=false);//realizuje nacteni podkladu
+	unsigned short int Nacist_podklad(UnicodeString soubor,bool akt_filename=false);//realizuje nacteni podkladu
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void ulozit_historie_otevrenych();//ukládání 3 naposledy otevøených projektù do historie
 	void vse_odstranit();
@@ -622,7 +606,7 @@ private:
 	void vytvor_seznam_pouzivanych_pohonu();//vytvoøí seznam, kam se zapíší pohony, které jsou používány jinde
 	void smaz_seznam_pouzivanych_pohonu();//smaže seznam používaných pohonù
 	void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
-  void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
+	void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
 
 	////promìnné
 	UINT TimerSimulaceID;
@@ -768,6 +752,8 @@ public:		// User declarations
 	bool CASOVEOSY;
 	TPointD pocatek_mereni;//ukládá .x - X souøadnici zaèátku mìøení a .y - Vozík -> n
 	TPointD konec_mereni;//ukládá .x - X souøadnici zaèátku mìøení a .y - Vozík -> n
+	String data_teplomeru;//slouží k uchování dat do buòìk, vyplnìní dat až na konci
+  unsigned int radku_teplomeru;//uchovává v sobì poèet øádkù teplomìru
 
 	//metody
 	void kurzor(TKurzory typ_kurzor);
@@ -843,7 +829,7 @@ public:		// User declarations
 	void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
 	void pan_create2();//vytvoøí výøez pro pan_move - velký
 	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
-  void pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem=false);
+  String pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem=false);
 	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
 	void GetTime(short int rezim);
