@@ -3368,567 +3368,613 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 {
 	if(X!=akt_souradnice_kurzoru_PX.X || Y!=akt_souradnice_kurzoru_PX.Y)//ošetření proti samovolným pulzům myši
 	{
-	vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
-	akt_souradnice_kurzoru_PX=TPoint(X,Y);
-	akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
-	//Memo(X);Memo(Y);
-	if(d.v.SIM!=NULL)//if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
-	{
-//		pocitadlo_doby_neaktivity=0;
-//		minule_souradnice_kurzoru=TPoint(X,Y);
-//		//d.vykresli_svislici_na_casove_osy(Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
-		unsigned int V=getV();
-		if(V>0)SB(String(V)+" voz.|"+String(m.round((X+d.PosunT.x)/d.PX2SEC*3))+"[s]",6);//výpis času na ose procesů dle kurzoru
-		else SB("",6);
-//		//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
-//		//Timer_neaktivity->Enabled=false;
-//
-//		Timer_neaktivity->Interval=1000;                                                                                                                                                             //R 21.1.2020 - odebrání časové osy z projektu
-//		//if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false /*&& Form_osa_info->Showing==false*/)
-//		Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
-	}
-	else if(MOD==TVORBA_CESTY)
-	{
-		if(Akce==NIC)REFRESH();
-  }
-	else //výpis metrických souřadnic
-	{
-		if(Zoom<1)SB(UnicodeString(m.round(m.P2Lx(X)))+";"+UnicodeString(m.round(m.P2Ly(Y))),3);
-		else SB(FloatToStrF(m.P2Lx(X),ffFixed,10,1)+";"+FloatToStrF(m.P2Ly(Y),ffFixed,10,1),3);
-		//vypsat fyzické souřadniceSB(UnicodeString(X)+";"+UnicodeString(Y));
-	}
+		vyska_menu=Mouse->CursorPos.y-Y;//uchová rozdíl myšího kurzoru a Y-pixelu v pracovní oblasti
+		akt_souradnice_kurzoru_PX=TPoint(X,Y);
+		akt_souradnice_kurzoru=m.P2L(akt_souradnice_kurzoru_PX);
+		//Memo(X);Memo(Y);
+		if(d.v.SIM!=NULL)//if(MOD==CASOVAOSA)//vykreslování posuvné (dle myši) svislice kolmé na osy procesů, slouží jakou ukázovatko času na ose
+		{
+	//		pocitadlo_doby_neaktivity=0;
+	//		minule_souradnice_kurzoru=TPoint(X,Y);
+	//		//d.vykresli_svislici_na_casove_osy(Canvas,X,Y);//nový přístup v zobrazování svislic, jen v momentu zobrazování labalu_zamerovac (bylo odkomentováno)
+			unsigned int V=getV();
+			if(V>0)SB(String(V)+" voz.|"+String(m.round((X+d.PosunT.x)/d.PX2SEC*3))+"[s]",6);//výpis času na ose procesů dle kurzoru
+			else SB("",6);
+	//		//hazí stejné souřadnice if(abs((int)minule_souradnice_kurzoru.x-(int)akt_souradnice_kurzoru_PX.x)>1 && abs((int)minule_souradnice_kurzoru.y-(int)akt_souradnice_kurzoru_PX.y)>1)//pokud je změna větší než jeden pixel, pouze ošetření proti divnému chování myši (možná mi docházela baterka, s myší jsem nehýbal, ale přesto docházele k rušení labelu resp. volání metody FormMouseMove)
+	//		//Timer_neaktivity->Enabled=false;
+	//
+	//		Timer_neaktivity->Interval=1000;                                                                                                                                                             //R 21.1.2020 - odebrání časové osy z projektu
+	//		//if(scSplitView_OPTIONS->Opened==false && scSplitView_MENU->Opened==false && PopUPmenu->Showing==false && Form_parametry_linky->Showing==false && Form_definice_zakazek->Showing==false /*&& Form_osa_info->Showing==false*/)
+	//		Timer_neaktivity->Enabled=true;//spoustí pouze pokud nejsou zobrazeny formuláře z podmínky
+		}
+		else if(MOD==TVORBA_CESTY)
+		{
+			if(Akce==NIC)REFRESH();
+		}
+		else //výpis metrických souřadnic
+		{
+			if(Zoom<1)SB(UnicodeString(m.round(m.P2Lx(X)))+";"+UnicodeString(m.round(m.P2Ly(Y))),3);
+			else SB(FloatToStrF(m.P2Lx(X),ffFixed,10,1)+";"+FloatToStrF(m.P2Ly(Y),ffFixed,10,1),3);
+			//vypsat fyzické souřadniceSB(UnicodeString(X)+";"+UnicodeString(Y));
+		}
 
-	switch(Akce)
-	{
-		case PAN_MOVE:
+		switch(Akce)
 		{
-			pan_map(Canvas,X,Y);
-			break;
-		}
-		case ZOOM_W://ZOOM_WINDOW
-		{
-			d.editacni_okno(Canvas, vychozi_souradnice_kurzoru,predchozi_souradnice_kurzoru,5,(TColor)RGB(0,128,192));//vymaže předchozí okno
-			predchozi_souradnice_kurzoru=akt_souradnice_kurzoru_PX;//uloží souřadnice pro další vymazání
-			d.editacni_okno(Canvas, vychozi_souradnice_kurzoru,akt_souradnice_kurzoru_PX,5,(TColor)RGB(0,128,192));//nakreslí nové okno
-			break;
-		}
-		case ADD://přídávání objektu či elementu, posun navigačních linii
-		{        //algoritmy v tomto CASE (včetně dílčích algoritmu) by bylo možné sloučit, ale bylo by to dost práce navíc...
-			if(MOD!=EDITACE)
-			{                           //oštření proti chybnému vykreslení (chybné souřadnice z tmgrid mousemove)
-				if(probehl_zoom==false && akt_souradnice_kurzoru_PX.x>168)//ošetření proti nežádoucímu chování po zoomu
-				{
-					if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
+			case PAN_MOVE:
+			{
+				pan_map(Canvas,X,Y);
+				break;
+			}
+			case ZOOM_W://ZOOM_WINDOW
+			{
+				d.editacni_okno(Canvas, vychozi_souradnice_kurzoru,predchozi_souradnice_kurzoru,5,(TColor)RGB(0,128,192));//vymaže předchozí okno
+				predchozi_souradnice_kurzoru=akt_souradnice_kurzoru_PX;//uloží souřadnice pro další vymazání
+				d.editacni_okno(Canvas, vychozi_souradnice_kurzoru,akt_souradnice_kurzoru_PX,5,(TColor)RGB(0,128,192));//nakreslí nové okno
+				break;
+			}
+			case ADD://přídávání objektu či elementu, posun navigačních linii
+			{        //algoritmy v tomto CASE (včetně dílčích algoritmu) by bylo možné sloučit, ale bylo by to dost práce navíc...
+				if(MOD!=EDITACE)
+				{                           //oštření proti chybnému vykreslení (chybné souřadnice z tmgrid mousemove)
+					if(probehl_zoom==false && akt_souradnice_kurzoru_PX.x>168)//ošetření proti nežádoucímu chování po zoomu
 					{
-						pom_element_temp=NULL;
-						Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
-						if(pom_element_temp!=NULL)//vkládání na vedlejší větev
+						if(d.v.OBJEKTY->predchozi->n>=2)//pokud už existují alespoň dva prvky, jinak nemá smysl
 						{
-							d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-							zneplatnit_minulesouradnice();
-							pom_element=pom_element_temp;
+							pom_element_temp=NULL;
+							Cvektory::TObjekt *p=add_objekt_za();//testuje zda se bude přidávat objekt mimo situace poslední-první objekt-prvek
+							if(pom_element_temp!=NULL)//vkládání na vedlejší větev
+							{
+								d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+								zneplatnit_minulesouradnice();
+								pom_element=pom_element_temp;
+							}
+							if(pom_element_temp==NULL && p!=NULL)
+							{
+								d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+								zneplatnit_minulesouradnice();
+								pom_element=NULL;
+							}
 						}
-						if(pom_element_temp==NULL && p!=NULL)
+						d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+						minule_souradnice_kurzoru=TPoint(X,Y);
+						d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
+					}
+					probehl_zoom=false;
+				}
+				if(MOD==EDITACE)//vkládání elementů a komor
+				{
+					if(pom->id==3 && element_id!=200)//vykreslování ikony komory v POW objektu
+					{
+						d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",element_id);
+						minule_souradnice_kurzoru=TPoint(X,Y);
+						d.vykresli_ikonu_komory(Canvas,X,Y,"",element_id);
+					}
+					else//vykreslování elementu + přichytávání na pohon
+					{
+						TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
+						short rotace_symbolu=0;if(OBJEKT_akt->orientace==0 || OBJEKT_akt->orientace==180)rotace_symbolu=90;
+						if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru;
+						else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(souradnice.x),m.L2Py(souradnice.y));//zjistění rotace symbolu
+						souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
+						d.vykresli_element(Canvas,0,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
+						minule_souradnice_kurzoru=m.L2P(souradnice);
+						d.vykresli_element(Canvas,0,m.L2Px(souradnice.x),m.L2Py(souradnice.y),"","",element_id,-1,rotace_symbolu);
+						Rotace_symbolu_minula=rotace_symbolu;
+					}
+					pom_element_temp=NULL;//mazání ukazatele, slouží k uchovávání elementu na jehož geometrii budu vkládat element
+				}
+				break;
+			}
+			case VYH:
+			{
+				TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon, naplní pom_element_temp
+				short rotace_symbolu=0;if(pom!=NULL && (pom->orientace==0 || pom->orientace==180))rotace_symbolu=90;
+				if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru;
+				else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(souradnice.x),m.L2Py(souradnice.y));//zjistění rotace symbolu
+				souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
+				//ošetření proti vykreslení, když je kurzor mimo pracovní plochu
+				if(X>scSplitView_LEFTTOOLBAR->Width && Y<scGPPanel_statusbar->Top && Y>scGPPanel_mainmenu->Height)
+				{
+					unsigned int velikost=m.round(2*F->Zoom);//pro vykreslení
+					Canvas->Pen->Color=clBlack;
+					Canvas->Pen->Mode=pmNotXor;
+					Canvas->Pen->Style=psDot;
+					Canvas->Pen->Width=1;
+					Canvas->Brush->Color=clWhite;
+					Canvas->Brush->Style=bsClear;
+					Canvas->Rectangle(minule_souradnice_kurzoru.x-velikost,minule_souradnice_kurzoru.y-velikost,minule_souradnice_kurzoru.x+velikost,minule_souradnice_kurzoru.y+velikost);
+					if(d.v.vyhybka_pom!=NULL && minule_souradnice_kurzoru.x>168 && minule_souradnice_kurzoru.y>34)d.line(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
+					minule_souradnice_kurzoru=m.L2P(souradnice);
+					Canvas->Rectangle(m.L2Px(souradnice.x)-velikost,m.L2Py(souradnice.y)-velikost,m.L2Px(souradnice.x)+velikost,m.L2Py(souradnice.y)+velikost);
+					if(d.v.vyhybka_pom!=NULL)d.line(Canvas,m.L2Px(souradnice.x),m.L2Py(souradnice.y),m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
+				}
+			}break;
+			case MOVE://posun objektu, v editaci funkce posunu objektu odstavena
+			{
+				//zapnutí kurzoru
+				//if(OBJEKT_akt!=NULL&&stisknute_leve_tlacitko_mysi&&Screen->Cursor!=pan_move)kurzor(pan_move);
+				//posun
+				//if(OBJEKT_akt!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),OBJEKT_akt,false,false);
+				if(OBJEKT_akt==NULL)
+				{
+					if(abs(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x))>=0.001 && abs(akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y))>=0.001)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
+					minule_souradnice_kurzoru=TPoint(X,Y);
+					REFRESH(2222221,false);//ZprVozEledElesDopObjHal
+				}else Akce=NIC;
+				break;
+			}
+			case DRAW_HALA:
+			{
+				if(d.v.HALA.body!=NULL&&d.v.HALA.body->dalsi!=NULL)
+				{
+					TPointD souradnice;
+					//přidat
+					//set_pen();
+					if(minule_souradnice_kurzoru.x!=-200)
+					{
+						d.linie(Canvas,m.L2Px(d.v.HALA.body->predchozi->X),m.L2Py(d.v.HALA.body->predchozi->Y),minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.m2px(0.4),m.clIntensive(clBlue,200),psSolid,pmNotXor);
+						if(d.v.HALA.body->predchozi->n>1)d.linie(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.HALA.body->dalsi->X),m.L2Py(d.v.HALA.body->dalsi->Y),m.m2px(0.4),m.clIntensive(clBlue,200),psSolid,pmNotXor);
+					}
+					if(grid)//přichytávání k bodu
+					{
+						switch(prichytavat_k_mrizce)
 						{
-							d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-							zneplatnit_minulesouradnice();
-							pom_element=NULL;
+							case 1:	souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;break;//přichytí automaticky
+							case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
 						}
 					}
-					d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-					minule_souradnice_kurzoru=TPoint(X,Y);
-					d.vykresli_kurzor_kabiny(Canvas,vybrany_objekt,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,pom);
-				}
-				probehl_zoom=false;
-			}
-			if(MOD==EDITACE)//vkládání elementů a komor
-			{
-				if(pom->id==3 && element_id!=200)//vykreslování ikony komory v POW objektu
-				{
-					d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",element_id);
-					minule_souradnice_kurzoru=TPoint(X,Y);
-					d.vykresli_ikonu_komory(Canvas,X,Y,"",element_id);
-				}
-				else//vykreslování elementu + přichytávání na pohon
-				{
-					TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
-					short rotace_symbolu=0;if(OBJEKT_akt->orientace==0 || OBJEKT_akt->orientace==180)rotace_symbolu=90;
-					if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru;
-					else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(souradnice.x),m.L2Py(souradnice.y));//zjistění rotace symbolu
-					souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
-					d.vykresli_element(Canvas,0,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"","",element_id,-1,Rotace_symbolu_minula);
-					minule_souradnice_kurzoru=m.L2P(souradnice);
-					d.vykresli_element(Canvas,0,m.L2Px(souradnice.x),m.L2Py(souradnice.y),"","",element_id,-1,rotace_symbolu);
-					Rotace_symbolu_minula=rotace_symbolu;
-				}
-				pom_element_temp=NULL;//mazání ukazatele, slouží k uchovávání elementu na jehož geometrii budu vkládat element
-			}
-			break;
-		}
-		case VYH:
-		{
-			TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon, naplní pom_element_temp
-			short rotace_symbolu=0;if(pom!=NULL && (pom->orientace==0 || pom->orientace==180))rotace_symbolu=90;
-			if(souradnice.x==-1000)souradnice=akt_souradnice_kurzoru;
-			else if(pom_element_temp!=NULL)rotace_symbolu=rotace_symbol(m.Rt90(pom_element_temp->geo.orientace),m.L2Px(souradnice.x),m.L2Py(souradnice.y));//zjistění rotace symbolu
-			souradnice=uprav_bod_vlozeni_elementu(souradnice,rotace_symbolu);//uprava souřadnic posun robota, bod vkládání na ramenu
-			//ošetření proti vykreslení, když je kurzor mimo pracovní plochu
-			if(X>scSplitView_LEFTTOOLBAR->Width && Y<scGPPanel_statusbar->Top && Y>scGPPanel_mainmenu->Height)
-			{
-				unsigned int velikost=m.round(2*F->Zoom);//pro vykreslení
-				Canvas->Pen->Color=clBlack;
-		  	Canvas->Pen->Mode=pmNotXor;
-		  	Canvas->Pen->Style=psDot;
-		  	Canvas->Pen->Width=1;
-		  	Canvas->Brush->Color=clWhite;
-		  	Canvas->Brush->Style=bsClear;
-				Canvas->Rectangle(minule_souradnice_kurzoru.x-velikost,minule_souradnice_kurzoru.y-velikost,minule_souradnice_kurzoru.x+velikost,minule_souradnice_kurzoru.y+velikost);
-		  	if(d.v.vyhybka_pom!=NULL && minule_souradnice_kurzoru.x>168 && minule_souradnice_kurzoru.y>34)d.line(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
-		  	minule_souradnice_kurzoru=m.L2P(souradnice);
-				Canvas->Rectangle(m.L2Px(souradnice.x)-velikost,m.L2Py(souradnice.y)-velikost,m.L2Px(souradnice.x)+velikost,m.L2Py(souradnice.y)+velikost);
-				if(d.v.vyhybka_pom!=NULL)d.line(Canvas,m.L2Px(souradnice.x),m.L2Py(souradnice.y),m.L2Px(d.v.vyhybka_pom->geo.X4),m.L2Py(d.v.vyhybka_pom->geo.Y4));
-			}
-		}break;
-		case MOVE://posun objektu, v editaci funkce posunu objektu odstavena
-		{
-      //zapnutí kurzoru
-			//if(OBJEKT_akt!=NULL&&stisknute_leve_tlacitko_mysi&&Screen->Cursor!=pan_move)kurzor(pan_move);
-			//posun
-			//if(OBJEKT_akt!=NULL&&stisknute_leve_tlacitko_mysi)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),OBJEKT_akt,false,false);
-			if(OBJEKT_akt==NULL)
-			{
-				if(abs(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x))>=0.001 && abs(akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y))>=0.001)d.v.posun_objekt(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
-				minule_souradnice_kurzoru=TPoint(X,Y);
-				REFRESH(2222221,false);//ZprVozEledElesDopObjHal
-			}else Akce=NIC;
-			break;
-		}
-		case DRAW_HALA:
-		{
-			if(d.v.HALA.body!=NULL&&d.v.HALA.body->dalsi!=NULL)
-			{
-				TPointD souradnice;
-        //přidat
-				//set_pen();
-				if(minule_souradnice_kurzoru.x!=-200)
-				{
-					d.linie(Canvas,m.L2Px(d.v.HALA.body->predchozi->X),m.L2Py(d.v.HALA.body->predchozi->Y),minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.m2px(0.4),m.clIntensive(clBlue,200),psSolid,pmNotXor);
+					else souradnice=m.P2L(TPoint(X,Y));
+					if(ortogonalizace_stav)//ortogonalizace
+					{
+						Cvektory::TBod *B=pom_bod;
+						if(m.abs_d(B->X-souradnice.x)<m.abs_d(B->Y-souradnice.y))souradnice.x=B->X;//zarovnat dle X
+						else souradnice.y=B->Y;//zarovnat dle Y
+						B=NULL;delete B;
+					}
+					souradnice.x=m.L2Px(souradnice.x);
+					souradnice.y=m.L2Py(souradnice.y);
+					minule_souradnice_kurzoru=TPoint(souradnice.x,souradnice.y);
+					d.linie(Canvas,m.L2Px(d.v.HALA.body->predchozi->X),m.L2Py(d.v.HALA.body->predchozi->Y),souradnice.x,souradnice.y,m.m2px(0.4),m.clIntensive(clBlue,200),psSolid,pmNotXor);
 					if(d.v.HALA.body->predchozi->n>1)d.linie(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.HALA.body->dalsi->X),m.L2Py(d.v.HALA.body->dalsi->Y),m.m2px(0.4),m.clIntensive(clBlue,200),psSolid,pmNotXor);
 				}
-				if(grid)//přichytávání k bodu
-		  	{
-					switch(prichytavat_k_mrizce)
-		  		{
-						case 1:	souradnice.x=m.round(m.P2Lx(X)/(size_grid*1.0*m2px))*size_grid*m2px;souradnice.y=m.round(m.P2Ly(Y)/(size_grid*1.0*m2px))*size_grid*m2px;break;//přichytí automaticky
-		  			case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
-		  		}
-		  	}
-				else souradnice=m.P2L(TPoint(X,Y));
-				if(ortogonalizace_stav)//ortogonalizace
+			}break;
+			case MOVE_TABLE://posun tabulky elementu
+			{
+				if(pom_element!=NULL)//posun tabulek elementů
 				{
-					Cvektory::TBod *B=pom_bod;
-					if(m.abs_d(B->X-souradnice.x)<m.abs_d(B->Y-souradnice.y))souradnice.x=B->X;//zarovnat dle X
-					else souradnice.y=B->Y;//zarovnat dle Y
-					B=NULL;delete B;
+					pom_element->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+					pom_element->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+					pom_element->mGrid->Highlight;//pro udržení, někdy zdá se vypadává
+					REFRESH(false);
+					//vykreslení spojnice tabulky a elementu
+					vykresli_spojinici_EmGrid(Canvas,pom_element);
 				}
-				souradnice.x=m.L2Px(souradnice.x);
-				souradnice.y=m.L2Py(souradnice.y);
-				minule_souradnice_kurzoru=TPoint(souradnice.x,souradnice.y);
-				d.linie(Canvas,m.L2Px(d.v.HALA.body->predchozi->X),m.L2Py(d.v.HALA.body->predchozi->Y),souradnice.x,souradnice.y,m.m2px(0.4),m.clIntensive(clBlue,200),psSolid,pmNotXor);
-				if(d.v.HALA.body->predchozi->n>1)d.linie(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,m.L2Px(d.v.HALA.body->dalsi->X),m.L2Py(d.v.HALA.body->dalsi->Y),m.m2px(0.4),m.clIntensive(clBlue,200),psSolid,pmNotXor);
-			}
-		}break;
-		case MOVE_TABLE://posun tabulky elementu
-		{
-			if(pom_element!=NULL)//posun tabulek elementů
-			{
-				pom_element->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				pom_element->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-				pom_element->mGrid->Highlight;//pro udržení, někdy zdá se vypadává
-				REFRESH(false);
-				//vykreslení spojnice tabulky a elementu
-				vykresli_spojinici_EmGrid(Canvas,pom_element);
-			}
-			else if(JID==4 && PmG!=NULL)//posun tabulky pohonu
-			{
-				OBJEKT_akt->Xp+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				OBJEKT_akt->Yp+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-				REFRESH(false);
-			}
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			nahled_ulozit(true,false);
-			break;
-		}
-		case MOVE_ELEMENT://posun elementu + příprava na kontrolu
-		{
-			bool nemazat=true;
-			//samotný pohyb, který je vázán na pohon
-			if (pom_element->geo.orientace-pom_element->geo.rotacni_uhel==90 || pom_element->geo.orientace-pom_element->geo.rotacni_uhel==270)
-				nemazat=d.v.posun_element(pom_element,akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),posun_dalsich_elementu,true);
-			else
-				nemazat=d.v.posun_element(pom_element,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),posun_dalsich_elementu,true);
-			//aktuální souřadnice se po posunu zapíší do minule_souřadnice, z důvodu okamžité změny známénka posuvu
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			//if(!nemazat && !posun_dalsich_elementu)Smazat1Click(this);
-			if(!nemazat)TIP=ls->Strings[307];else TIP="";//"Prvek nelze přeunout!"
-			REFRESH(false);
-			//když nejsou viditelné tabulky elementu, a když se nejedná o element, který nemá tabulku -> nevykresli spojnici mezi elementem a tabulkou
-			if(OBJEKT_akt->zobrazit_mGrid&&pom_element->eID!=100&&pom_element->eID!=MaxInt)vykresli_spojinici_EmGrid(Canvas,pom_element);
-			vykresli_spojinici_EmGrid(Canvas,pom_element);
-			nahled_ulozit(true);
-			break;
-		}
-		case MOVE_KOMORA://posun komory vedoucí k jejímu odstranění
-		{
-			d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",-1);
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			d.vykresli_ikonu_komory(Canvas,X,Y,"",-1);
-			if(OBJEKT_akt->orientace==90 && (m.P2Lx(X)<OBJEKT_akt->body->dalsi->X || m.P2Lx(X)>OBJEKT_akt->body->dalsi->dalsi->X))Smazat1Click(this);
-			if(OBJEKT_akt->orientace==180 && (m.P2Ly(Y)>OBJEKT_akt->body->dalsi->Y || m.P2Ly(Y)<OBJEKT_akt->body->dalsi->dalsi->Y))Smazat1Click(this);
-			if(OBJEKT_akt->orientace==270 && (m.P2Lx(X)>OBJEKT_akt->body->dalsi->X || m.P2Lx(X)<OBJEKT_akt->body->dalsi->dalsi->X))Smazat1Click(this);
-			if(OBJEKT_akt->orientace==0 && (m.P2Ly(Y)<OBJEKT_akt->body->dalsi->Y || m.P2Ly(Y)>OBJEKT_akt->body->dalsi->dalsi->Y))Smazat1Click(this);
-			nahled_ulozit(true);
-			break;
-		}
-		case MOVE_BOD://posun bodu pokud je zapnuté přichytávání k mřížce posun bodu po bodech mřížky
-		{
-			TPointD souradnice;
-			if(grid)//pokud je zobrazena mřížka
-			{
-				int vel_gridu=size_grid;//nesmí se pracovat se size_grid ->ovlivnilo by to vykreslování
-				if(OBJEKT_akt!=NULL)vel_gridu/=10;//pokud jsem v editaci, grid je jemější
-				switch(prichytavat_k_mrizce)
+				else if(JID==4 && PmG!=NULL)//posun tabulky pohonu
 				{
-					case 1:	souradnice.x=m.round(m.P2Lx(X)/(vel_gridu*1.0*m2px))*vel_gridu*m2px;souradnice.y=m.round(m.P2Ly(Y)/(vel_gridu*1.0*m2px))*vel_gridu*m2px;break;//přichytí automaticky
-					case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
-				}
-			}
-			else souradnice=m.P2L(TPoint(X,Y));
-			d.v.posun_bod(souradnice.x,souradnice.y,pom_bod);
-			minule_souradnice_kurzoru=TPoint(souradnice.x,souradnice.y);
-			REFRESH();
-			break;
-		}
-		case MOVE_USECKA:
-		{
-			Cvektory::TBod *A,*B;//body úsečky
-			if(pom_bod->n==1)//poslední úsečka
-			{
-				if(OBJEKT_akt!=NULL){A=OBJEKT_akt->body->predchozi;B=OBJEKT_akt->body->dalsi;}//posun úsečky objektu v náhledu
-				else if(pom!=NULL){A=pom->body->predchozi;B=pom->body->dalsi;}//posun úsečky objektu ve schématu
-				else {A=d.v.HALA.body->predchozi;B=d.v.HALA.body->dalsi;}//posun úsečky haly
-			}
-			else {A=pom_bod->predchozi;B=pom_bod;}//ostatní úsečky
-			if(m.round2double(A->X,2)==m.round2double(B->X,2))//posun po x
-				d.v.posun_hranu(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),0,A,B);
-			else if(m.round2double(A->Y,2)==m.round2double(B->Y,2))//posun po y
-				d.v.posun_hranu(0,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),A,B);
-			else//skosená úsečka
-			{
-				double posunx,posuny,vysledek;
-				posunx=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);//posun po x
-				posuny=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);//posun po y
-				if(m.abs_d(posunx)>m.abs_d(posuny))posuny=0;else posunx=0;//vylepšení "pocitu" z posunu, není nezbytně nutné
-				d.v.posun_hranu(posunx,posuny,A,B);
-			}
-			//rozšiřování el. osy + komor
-			if((pom!=NULL && OBJEKT_akt==NULL && pom->body->predchozi->n==4 && (pom->element->dalsi==NULL || pom->element->dalsi!=NULL && pom->element->dalsi->objekt_n!=pom->n) && pom->element->geo.typ==0) || (OBJEKT_akt!=NULL && OBJEKT_akt->body->predchozi->n==4 && (OBJEKT_akt->element->dalsi==NULL || (OBJEKT_akt->element->dalsi!=NULL && OBJEKT_akt->element->dalsi->objekt_n!=OBJEKT_akt->n)) && OBJEKT_akt->element->geo.typ==0))//speciální uprava objektu POW při posunu jeho přímek, z layoutu + z editace
-			{
-        //bool zmena_pohonu=false;
-				Cvektory::TObjekt *O=pom;
-				if(OBJEKT_akt!=NULL)O=OBJEKT_akt;
-				//////uchopeno za boky .. budu měnit délku pohonu a komor
-				if(A->n==2 || A->n==4)
-				{
-					double posun_x=0,posun_y=0,pom1=1,pom2=1,zmena=0,zbytek=0;
-					//vypočet změny
-					if(B->n==1 && A->n==4){pom1=-1;pom2=-1;}
-					if(O->orientace==0)posun_y=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-					if(O->orientace==90)posun_x=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-					if(O->orientace==180){posun_y=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);pom2*=-1;}
-					if(O->orientace==270){posun_x=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);pom1*=-1;}
-					zmena=pom1*posun_x+pom2*posun_y;
-					//pokud změnu provádím z editace měním rozměry poslendí nebo první komory
-					if(O->id==3)
-					{
-						if(A->n==2)
-						{
-							O->komora->predchozi->velikost+=zmena;
-							while(O->komora->predchozi->velikost>O->komora->dalsi->velikost*1.10)//10% na víc
-							{
-								d.v.vloz_komoru(O,O->komora->dalsi->velikost,NULL/*O->komora->predchozi*/,abs(O->komora->predchozi->typ-1));
-								zbytek=O->komora->predchozi->predchozi->velikost-O->komora->dalsi->velikost;
-								O->komora->predchozi->predchozi->velikost=O->komora->dalsi->velikost;
-								O->komora->predchozi->velikost=O->komora->predchozi->velikost-O->komora->dalsi->velikost+zbytek;
-							}
-							while(O->komora->predchozi->velikost<0)d.v.smaz_komoru(O,O->komora->predchozi);
-						}
-						if(A->n==4)
-						{
-							O->komora->dalsi->velikost+=zmena;
-							while(O->komora->dalsi->velikost>O->komora->predchozi->velikost*1.10)//10% na víc
-							{
-								d.v.vloz_komoru(O,O->komora->predchozi->velikost,O->komora->dalsi,abs(O->komora->dalsi->dalsi->typ-1));
-								zbytek=O->komora->dalsi->dalsi->velikost-O->komora->predchozi->velikost;
-								O->komora->dalsi->dalsi->velikost=O->komora->predchozi->velikost;
-								O->komora->dalsi->velikost=O->komora->dalsi->velikost-O->komora->predchozi->velikost+zbytek;
-							}
-							while(O->komora->dalsi->velikost<0)d.v.smaz_komoru(O,O->komora->dalsi);
-						}
-					}
-					//rozšíření pohonu
-					if(O->element->pohon==NULL)
-					{
-				  	if(B->n==1 && A->n==4)
-				  	{
-				  		O->element->geo.X1+=posun_x;
-				  		O->element->geo.Y1+=posun_y;
-				  	}
-				  	else
-				  	{
-				  		O->element->X+=posun_x;
-				  		O->element->Y+=posun_y;
-						}
-						d.v.vloz_G_element(O->element,0,O->element->geo.X1,O->element->geo.Y1,0,0,0,0,O->element->X,O->element->Y,O->element->geo.orientace);
-					}
-					//zmena_pohonu=true;
-				}
-				//////uchopeno za vrh/spodek .. budu posouvat osu pohonu
-				else
-				{
-//					double delka_hrany=abs(O->body->dalsi->X-O->body->predchozi->X+O->body->dalsi->Y-O->body->predchozi->Y),posun=0;
-//					if(O->orientace==90 || O->orientace==270)
-//					{
-//						if(O->orientace==90)posun=O->body->dalsi->Y-delka_hrany/2.0;
-//						else posun=O->body->predchozi->Y-delka_hrany/2.0;
-//						O->element->Y=O->element->geo.Y1=O->element->geo.Y2=O->element->geo.Y3=O->element->geo.Y4=posun;
-//					}
-//					else
-//					{
-//						if(O->orientace==0)posun=O->body->dalsi->X+delka_hrany/2.0;
-//						else posun=O->body->predchozi->X+delka_hrany/2.0;
-//						O->element->X=O->element->geo.X1=O->element->geo.X2=O->element->geo.X3=O->element->geo.X4=posun;
-//          }
-				}
-				O=NULL;delete O;
-			}
-			minule_souradnice_kurzoru=TPoint(X,Y);
-//			if(MOD==LAYOUT)//čekání na funkčnost pom v statické scéně
-//			{
-//				//ZprVozEledElesDopObjHal
-//				long scena=1111121;//pouze změna objektu
-//				if(zmena_pohonu)scena=1111221;//změna objektu a pohonu
-//				if(pom==NULL)scena=1111112;//změna haly
-//				REFRESH(scena,false);
-//			}
-//			else
-			REFRESH();
-			A=NULL;B=NULL;delete A;delete B;
-			break;
-		}
-		case MOVE_HALA:
-		{
-			if(stisknute_leve_tlacitko_mysi)//pokud je stisknuto levé tlačítko
-			{
-				if(Screen->Cursor!=pan_move)kurzor(pan_move);//změna kurzoru pouze v případě prvního posunu po kliku
-				//posun haly nebo kabiny objektu z layoutu
-				if(OBJEKT_akt==NULL)d.v.posun_body(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
-				//posun obrysu v editaci
-				else d.v.posun_body(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),OBJEKT_akt);
-				if(TIP!="")TIP="";
-				refresh_mGrid=false;
-				REFRESH(1111112,false);
-				refresh_mGrid=true;
-			}
-			minule_souradnice_kurzoru=TPoint(X,Y);//slouží i k určení výchozího bodu pro posun
-			break;
-		}
-		case MOVE_TEXT:
-		{
-			if(OBJEKT_akt!=NULL)
-			{
-				OBJEKT_akt->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				OBJEKT_akt->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-			}
-			else
-			{
-				pom->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				pom->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-      }
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH();
-			break;
-    }
-		case ROZMER_KOMORA://změna rozmerů komor pomocí úchopu
-		{
-			Cvektory::TKomora *ovlivneny=pom_komora_temp->dalsi;
-			if(ovlivneny!=NULL)//ošetření, může se stát že se spustí tato událost místo MOVE_USECKA - poslední komora nemá nasledující
-			{
-				if((OBJEKT_akt->orientace==90||OBJEKT_akt->orientace==270)&&ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
-				{
-		  		double posun=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-		  		if(OBJEKT_akt->orientace==270)posun*=-1;
-		  		pom_komora_temp->velikost+=posun;
-		  		ovlivneny->velikost-=posun;
-		  	}
-		  	else if(ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
-		  	{
-		  		double posun=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-		  		if(OBJEKT_akt->orientace==0)posun*=-1;
-		  		pom_komora_temp->velikost-=posun;
-		  		ovlivneny->velikost+=posun;
-		  	}
-		  	else//překročil jsem rozmery ovlivněného nebo aktuální komory
-		  	{
-		  		double rozdil=0;
-		  		if(pom_komora_temp->velikost<=0.5){rozdil=0.5-pom_komora_temp->velikost;pom_komora_temp->velikost=0.5;ovlivneny->velikost-=rozdil;}
-		  		if(ovlivneny->velikost<=0.5){rozdil=0.5-ovlivneny->velikost;ovlivneny->velikost=0.5;pom_komora_temp->velikost-=rozdil;}
-					Akce=NIC;
-				}
-		  	minule_souradnice_kurzoru=TPoint(X,Y);
-		  	refresh_mGrid=false;
-				REFRESH();
-		  	refresh_mGrid=true;
-		  	ovlivneny=NULL;delete ovlivneny;
-				nahled_ulozit(true);
-			}
-			break;
-    }
-		case OFFSET_KOTY:
-		{
-			if(JID==13)//offset kót elementu a komor
-			{
-				if(OBJEKT_akt->id==3)
-				{
-        	if(OBJEKT_akt->orientace==90||OBJEKT_akt->orientace==270)OBJEKT_akt->koty_elementu_offset.x-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-					else OBJEKT_akt->koty_elementu_offset.x+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-				}
-				else
-				{
-					switch((int)pom_element->geo.orientace)
-					{
-						case 0:case 180:OBJEKT_akt->koty_elementu_offset.x+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);break;
-						case 90:case 270:OBJEKT_akt->koty_elementu_offset.x-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);break;
-					}
+					OBJEKT_akt->Xp+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+					OBJEKT_akt->Yp+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+					REFRESH(false);
 				}
 				minule_souradnice_kurzoru=TPoint(X,Y);
+				nahled_ulozit(true,false);
+				break;
+			}
+			case MOVE_ELEMENT://posun elementu + příprava na kontrolu
+			{
+				bool nemazat=true;
+				//samotný pohyb, který je vázán na pohon
+				if (pom_element->geo.orientace-pom_element->geo.rotacni_uhel==90 || pom_element->geo.orientace-pom_element->geo.rotacni_uhel==270)
+					nemazat=d.v.posun_element(pom_element,akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),posun_dalsich_elementu,true);
+				else
+					nemazat=d.v.posun_element(pom_element,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),posun_dalsich_elementu,true);
+				//aktuální souřadnice se po posunu zapíší do minule_souřadnice, z důvodu okamžité změny známénka posuvu
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				//if(!nemazat && !posun_dalsich_elementu)Smazat1Click(this);
+				if(!nemazat)TIP=ls->Strings[307];else TIP="";//"Prvek nelze přeunout!"
 				REFRESH(false);
+				//když nejsou viditelné tabulky elementu, a když se nejedná o element, který nemá tabulku -> nevykresli spojnici mezi elementem a tabulkou
+				if(OBJEKT_akt->zobrazit_mGrid&&pom_element->eID!=100&&pom_element->eID!=MaxInt)vykresli_spojinici_EmGrid(Canvas,pom_element);
+				vykresli_spojinici_EmGrid(Canvas,pom_element);
 				nahled_ulozit(true);
+				break;
 			}
-			else
+			case MOVE_KOMORA://posun komory vedoucí k jejímu odstranění
 			{
-		  	//definice předchozího bodu
-		  	Cvektory::TBod *Bod;
-		  	if(pom_bod->n!=1)Bod=pom_bod->predchozi;
-		  	else if(OBJEKT_akt==NULL)Bod=d.v.HALA.body->predchozi;
-		  	else Bod=OBJEKT_akt->body->predchozi;
-		  	//výpočet posunů
-		  	double posunx,posuny,vysledek=0,x1,y1;
-		  	posunx=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);posuny=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-		  	if(m.abs_d(posunx)>m.abs_d(posuny))vysledek=sin(DegToRad(fmod(m.azimut(Bod->X,Bod->Y,pom_bod->X,pom_bod->Y)+90,360)))*posunx;
-		  	else vysledek=cos(DegToRad(fmod(m.azimut(Bod->X,Bod->Y,pom_bod->X,pom_bod->Y)+90,360)))*posuny;
-		  	//uložení
-		  	pom_bod->kota_offset+=vysledek*30;//musí být násobeno, offset je -70 a posun je 0.xxx
-		  	//nutné na konec
-		  	Bod=NULL;delete Bod;
-		  	minule_souradnice_kurzoru=TPoint(X,Y);
-		  	REFRESH();
+				d.vykresli_ikonu_komory(Canvas,minule_souradnice_kurzoru.x,minule_souradnice_kurzoru.y,"",-1);
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				d.vykresli_ikonu_komory(Canvas,X,Y,"",-1);
+				if(OBJEKT_akt->orientace==90 && (m.P2Lx(X)<OBJEKT_akt->body->dalsi->X || m.P2Lx(X)>OBJEKT_akt->body->dalsi->dalsi->X))Smazat1Click(this);
+				if(OBJEKT_akt->orientace==180 && (m.P2Ly(Y)>OBJEKT_akt->body->dalsi->Y || m.P2Ly(Y)<OBJEKT_akt->body->dalsi->dalsi->Y))Smazat1Click(this);
+				if(OBJEKT_akt->orientace==270 && (m.P2Lx(X)>OBJEKT_akt->body->dalsi->X || m.P2Lx(X)<OBJEKT_akt->body->dalsi->dalsi->X))Smazat1Click(this);
+				if(OBJEKT_akt->orientace==0 && (m.P2Ly(Y)<OBJEKT_akt->body->dalsi->Y || m.P2Ly(Y)>OBJEKT_akt->body->dalsi->dalsi->Y))Smazat1Click(this);
+				nahled_ulozit(true);
+				break;
 			}
-			break;
-		}
-		case MEASURE://liniové měření vzdálenosti,vykreslení provizorní měřící linie
-		{
-			//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
-			zobraz_tip(ls->Strings[295],Canvas);//"Tažením myši z vybraného bodu do cílového bodu zobrazíte vzdálenost mezi těmito body."
+			case MOVE_BOD://posun bodu pokud je zapnuté přichytávání k mřížce posun bodu po bodech mřížky
+			{
+				TPointD souradnice;
+				if(grid)//pokud je zobrazena mřížka
+				{
+					int vel_gridu=size_grid;//nesmí se pracovat se size_grid ->ovlivnilo by to vykreslování
+					if(OBJEKT_akt!=NULL)vel_gridu/=10;//pokud jsem v editaci, grid je jemější
+					switch(prichytavat_k_mrizce)
+					{
+						case 1:	souradnice.x=m.round(m.P2Lx(X)/(vel_gridu*1.0*m2px))*vel_gridu*m2px;souradnice.y=m.round(m.P2Ly(Y)/(vel_gridu*1.0*m2px))*vel_gridu*m2px;break;//přichytí automaticky
+						case 2: souradnice=m.P2L(TPoint(X,Y));break;//automaticky nepřichyt
+					}
+				}
+				else souradnice=m.P2L(TPoint(X,Y));
+				d.v.posun_bod(souradnice.x,souradnice.y,pom_bod);
+				minule_souradnice_kurzoru=TPoint(souradnice.x,souradnice.y);
+				REFRESH();
+				break;
+			}
+			case MOVE_USECKA:
+			{
+				Cvektory::TBod *A,*B;//body úsečky
+				if(pom_bod->n==1)//poslední úsečka
+				{
+					if(OBJEKT_akt!=NULL){A=OBJEKT_akt->body->predchozi;B=OBJEKT_akt->body->dalsi;}//posun úsečky objektu v náhledu
+					else if(pom!=NULL){A=pom->body->predchozi;B=pom->body->dalsi;}//posun úsečky objektu ve schématu
+					else {A=d.v.HALA.body->predchozi;B=d.v.HALA.body->dalsi;}//posun úsečky haly
+				}
+				else {A=pom_bod->predchozi;B=pom_bod;}//ostatní úsečky
+				if(m.round2double(A->X,2)==m.round2double(B->X,2))//posun po x
+					d.v.posun_hranu(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),0,A,B);
+				else if(m.round2double(A->Y,2)==m.round2double(B->Y,2))//posun po y
+					d.v.posun_hranu(0,akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),A,B);
+				else//skosená úsečka
+				{
+					double posunx,posuny,vysledek;
+					posunx=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);//posun po x
+					posuny=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);//posun po y
+					if(m.abs_d(posunx)>m.abs_d(posuny))posuny=0;else posunx=0;//vylepšení "pocitu" z posunu, není nezbytně nutné
+					d.v.posun_hranu(posunx,posuny,A,B);
+				}
+				//rozšiřování el. osy + komor
+				if((pom!=NULL && OBJEKT_akt==NULL && pom->body->predchozi->n==4 && (pom->element->dalsi==NULL || pom->element->dalsi!=NULL && pom->element->dalsi->objekt_n!=pom->n) && pom->element->geo.typ==0) || (OBJEKT_akt!=NULL && OBJEKT_akt->body->predchozi->n==4 && (OBJEKT_akt->element->dalsi==NULL || (OBJEKT_akt->element->dalsi!=NULL && OBJEKT_akt->element->dalsi->objekt_n!=OBJEKT_akt->n)) && OBJEKT_akt->element->geo.typ==0))//speciální uprava objektu POW při posunu jeho přímek, z layoutu + z editace
+				{
+					//bool zmena_pohonu=false;
+					Cvektory::TObjekt *O=pom;
+					if(OBJEKT_akt!=NULL)O=OBJEKT_akt;
+					//////uchopeno za boky .. budu měnit délku pohonu a komor
+					if(A->n==2 || A->n==4)
+					{
+						double posun_x=0,posun_y=0,pom1=1,pom2=1,zmena=0,zbytek=0;
+						//vypočet změny
+						if(B->n==1 && A->n==4){pom1=-1;pom2=-1;}
+						if(O->orientace==0)posun_y=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+						if(O->orientace==90)posun_x=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+						if(O->orientace==180){posun_y=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);pom2*=-1;}
+						if(O->orientace==270){posun_x=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);pom1*=-1;}
+						zmena=pom1*posun_x+pom2*posun_y;
+						//pokud změnu provádím z editace měním rozměry poslendí nebo první komory
+						if(O->id==3)
+						{
+							if(A->n==2)
+							{
+								O->komora->predchozi->velikost+=zmena;
+								while(O->komora->predchozi->velikost>O->komora->dalsi->velikost*1.10)//10% na víc
+								{
+									d.v.vloz_komoru(O,O->komora->dalsi->velikost,NULL/*O->komora->predchozi*/,abs(O->komora->predchozi->typ-1));
+									zbytek=O->komora->predchozi->predchozi->velikost-O->komora->dalsi->velikost;
+									O->komora->predchozi->predchozi->velikost=O->komora->dalsi->velikost;
+									O->komora->predchozi->velikost=O->komora->predchozi->velikost-O->komora->dalsi->velikost+zbytek;
+								}
+								while(O->komora->predchozi->velikost<0)d.v.smaz_komoru(O,O->komora->predchozi);
+							}
+							if(A->n==4)
+							{
+								O->komora->dalsi->velikost+=zmena;
+								while(O->komora->dalsi->velikost>O->komora->predchozi->velikost*1.10)//10% na víc
+								{
+									d.v.vloz_komoru(O,O->komora->predchozi->velikost,O->komora->dalsi,abs(O->komora->dalsi->dalsi->typ-1));
+									zbytek=O->komora->dalsi->dalsi->velikost-O->komora->predchozi->velikost;
+									O->komora->dalsi->dalsi->velikost=O->komora->predchozi->velikost;
+									O->komora->dalsi->velikost=O->komora->dalsi->velikost-O->komora->predchozi->velikost+zbytek;
+								}
+								while(O->komora->dalsi->velikost<0)d.v.smaz_komoru(O,O->komora->dalsi);
+							}
+						}
+						//rozšíření pohonu
+						if(O->element->pohon==NULL)
+						{
+							if(B->n==1 && A->n==4)
+							{
+								O->element->geo.X1+=posun_x;
+								O->element->geo.Y1+=posun_y;
+							}
+							else
+							{
+								O->element->X+=posun_x;
+								O->element->Y+=posun_y;
+							}
+							d.v.vloz_G_element(O->element,0,O->element->geo.X1,O->element->geo.Y1,0,0,0,0,O->element->X,O->element->Y,O->element->geo.orientace);
+						}
+						//zmena_pohonu=true;
+					}
+					//////uchopeno za vrh/spodek .. budu posouvat osu pohonu
+					else
+					{
+	//					double delka_hrany=abs(O->body->dalsi->X-O->body->predchozi->X+O->body->dalsi->Y-O->body->predchozi->Y),posun=0;
+	//					if(O->orientace==90 || O->orientace==270)
+	//					{
+	//						if(O->orientace==90)posun=O->body->dalsi->Y-delka_hrany/2.0;
+	//						else posun=O->body->predchozi->Y-delka_hrany/2.0;
+	//						O->element->Y=O->element->geo.Y1=O->element->geo.Y2=O->element->geo.Y3=O->element->geo.Y4=posun;
+	//					}
+	//					else
+	//					{
+	//						if(O->orientace==0)posun=O->body->dalsi->X+delka_hrany/2.0;
+	//						else posun=O->body->predchozi->X+delka_hrany/2.0;
+	//						O->element->X=O->element->geo.X1=O->element->geo.X2=O->element->geo.X3=O->element->geo.X4=posun;
+	//          }
+					}
+					O=NULL;delete O;
+				}
+				minule_souradnice_kurzoru=TPoint(X,Y);
+	//			if(MOD==LAYOUT)//čekání na funkčnost pom v statické scéně
+	//			{
+	//				//ZprVozEledElesDopObjHal
+	//				long scena=1111121;//pouze změna objektu
+	//				if(zmena_pohonu)scena=1111221;//změna objektu a pohonu
+	//				if(pom==NULL)scena=1111112;//změna haly
+	//				REFRESH(scena,false);
+	//			}
+	//			else
+				REFRESH();
+				A=NULL;B=NULL;delete A;delete B;
+				break;
+			}
+			case MOVE_HALA:
+			{
+				if(stisknute_leve_tlacitko_mysi)//pokud je stisknuto levé tlačítko
+				{
+					if(Screen->Cursor!=pan_move)kurzor(pan_move);//změna kurzoru pouze v případě prvního posunu po kliku
+					//posun haly nebo kabiny objektu z layoutu
+					if(OBJEKT_akt==NULL)d.v.posun_body(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),pom);
+					//posun obrysu v editaci
+					else d.v.posun_body(akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x),akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y),OBJEKT_akt);
+					if(TIP!="")TIP="";
+					refresh_mGrid=false;
+					REFRESH(1111112,false);
+					refresh_mGrid=true;
+				}
+				minule_souradnice_kurzoru=TPoint(X,Y);//slouží i k určení výchozího bodu pro posun
+				break;
+			}
+			case MOVE_TEXT:
+			{
+				if(OBJEKT_akt!=NULL)
+				{
+					OBJEKT_akt->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+					OBJEKT_akt->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				}
+				else
+				{
+					pom->Xt+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+					pom->Yt+=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				}
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				REFRESH();
+				break;
+			}
+			case ROZMER_KOMORA://změna rozmerů komor pomocí úchopu
+			{
+				Cvektory::TKomora *ovlivneny=pom_komora_temp->dalsi;
+				if(ovlivneny!=NULL)//ošetření, může se stát že se spustí tato událost místo MOVE_USECKA - poslední komora nemá nasledující
+				{
+					if((OBJEKT_akt->orientace==90||OBJEKT_akt->orientace==270)&&ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
+					{
+						double posun=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+						if(OBJEKT_akt->orientace==270)posun*=-1;
+						pom_komora_temp->velikost+=posun;
+						ovlivneny->velikost-=posun;
+					}
+					else if(ovlivneny->velikost>=0.5&&pom_komora_temp->velikost>=0.5)
+					{
+						double posun=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+						if(OBJEKT_akt->orientace==0)posun*=-1;
+						pom_komora_temp->velikost-=posun;
+						ovlivneny->velikost+=posun;
+					}
+					else//překročil jsem rozmery ovlivněného nebo aktuální komory
+					{
+						double rozdil=0;
+						if(pom_komora_temp->velikost<=0.5){rozdil=0.5-pom_komora_temp->velikost;pom_komora_temp->velikost=0.5;ovlivneny->velikost-=rozdil;}
+						if(ovlivneny->velikost<=0.5){rozdil=0.5-ovlivneny->velikost;ovlivneny->velikost=0.5;pom_komora_temp->velikost-=rozdil;}
+						Akce=NIC;
+					}
+					minule_souradnice_kurzoru=TPoint(X,Y);
+					refresh_mGrid=false;
+					REFRESH();
+					refresh_mGrid=true;
+					ovlivneny=NULL;delete ovlivneny;
+					nahled_ulozit(true);
+				}
+				break;
+			}
+			case OFFSET_KOTY:
+			{
+				if(JID==13)//offset kót elementu a komor
+				{
+					if(OBJEKT_akt->id==3)
+					{
+						if(OBJEKT_akt->orientace==90||OBJEKT_akt->orientace==270)OBJEKT_akt->koty_elementu_offset.x-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+						else OBJEKT_akt->koty_elementu_offset.x+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+					}
+					else
+					{
+						switch((int)pom_element->geo.orientace)
+						{
+							case 0:case 180:OBJEKT_akt->koty_elementu_offset.x+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);break;
+							case 90:case 270:OBJEKT_akt->koty_elementu_offset.x-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);break;
+						}
+					}
+					minule_souradnice_kurzoru=TPoint(X,Y);
+					REFRESH(false);
+					nahled_ulozit(true);
+				}
+				else
+				{
+					//definice předchozího bodu
+					Cvektory::TBod *Bod;
+					if(pom_bod->n!=1)Bod=pom_bod->predchozi;
+					else if(OBJEKT_akt==NULL)Bod=d.v.HALA.body->predchozi;
+					else Bod=OBJEKT_akt->body->predchozi;
+					//výpočet posunů
+					double posunx,posuny,vysledek=0,x1,y1;
+					posunx=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);posuny=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+					if(m.abs_d(posunx)>m.abs_d(posuny))vysledek=sin(DegToRad(fmod(m.azimut(Bod->X,Bod->Y,pom_bod->X,pom_bod->Y)+90,360)))*posunx;
+					else vysledek=cos(DegToRad(fmod(m.azimut(Bod->X,Bod->Y,pom_bod->X,pom_bod->Y)+90,360)))*posuny;
+					//uložení
+					pom_bod->kota_offset+=vysledek*30;//musí být násobeno, offset je -70 a posun je 0.xxx
+					//nutné na konec
+					Bod=NULL;delete Bod;
+					minule_souradnice_kurzoru=TPoint(X,Y);
+					REFRESH();
+				}
+				break;
+			}
+			case MEASURE://liniové měření vzdálenosti,vykreslení provizorní měřící linie
+			{
+				//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
+				zobraz_tip(ls->Strings[295],Canvas);//"Tažením myši z vybraného bodu do cílového bodu zobrazíte vzdálenost mezi těmito body."
+					if(stisknute_leve_tlacitko_mysi)
+				{
+					d.vykresli_meridlo(Canvas,X,Y);
+				}
+			}break;
+			case KALIBRACE:
+			{
+				//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
+				zobraz_tip(ls->Strings[296],Canvas);//"Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu."
 				if(stisknute_leve_tlacitko_mysi)
-			{
-				d.vykresli_meridlo(Canvas,X,Y);
-			}
-		}break;
-		case KALIBRACE:
-		{
-			//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
-			zobraz_tip(ls->Strings[296],Canvas);//"Tažením myši z vybraného bodu na podkladu směřujte do vybraného technolog. objektu, po puštění myši dojde ke kalibraci obrazu."
-			if(stisknute_leve_tlacitko_mysi)
-			{
-				d.vykresli_meridlo(Canvas,X,Y,true);
-			}
-		}break;
-		case ADJUSTACE:
-		{
-			//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
-			zobraz_tip(ls->Strings[297],Canvas);//"Tažením myši z výchozího bodu směřujte do cílového bodu podkladu, po puštění myši zadejte skutečnou vzdálenost mezi body v metrech či milimetrech."
-			if(stisknute_leve_tlacitko_mysi)
-			{
-				d.vykresli_meridlo(Canvas,X,Y);
-			}
-		}break;
-		case GEOMETRIE:
-		{
-			log(__func__);
-			if(Akce_temp==NIC)
-			{
-				Cvektory::TElement *e_poslendi=posledni_editovany_element;
-				//pan_move při stisknutém levém tlačítku
-				if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
-				//vykreslení spojnice mezi posledním editovaným elementem a dalším elementem v objektu (pokud existuje)
-				if(e_poslendi!=NULL && e_poslendi->dalsi!=NULL && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1 && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1)
 				{
-		  		//nastavení pera
-		  		Canvas->Pen->Color=clBlack;
-		  		Canvas->Pen->Width=1;
-		  		Canvas->Pen->Style=psDot;//nastevení čarkované čáry
-		  		Canvas->Pen->Mode=pmNotXor;
-		  		Canvas->Brush->Style=bsClear;
-		  		//nastavení souřadnic
-					double X=0,Y=0,X2=0,Y2=0;
-		  		if(d.geoTemp.typ!=-1000)
-		  		{
-		  			X=d.geoTemp.X4;
-		  			Y=d.geoTemp.Y4;
-		  		}
-		  		else
-		  		{
-						X=e_poslendi->X;
-						Y=e_poslendi->Y;
-		  		}
-					X=m.L2Px(X);Y=m.L2Py(Y);
-					X2=m.L2Px(e_poslendi->dalsi->geo.X1);Y2=m.L2Py(e_poslendi->dalsi->geo.Y1);
-					if(e_poslendi->dalsi->eID==301 && e_poslendi->dalsi->predchozi2==e_poslendi){X2=m.L2Px(e_poslendi->dalsi->geo.X4);Y2=m.L2Py(e_poslendi->dalsi->geo.Y4);}
-					Canvas->MoveTo(X,Y);
-					Canvas->LineTo(X2,Y2);
+					d.vykresli_meridlo(Canvas,X,Y,true);
 				}
-				//hledání elementu na kterém je kurzor
-				pom_element=NULL;
-				Cvektory::TElement *E=OBJEKT_akt->element;
-				Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-				while(E!=NULL)
+			}break;
+			case ADJUSTACE:
+			{
+				//zobraz tip musí být zde, jelikož jinak pravé options tento TIP překryje
+				zobraz_tip(ls->Strings[297],Canvas);//"Tažením myši z výchozího bodu směřujte do cílového bodu podkladu, po puštění myši zadejte skutečnou vzdálenost mezi body v metrech či milimetrech."
+				if(stisknute_leve_tlacitko_mysi)
 				{
-					if(E->geo.delka!=0 && m.PtInCircle(E->geo.X4,E->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
-					{
-						pom_element=E;
-						//break;//musím najít poslední element, který souhlasí se souřadnicemi, důvod: překrytí zarážky a spojky (konec vedlejší větve)
-					}
-					if(E!=OBJEKT_akt->element && E->predchozi->objekt_n!=OBJEKT_akt->n && E->predchozi->geo.delka!=0 && m.PtInCircle(E->predchozi->geo.X4,E->predchozi->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
-					{
-						pom_element=E->predchozi;
-						//break;
-					}
-					if(E->eID==301 && E->predchozi2->objekt_n!=OBJEKT_akt->n && E->predchozi2->geo.delka!=0 && m.PtInCircle(E->predchozi2->geo.X4,E->predchozi2->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
-					{
-						pom_element=E->predchozi2;
-						//break;
-					}
-					E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
+					d.vykresli_meridlo(Canvas,X,Y);
 				}
-				d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-				E=NULL;delete E;
-				if((pom_element!=NULL && posledni_editovany_element!=NULL && pom_element!=posledni_editovany_element) || (pom_element!=NULL && posledni_editovany_element==NULL)){posledni_editovany_element=pom_element;editace_geometrie_spustena=true;}
-				else if(OBJEKT_akt->element->geo.X1!=OBJEKT_akt->element->geo.X4 && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,OBJEKT_akt->element->geo.X1,OBJEKT_akt->element->geo.Y1,velikost_citelne_oblasti_elementu) && posledni_editovany_element!=NULL){posledni_editovany_element=NULL;editace_geometrie_spustena=true;}
-				//vypisování tipu s přichycením
-				TIP="";
-				if(posledni_editovany_element==NULL)TIP="Přichyceno na začátek objektu";
-				else if(posledni_editovany_element->eID!=MaxInt)TIP="Přichyceno na "+posledni_editovany_element->name;
+			}break;
+			case GEOMETRIE:
+			{
+				log(__func__);
+				if(Akce_temp==NIC)
+				{
+					Cvektory::TElement *e_poslendi=posledni_editovany_element;
+					//pan_move při stisknutém levém tlačítku
+					if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
+					//vykreslení spojnice mezi posledním editovaným elementem a dalším elementem v objektu (pokud existuje)
+					if(e_poslendi!=NULL && e_poslendi->dalsi!=NULL && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1 && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1)
+					{
+						//nastavení pera
+						Canvas->Pen->Color=clBlack;
+						Canvas->Pen->Width=1;
+						Canvas->Pen->Style=psDot;//nastevení čarkované čáry
+						Canvas->Pen->Mode=pmNotXor;
+						Canvas->Brush->Style=bsClear;
+						//nastavení souřadnic
+						double X=0,Y=0,X2=0,Y2=0;
+						if(d.geoTemp.typ!=-1000)
+						{
+							X=d.geoTemp.X4;
+							Y=d.geoTemp.Y4;
+						}
+						else
+						{
+							X=e_poslendi->X;
+							Y=e_poslendi->Y;
+						}
+						X=m.L2Px(X);Y=m.L2Py(Y);
+						X2=m.L2Px(e_poslendi->dalsi->geo.X1);Y2=m.L2Py(e_poslendi->dalsi->geo.Y1);
+						if(e_poslendi->dalsi->eID==301 && e_poslendi->dalsi->predchozi2==e_poslendi){X2=m.L2Px(e_poslendi->dalsi->geo.X4);Y2=m.L2Py(e_poslendi->dalsi->geo.Y4);}
+						Canvas->MoveTo(X,Y);
+						Canvas->LineTo(X2,Y2);
+					}
+					//hledání elementu na kterém je kurzor
+					pom_element=NULL;
+					Cvektory::TElement *E=OBJEKT_akt->element;
+					Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+					while(E!=NULL)
+					{
+						if(E->geo.delka!=0 && m.PtInCircle(E->geo.X4,E->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
+						{
+							pom_element=E;
+							//break;//musím najít poslední element, který souhlasí se souřadnicemi, důvod: překrytí zarážky a spojky (konec vedlejší větve)
+						}
+						if(E!=OBJEKT_akt->element && E->predchozi->objekt_n!=OBJEKT_akt->n && E->predchozi->geo.delka!=0 && m.PtInCircle(E->predchozi->geo.X4,E->predchozi->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
+						{
+							pom_element=E->predchozi;
+							//break;
+						}
+						if(E->eID==301 && E->predchozi2->objekt_n!=OBJEKT_akt->n && E->predchozi2->geo.delka!=0 && m.PtInCircle(E->predchozi2->geo.X4,E->predchozi2->geo.Y4,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,velikost_citelne_oblasti_elementu))
+						{
+							pom_element=E->predchozi2;
+							//break;
+						}
+						E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
+					}
+					d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+					E=NULL;delete E;
+					if((pom_element!=NULL && posledni_editovany_element!=NULL && pom_element!=posledni_editovany_element) || (pom_element!=NULL && posledni_editovany_element==NULL)){posledni_editovany_element=pom_element;editace_geometrie_spustena=true;}
+					else if(OBJEKT_akt->element->geo.X1!=OBJEKT_akt->element->geo.X4 && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,OBJEKT_akt->element->geo.X1,OBJEKT_akt->element->geo.Y1,velikost_citelne_oblasti_elementu) && posledni_editovany_element!=NULL){posledni_editovany_element=NULL;editace_geometrie_spustena=true;}
+					//vypisování tipu s přichycením
+					TIP="";
+					if(posledni_editovany_element==NULL)TIP="Přichyceno na začátek objektu";
+					else if(posledni_editovany_element->eID!=MaxInt)TIP="Přichyceno na "+posledni_editovany_element->name;
+					//////setjobid, při geometrii je třeba mít zjišťování jidů kolem kót elementu (editace přímek)
+					int puvJID=JID;//záloha původního JID
+					//////getjobid
+					JID=-1;
+					if(OBJEKT_akt->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
+					{
+						short PtInKota_elementu=d.v.PtInKota_elementu(OBJEKT_akt,X,Y);
+						//jednotky kóty buď kabiny nebo kót elementů JID=-10
+						if(PtInKota_elementu==3)JID=-101;//hodnota LO kóty
+						else if(OBJEKT_akt->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || OBJEKT_akt->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
+						else if(OBJEKT_akt->uzamknout_nahled==false)//hledám kóty kabiny
+						{
+							short PtInKota_bod=d.v.PtInKota_bod(OBJEKT_akt);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
+							if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
+							else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
+							else//kóty elementů RET=11-99
+							{
+								if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
+								if(PtInKota_elementu==1 && pom_element!=NULL)JID=-11;//hodnota kóty
+							}
+						}
+					}
+					//////setjobid
+					if(puvJID!=JID)//pokud došlo ke změně JID, nebo změně bodu bez změny JID, jinak nemá smysl řešit
+					{
+						kurzor(standard);
+						if(JID==-11&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
+						if(JID==13){if(pom_element->geo.orientace==90||pom_element->geo.orientace==270)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
+					}
+					//////přepínání typu elementu pro smart_kurzor
+					if(posledni_editovany_element!=NULL)
+					{
+						if(posledni_editovany_element->eID==300)
+						{
+							if((posledni_editovany_element->dalsi->geo.delka>0 && posledni_editovany_element->dalsi->geo.typ==0) || (posledni_editovany_element->dalsi->dalsi!=NULL && posledni_editovany_element->dalsi->dalsi->geo.delka==0 && posledni_editovany_element->dalsi->dalsi->geo.typ==0))
+								typElementu=1;//povolit oblouky
+							else typElementu=2;//povolit linie
+						}else typElementu=0;//povolit vše
+					}
+					//při pan_move nesmí dojít k refreshi, v ostatních případech musí
+					if(Screen->Cursor!=pan_move)REFRESH();
+					e_poslendi=NULL;delete e_poslendi;
+				}
+			}break;
+			case GEOMETRIE_LIGHT://pouze editace z kót, nezobrazuje se smart kurzor
+			{
 				//////setjobid, při geometrii je třeba mít zjišťování jidů kolem kót elementu (editace přímek)
 				int puvJID=JID;//záloha původního JID
 				//////getjobid
@@ -3955,211 +4001,165 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				if(puvJID!=JID)//pokud došlo ke změně JID, nebo změně bodu bez změny JID, jinak nemá smysl řešit
 				{
 					kurzor(standard);
-					if(JID==-11&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
+					if(JID<=-11&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
 					if(JID==13){if(pom_element->geo.orientace==90||pom_element->geo.orientace==270)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
 				}
-				//////přepínání typu elementu pro smart_kurzor
-				if(posledni_editovany_element!=NULL)
-				{
-					if(posledni_editovany_element->eID==300)
-					{
-						if((posledni_editovany_element->dalsi->geo.delka>0 && posledni_editovany_element->dalsi->geo.typ==0) || (posledni_editovany_element->dalsi->dalsi!=NULL && posledni_editovany_element->dalsi->dalsi->geo.delka==0 && posledni_editovany_element->dalsi->dalsi->geo.typ==0))
-							typElementu=1;//povolit oblouky
-						else typElementu=2;//povolit linie
-					}else typElementu=0;//povolit vše
-				}
-		  	//při pan_move nesmí dojít k refreshi, v ostatních případech musí
-				if(Screen->Cursor!=pan_move)REFRESH();
-				e_poslendi=NULL;delete e_poslendi;
-			}
-		}break;
-		case GEOMETRIE_LIGHT://pouze editace z kót, nezobrazuje se smart kurzor
-		{
-			//////setjobid, při geometrii je třeba mít zjišťování jidů kolem kót elementu (editace přímek)
-		  int puvJID=JID;//záloha původního JID
-			//////getjobid
-			JID=-1;
-			if(OBJEKT_akt->zobrazit_koty)//pouze pokud je náhled povolen a jsou kóty zobrazeny
+			}break;
+			case POSUN_TEPLOMER:
 			{
-				short PtInKota_elementu=d.v.PtInKota_elementu(OBJEKT_akt,X,Y);
-				//jednotky kóty buď kabiny nebo kót elementů JID=-10
-				if(PtInKota_elementu==3)JID=-101;//hodnota LO kóty
-				else if(OBJEKT_akt->kabinaKotaX_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || OBJEKT_akt->kabinaKotaY_oblastHodnotaAJednotky.rect2.PtInRect(TPoint(X,Y)) || PtInKota_elementu==2)JID=-10;
-				else if(OBJEKT_akt->uzamknout_nahled==false)//hledám kóty kabiny
+				//posun prvního teploměru
+				double orientace=m.Rt90(pom_element->geo.orientace-pom_element->geo.rotacni_uhel);
+				TPointD korekce;
+				korekce.x=-(d.v.PP.sirka_podvozek/2.0+0.4);korekce.y=0;
+				if(orientace==90 || orientace==270){korekce.x=0;korekce.y=-(d.v.PP.sirka_podvozek/2.0+0.4);}
+				//přichytávání
+				int prichyceno=0;
+				pom_element->short_name="";//identifikátor, že teploměr byl přichycen na element nebo kabinu
+				pom_element_temp=d.v.ELEMENTY->dalsi;
+				Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+				while(pom_element_temp!=NULL)
 				{
-					short PtInKota_bod=d.v.PtInKota_bod(OBJEKT_akt);//metoda vrací zda jsem v oblasti kóty nebo v její hodnotě + ukládá ukazatel na bod do pom_bod
-					if(PtInKota_bod==0 && pom_bod!=NULL)JID=-4;//oblast kóty - posun kóty
-					else if(PtInKota_bod==1 && pom_bod!=NULL)JID=-5;//hodnota kóty
-					else//kóty elementů RET=11-99
+					//kontrola, zda jsem na elementu
+					if(pom_element_temp->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,velikost_citelne_oblasti_elementu))
 					{
-						if(PtInKota_elementu==0 && pom_element!=NULL)JID=13;//oblast kóty - posun kóty
-						if(PtInKota_elementu==1 && pom_element!=NULL)JID=-11;//hodnota kóty
-					}
-				}
-			}
-			//////setjobid
-			if(puvJID!=JID)//pokud došlo ke změně JID, nebo změně bodu bez změny JID, jinak nemá smysl řešit
-			{
-				kurzor(standard);
-				if(JID<=-11&&!editace_textu){kurzor(edit_text);refresh_mGrid=false;}//kurzor pro editaci textu
-				if(JID==13){if(pom_element->geo.orientace==90||pom_element->geo.orientace==270)kurzor(zmena_d_y);else kurzor(zmena_d_x);refresh_mGrid=false;}//interaktivní kóty elementů
-			}
-		}break;
-		case POSUN_TEPLOMER:
-		{
-			//posun prvního teploměru
-			double orientace=m.Rt90(pom_element->geo.orientace-pom_element->geo.rotacni_uhel);
-			TPointD korekce;
-			korekce.x=-(d.v.PP.sirka_podvozek/2.0+0.4);korekce.y=0;
-			if(orientace==90 || orientace==270){korekce.x=0;korekce.y=-(d.v.PP.sirka_podvozek/2.0+0.4);}
-			//přichytávání
-			int prichyceno=0;
-			pom_element->short_name="";//identifikátor, že teploměr byl přichycen na element nebo kabinu
-			pom_element_temp=d.v.ELEMENTY->dalsi;
-			Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
-			while(pom_element_temp!=NULL)
-			{
-				//kontrola, zda jsem na elementu
-				if(pom_element_temp->eID!=MaxInt && m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,velikost_citelne_oblasti_elementu))
-				{
-					//přilepení na element
-					pom_element->X=pom_element_temp->geo.X4;
-					pom_element->Y=pom_element_temp->geo.Y4;
-					pom_element->geo.orientace=pom_element_temp->geo.orientace;//aktualizace orientace podle aktuálně přichyceného elementu
-					pom_element->geo.rotacni_uhel=pom_element_temp->geo.rotacni_uhel;
-					TIP=ls->Strings[506]+" "+pom_element_temp->name;//"Přichyceno k"
-					pom_element->short_name=pom_element_temp->name;
-					prichyceno=1;
-					break;
-        }
-				//kontrola, zda sem na geometrii
-				if(d.v.PtInSegment(pom_element_temp,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
-				{
-					//kontrola, zda nejsem na hraně objektu
-					TPointD P;
-					P.x=-1*MaxInt;P.y=-1*MaxInt;
-					if(prichytavat_k_mrizce==1)P=d.v.InVrata(pom_element_temp);
-					if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
-					{
-						//přilepení souřadnic na hranu kabiny
-						pom_element->X=P.x;
-						pom_element->Y=P.y;
-						TIP=ls->Strings[507];//"Přichyceno k hraně kabiny"
-						prichyceno=1;
+						//přilepení na element
+						pom_element->X=pom_element_temp->geo.X4;
+						pom_element->Y=pom_element_temp->geo.Y4;
+						pom_element->geo.orientace=pom_element_temp->geo.orientace;//aktualizace orientace podle aktuálně přichyceného elementu
+						pom_element->geo.rotacni_uhel=pom_element_temp->geo.rotacni_uhel;
+						TIP=ls->Strings[506]+" "+pom_element_temp->name;//"Přichyceno k"
 						pom_element->short_name=pom_element_temp->name;
+						prichyceno=1;
 						break;
 					}
-          //kontrola začátku a konce stoupání
-					if(pom_element_temp->geo.HeightDepp!=0)
-		    	{
-						if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,velikost_citelne_oblasti_elementu))
-						{
-							pom_element->X=pom_element_temp->geo.X1;
-							pom_element->Y=pom_element_temp->geo.Y1;
-							TIP=ls->Strings[509];//"Přichyceno k začátku S/K"
-              prichyceno=1;
-							pom_element->short_name=pom_element_temp->name;
-							break;
-		    		}
-						if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,velikost_citelne_oblasti_elementu))
-						{
-							pom_element->X=pom_element_temp->geo.X4;
-							pom_element->Y=pom_element_temp->geo.Y4;
-							TIP=ls->Strings[510];//"Přichyceno ke konci S/K"
-              prichyceno=1;
-							pom_element->short_name=pom_element_temp->name;
-							break;
-		    		}
-					}
-					//pouze na geometrii
+					//kontrola, zda sem na geometrii
 					if(d.v.PtInSegment(pom_element_temp,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 					{
-						//přilepení souřadnic na geometrii
-						korekce=d.v.bod_na_geometrii(pom_element_temp);
-				   	pom_element->X=korekce.x;
-						pom_element->Y=korekce.y;
-						prichyceno=2;
+						//kontrola, zda nejsem na hraně objektu
+						TPointD P;
+						P.x=-1*MaxInt;P.y=-1*MaxInt;
+						if(prichytavat_k_mrizce==1)P=d.v.InVrata(pom_element_temp);
+						if(P.x!=-1*MaxInt && P.y!=-1*MaxInt)
+						{
+							//přilepení souřadnic na hranu kabiny
+							pom_element->X=P.x;
+							pom_element->Y=P.y;
+							TIP=ls->Strings[507];//"Přichyceno k hraně kabiny"
+							prichyceno=1;
+							pom_element->short_name=pom_element_temp->name;
+							break;
+						}
+						//kontrola začátku a konce stoupání
+						if(pom_element_temp->geo.HeightDepp!=0)
+						{
+							if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X1,pom_element_temp->geo.Y1,velikost_citelne_oblasti_elementu))
+							{
+								pom_element->X=pom_element_temp->geo.X1;
+								pom_element->Y=pom_element_temp->geo.Y1;
+								TIP=ls->Strings[509];//"Přichyceno k začátku S/K"
+								prichyceno=1;
+								pom_element->short_name=pom_element_temp->name;
+								break;
+							}
+							if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,pom_element_temp->geo.X4,pom_element_temp->geo.Y4,velikost_citelne_oblasti_elementu))
+							{
+								pom_element->X=pom_element_temp->geo.X4;
+								pom_element->Y=pom_element_temp->geo.Y4;
+								TIP=ls->Strings[510];//"Přichyceno ke konci S/K"
+								prichyceno=1;
+								pom_element->short_name=pom_element_temp->name;
+								break;
+							}
+						}
+						//pouze na geometrii
+						if(d.v.PtInSegment(pom_element_temp,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
+						{
+							//přilepení souřadnic na geometrii
+							korekce=d.v.bod_na_geometrii(pom_element_temp);
+							pom_element->X=korekce.x;
+							pom_element->Y=korekce.y;
+							prichyceno=2;
+						}
+						pom_element->geo.orientace=pom_element_temp->geo.orientace;//aktualizace orientace podle aktuálně přichyceného elementu
+						pom_element->geo.rotacni_uhel=pom_element_temp->geo.rotacni_uhel;
+						break;
 					}
-					pom_element->geo.orientace=pom_element_temp->geo.orientace;//aktualizace orientace podle aktuálně přichyceného elementu
-					pom_element->geo.rotacni_uhel=pom_element_temp->geo.rotacni_uhel;
-					break;
+					pom_element_temp=d.v.dalsi_krok(VYH,pom_element_temp);
 				}
-				pom_element_temp=d.v.dalsi_krok(VYH,pom_element_temp);
-			}
-			d.v.vymaz_seznam_VYHYBKY(VYH);
-			pom_element_temp=NULL;delete pom_element_temp;
-			//posun pokud není přichyceno
-			if(pom_element!=NULL && prichyceno==0)
+				d.v.vymaz_seznam_VYHYBKY(VYH);
+				pom_element_temp=NULL;delete pom_element_temp;
+				//posun pokud není přichyceno
+				if(pom_element!=NULL && prichyceno==0)
+				{
+					pom_element->X=akt_souradnice_kurzoru.x+korekce.x;
+					pom_element->Y=akt_souradnice_kurzoru.y+korekce.y;
+				}
+				minule_souradnice_kurzoru=TPoint(X,Y);
+				if(prichyceno==0 || prichyceno==2)TIP=ls->Strings[504];//"Uchopením a tažením v oblasti pohonu změníte umístění teploměru."
+				REFRESH();
+			}break;
+			case NIC://přejíždění po ploše aplikace, bez aktuálně nastavené akce
+			case BLOK:
 			{
-				pom_element->X=akt_souradnice_kurzoru.x+korekce.x;
-				pom_element->Y=akt_souradnice_kurzoru.y+korekce.y;
+				Akce=NIC;
+				if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
+				if(MOD==EDITACE && OBJEKT_akt!=NULL || MOD==LAYOUT)
+				{    //testování odstaveno
+	//					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
+	//					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
+	//					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci setJobIDOnMouseMove(X,Y);
+	//					//pokud bych odstavil výše uvedený timer takto toto zprovoznit:
+						//setJobIDOnMouseMove(X,Y);
+						Timer_getjobid->Enabled=true;//restart timeru pro setjobid
+				}
+				//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
+				break;
 			}
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			if(prichyceno==0 || prichyceno==2)TIP=ls->Strings[504];//"Uchopením a tažením v oblasti pohonu změníte umístění teploměru."
-			REFRESH();
-		}break;
-		case NIC://přejíždění po ploše aplikace, bez aktuálně nastavené akce
-		case BLOK:
-		{
-			Akce=NIC;
-			if(MOD!=CASOVAOSA)zneplatnit_minulesouradnice();
-			if(MOD==EDITACE && OBJEKT_akt!=NULL || MOD==LAYOUT)
-			{    //testování odstaveno
-//					pocitadlo_doby_neaktivity=0; Timer_neaktivity->Interval=20;
-//					if(++pocitadlo_zmeny_pozice.x>10 || ++pocitadlo_zmeny_pozice.y>10){pocitadlo_zmeny_pozice.x=0;pocitadlo_zmeny_pozice.y=0;pocitadlo_doby_neaktivity=1;}//naopak akcelerátor, aby se při rychlém pohybu myší zkontrolovala změna
-//					Timer_neaktivity->Enabled=true;//volá se zpožděním kvůli optimalizaci setJobIDOnMouseMove(X,Y);
-//					//pokud bych odstavil výše uvedený timer takto toto zprovoznit:
-					//setJobIDOnMouseMove(X,Y);
-					Timer_getjobid->Enabled=true;//restart timeru pro setjobid
-			}
-			//algoritmus na ověřování zda se kurzor nachází na objektem (a může být tedy povoleno v pop-up menu zobrazení volby nastavit parametry) přesunut do metody mousedownclick, zde se to zbytečně volalo při každém posunu myši
-			break;
+			case MAGNETICKE_LASO:
+			{
+				//pan_move při stisknutém levém tlačítku
+				//if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);Akce_temp=PAN;}else if(Screen->Cursor==pan_move)kurzor(add_o);
+				//běžná fce.
+				/*else*/ getJobID(X,Y);
+			}break;
+			//definice stoupání / klesání
+			case S_K:
+			{
+				if(d.v.MAG_LASO!=NULL && d.v.MAG_LASO->dalsi!=NULL)
+				{
+					REFRESH(false);
+					String popisek="";
+					double X=d.v.MAG_LASO->dalsi->Element->geo.X1,Y=d.v.MAG_LASO->dalsi->Element->geo.Y1,azimut,delka;
+					TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
+					if(souradnice.x!=-1000 && pom_element_temp!=NULL && pom_element_temp==d.v.MAG_LASO->dalsi->sparovany)akt_souradnice_kurzoru=souradnice;//přichycovat na pohon poůze v případě, že jsem na jednom úseku
+					azimut=m.azimut(X,Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
+					delka=m.delka(X,Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
+					if(souradnice.x!=-1000 && pom_element_temp!=NULL && pom_element_temp==d.v.MAG_LASO->dalsi->sparovany)popisek=String(m.round2double(delka*1000,2))+" [mm]";
+					d.vykresli_Gelement(Canvas,X,Y,azimut,0,delka,m.clIntensive(clGray,-50),2,popisek,"",3);
+				}
+			}break;
+			default: break;
 		}
-		case MAGNETICKE_LASO:
+		////akce nad akcemi
+		switch(Akce_temp)
 		{
-      //pan_move při stisknutém levém tlačítku
-			//if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);Akce_temp=PAN;}else if(Screen->Cursor==pan_move)kurzor(add_o);
-			//běžná fce.
-			/*else*/ getJobID(X,Y);
-		}break;
-		//definice stoupání / klesání
-		case S_K:
-		{
-			if(d.v.MAG_LASO!=NULL && d.v.MAG_LASO->dalsi!=NULL)
+			case OFFSET_KOTY:
 			{
+				if(Screen->Cursor==zmena_d_y)OBJEKT_akt->koty_elementu_offset.y-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
+				else OBJEKT_akt->koty_elementu_offset.y+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
+				minule_souradnice_kurzoru=TPoint(X,Y);
 				REFRESH(false);
-				String popisek="";
-				double X=d.v.MAG_LASO->dalsi->Element->geo.X1,Y=d.v.MAG_LASO->dalsi->Element->geo.Y1,azimut,delka;
-				TPointD souradnice=bod_vlozeni_elementu();//"přilepení" kurzoru na pohon
-				if(souradnice.x!=-1000 && pom_element_temp!=NULL && pom_element_temp==d.v.MAG_LASO->dalsi->sparovany)akt_souradnice_kurzoru=souradnice;//přichycovat na pohon poůze v případě, že jsem na jednom úseku
-				azimut=m.azimut(X,Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
-				delka=m.delka(X,Y,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y);
-				if(souradnice.x!=-1000 && pom_element_temp!=NULL && pom_element_temp==d.v.MAG_LASO->dalsi->sparovany)popisek=String(m.round2double(delka*1000,2))+" [mm]";
-				d.vykresli_Gelement(Canvas,X,Y,azimut,0,delka,m.clIntensive(clGray,-50),2,popisek,"",3);
-			}
-		}break;
-		default: break;
-	}
-	////akce nad akcemi
-	switch(Akce_temp)
-	{
-		case OFFSET_KOTY:
-		{
-			if(Screen->Cursor==zmena_d_y)OBJEKT_akt->koty_elementu_offset.y-=akt_souradnice_kurzoru.y-m.P2Ly(minule_souradnice_kurzoru.y);
-			else OBJEKT_akt->koty_elementu_offset.y+=akt_souradnice_kurzoru.x-m.P2Lx(minule_souradnice_kurzoru.x);
-			minule_souradnice_kurzoru=TPoint(X,Y);
-			REFRESH(false);
-			nahled_ulozit(true);
-		}break;
-		default:break;
-	}
-		//fix na pridani 1 obj pro demo
-//    if(EDICE==DEMO && MOD==LAYOUT)
-//    {
-//    if(d.v.OBJEKTY->predchozi->n >= 1) DrawGrid_knihovna->Visible=false;
-//    else   DrawGrid_knihovna->Visible=true;
-//    }
-//    if(MOD==EDITACE) DrawGrid_knihovna->Visible=true;
+				nahled_ulozit(true);
+			}break;
+			default:break;
+		}
+			//fix na pridani 1 obj pro demo
+	//    if(EDICE==DEMO && MOD==LAYOUT)
+	//    {
+	//    if(d.v.OBJEKTY->predchozi->n >= 1) DrawGrid_knihovna->Visible=false;
+	//    else   DrawGrid_knihovna->Visible=true;
+	//    }
+	//    if(MOD==EDITACE) DrawGrid_knihovna->Visible=true;
 	}
 }
 //---------------------------------------------------------------------------
