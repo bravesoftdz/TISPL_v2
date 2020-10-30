@@ -2384,7 +2384,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(antialiasing) Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
 			short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
 			d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
-			if(Akce==GEOMETRIE && Akce_temp==NIC && !editace_textu)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element,typElementu);//0,1,2
+			//if(Akce==GEOMETRIE && Akce_temp==NIC && !editace_textu)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element,typElementu);//0,1,2
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_in->Canvas,s,OBJEKT_akt);//vykreslení teploměrů
 			if(antialiasing)
@@ -2405,6 +2405,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		//již nepoužíváno if(MOD!=SIMULACE && zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
 		////vykreslení magnetického lasa
 		if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_total->Canvas);
+		if(Akce==GEOMETRIE && Akce_temp==NIC && !editace_textu)d.smart_kurzor(bmp_total->Canvas,posledni_editovany_element,typElementu);//0,1,2
 		////FINALNÍ vykreslení bmp_total do Canvasu
 		Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
 		delete (bmp_total);//velice nutné
@@ -7641,7 +7642,7 @@ void TForm1::vlozeni_editace_geometrie()
 	  	}
 	  	else//pokud je veškerá geometrie odstraněna z kabiny
 	  	{
-	  		posledni_editovany_element->geo=d.geoTemp;
+				posledni_editovany_element->geo=d.geoTemp;
 	  		posledni_editovany_element->X=posledni_editovany_element->geo.X4;
 	  		posledni_editovany_element->Y=posledni_editovany_element->geo.Y4;
 			}
@@ -7670,6 +7671,7 @@ void TForm1::vlozeni_editace_geometrie()
 	nahled_ulozit(true);
 	//vytvoření obrazu pro UNDO a REDO, nelze načíst obrazi při editaci geometrie ... pam. chyba
 	vytvor_obraz();
+  vytvor_statickou_scenu();
 }
 //---------------------------------------------------------------------------
 //vymaže aktuální usek geometrie
@@ -7712,9 +7714,10 @@ void TForm1::smaz_usek_geometrie()
 			posledni_editovany_element=NULL;
 		}
 		TIP="";
-		REFRESH(false);
+		vytvor_statickou_scenu();
+		REFRESH();
 		vytvor_obraz();
-    nahled_ulozit(true);
+		nahled_ulozit(true);
 	}
 	else if(Akce==GEOMETRIE && !editace_textu && TIP=="")zobraz_tip(ls->Strings[311]);
 }
@@ -7766,8 +7769,9 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	duvod_validovat=2;
 	//kurzor
 	if(Screen->Cursor!=standard)kurzor(standard);
-  //překreslení
-	REFRESH(d.SCENA,true);
+	//překreslení
+  d.SCENA=0;
+	REFRESH();
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -12643,8 +12647,10 @@ void __fastcall TForm1::DrawGrid_geometrieMouseDown(TObject *Sender, TMouseButto
   		scGPCheckBox_rozmisteni_voziku->Checked=false;
   		scGPCheckBox_popisek_pohonu->Checked=false;
   		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
-  		typElementu=0;
-  		REFRESH(false);
+			typElementu=0;
+			d.SCENA=1111111;
+      vytvor_statickou_scenu();
+			REFRESH();
   	}
   	else {ukonceni_geometrie();}//vypunutí akce geometrie
   	if(Col==1 && OBJEKT_akt->pohon!=NULL && (d.v.ZAKAZKA_akt==NULL || d.v.ZAKAZKA_akt!=NULL && d.v.ZAKAZKA_akt->n==0))
@@ -16405,7 +16411,7 @@ void __fastcall TForm1::scButton_nacist_podkladClick(TObject *Sender)
 {
 	log(__func__);//logování
 	scSplitView_MENU->Opened=false;
-	if(d.v.PP.raster.filename=="" || (d.v.PP.raster.filename!="" && FileExists(d.v.PP.raster.filename) && MB(ls->Strings[496],MB_YESNO)==mrYes))//"Podklad již existuje, přejete si načíst nový?"
+	if(d.v.PP.raster.filename=="" || (d.v.PP.raster.filename!="" && FileExists(d.v.PP.raster.filename) && MB(ls->Strings[496],MB_YESNO)==mrYes) || (d.v.PP.raster.filename!="" && !FileExists(d.v.PP.raster.filename)))//"Podklad již existuje, přejete si načíst nový?"
 	{
     Nacist_podklad();
 	}
@@ -19179,4 +19185,6 @@ void __fastcall TForm1::scGPCheckBox_antialiasingClick(TObject *Sender)
   REFRESH();
 }
 //---------------------------------------------------------------------------
+
+
 
