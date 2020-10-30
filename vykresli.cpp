@@ -171,7 +171,8 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	if(F->OBJEKT_akt!=NULL)vykresli_objekt(canv,F->OBJEKT_akt);
 }
 //---------------------------------------------------------------------------
-void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)//cyklem prochází všechny elementy a ty následně "selectí" dle: scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény
+//cyklem prochází všechny elementy a ty následně "selectí" dle: scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény 5 - zobrazit jenom popisky
+void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 {
 	//vykreslování z ELEMENTY
 	float sipka_velikost=0.1*F->Zoom; if(sipka_velikost<1*3)sipka_velikost=1*3;
@@ -3308,7 +3309,7 @@ void Cvykresli::vykresli_popisek_pohonu(TCanvas *canv,AnsiString text,TPoint zac
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //celková vykreslovací metoda, vykreslí buď stopku, robota nebo otoč
 void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiString name,AnsiString short_name,unsigned int eID,short typ,double rotace,short stav,double LO1,double OTOC_delka,double LO2,double LO_pozice,Cvektory::TElement *E)
-{ //scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény
+{ //scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény, 5 - zobrazit jenom popisky
 	rotace=m.Rt90(rotace);
 	switch(eID)
 	{
@@ -3420,43 +3421,47 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		barva=m.clIntensive(barva,I);//pokud je aktivní nebo neaktivní
 	}
 
-	//typ zobrazení
-	if(typ==-1)//kurzor
+	if(typ!=3)//pokud se nemá zobrazovat jenom popisek
 	{
-		canv->Pen->Color=clBlack;
-		canv->Pen->Mode=pmNotXor;
-		canv->Pen->Style=psDot;
-		canv->Pen->Width=1;
-		canv->Brush->Color=clWhite;
-		canv->Brush->Style=bsClear;
-		size=6*F->Zoom;//kvůli bílému orámování stopky v normálním zobrazení musí být menší
-	}//normální
-	else
-	{
-		canv->Pen->Color=clWhite;//bílý framing okolo stopky
-		canv->Pen->Width=m.round(0.2*Z);
-		canv->Pen->Mode=pmCopy;
-		canv->Pen->Style=psSolid;
-		canv->Brush->Color=barva;
-		canv->Brush->Style=bsSolid;
+
+		//typ zobrazení
+		if(typ==-1)//kurzor
+		{
+			canv->Pen->Color=clBlack;
+			canv->Pen->Mode=pmNotXor;
+			canv->Pen->Style=psDot;
+			canv->Pen->Width=1;
+			canv->Brush->Color=clWhite;
+			canv->Brush->Style=bsClear;
+			size=6*F->Zoom;//kvůli bílému orámování stopky v normálním zobrazení musí být menší
+		}//normální
+		else
+		{
+			canv->Pen->Color=clWhite;//bílý framing okolo stopky
+			canv->Pen->Width=m.round(0.2*Z);
+			canv->Pen->Mode=pmCopy;
+			canv->Pen->Style=psSolid;
+			canv->Brush->Color=barva;
+			canv->Brush->Style=bsSolid;
+		}
+		//rotace
+		switch((int)rotace)//tento switch pouze posun referenčního bodu kvůli bílému orámování
+		{
+			case 0: 	Y+=m.round(1*Z);break;
+			case 90: 	X-=m.round(1*Z/2.0);break;
+			case 180: Y-=m.round(1*Z);break;
+			case 270: X+=m.round(1*Z/2.0);break;
+		}
+		//referenční bode ve špičce, špička je směrem dolu (při nulové rotaci)
+		float sizeX=size;float sizeY=size;
+		if(rotace==0 || rotace==180)sizeX/=2.0;
+		if(rotace==90 || rotace==270)sizeY/=2.0;
+		POINT body[3]={{F->m.round(X+m.rotace(1,sklon,rotace).x*sizeX),F->m.round(Y+m.rotace(1,sklon,rotace).y*sizeY)},{X,Y},{F->m.round(X+m.rotace(1,360-sklon,rotace).x*sizeX),F->m.round(Y+m.rotace(1,360-sklon,rotace).y*sizeY)}};
+		canv->Polygon((TPoint*)body,2);
 	}
-	//rotace
-	switch((int)rotace)//tento switch pouze posun referenčního bodu kvůli bílému orámování
-	{
-		case 0: 	Y+=m.round(1*Z);break;
-		case 90: 	X-=m.round(1*Z/2.0);break;
-		case 180: Y-=m.round(1*Z);break;
-		case 270: X+=m.round(1*Z/2.0);break;
-	}
-	//referenční bode ve špičce, špička je směrem dolu (při nulové rotaci)
-	float sizeX=size;float sizeY=size;
-	if(rotace==0 || rotace==180)sizeX/=2.0;
-	if(rotace==90 || rotace==270)sizeY/=2.0;
-	POINT body[3]={{F->m.round(X+m.rotace(1,sklon,rotace).x*sizeX),F->m.round(Y+m.rotace(1,sklon,rotace).y*sizeY)},{X,Y},{F->m.round(X+m.rotace(1,360-sklon,rotace).x*sizeX),F->m.round(Y+m.rotace(1,360-sklon,rotace).y*sizeY)}};
-	canv->Polygon((TPoint*)body,2);
 
 	//text
-	if(typ!=-1 && name!="")//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje
+	if(typ!=-1 && typ!=2)//v módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje
 	{
 		canv->Font->Color=barva;
 		canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
@@ -3500,176 +3505,179 @@ void Cvykresli::vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiStri
 {
 	try
 	{
-	double Z=F->Zoom;//zoom, pouze zkrácení zápisu
+		double Z=F->Zoom;//zoom, pouze zkrácení zápisu
 
-	//vstupní parametry - budou součástí parametrů metody robota
-	double LO=(LO1+OTOC_delka+LO2)*Z/F->m2px;//délka cekového lakovacího okna
-	if(typ==0)LO=1.5*Z/F->m2px;//v knihovně se symbol robota zobrazuje s 1,5 m velkých lakovacím oknem vždy
-	aP; if(aP>LO/2.0)aP=LO/2.0;if(aP<-LO/2.0)aP=-LO/2.0;//Aktuální Pozice odsazení tryskového kloubu i trysky (ve svislé poloze trysky) v lakovacím okně + ochrana proti přetečení
-	TS;//Tryska Sklon stupně
+		//vstupní parametry - budou součástí parametrů metody robota
+		double LO=(LO1+OTOC_delka+LO2)*Z/F->m2px;//délka cekového lakovacího okna
+		if(typ==0)LO=1.5*Z/F->m2px;//v knihovně se symbol robota zobrazuje s 1,5 m velkých lakovacím oknem vždy
+		aP; if(aP>LO/2.0)aP=LO/2.0;if(aP<-LO/2.0)aP=-LO/2.0;//Aktuální Pozice odsazení tryskového kloubu i trysky (ve svislé poloze trysky) v lakovacím okně + ochrana proti přetečení
+		TS;//Tryska Sklon stupně
 
-	//konstanty
-	double pLOvC=1/2.0;//část z LO v delší části (většinou v polovina),bude sloužit na vyosení LO mimo osu robota
-	double DkRB=1.2*Z/F->m2px;//délka k referenčnímu bodu od středu prvního kloubu ramena, respektive odsazení robota od linky
-	float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie robota
-	float zaobleni=4*Z;//míra zaoblení základny
-	float sirka_zakladny=Robot_sirka_zakladny*Z/F->m2px;
-	float delka_zakladny=Robot_delka_zakladny*Z/F->m2px;
-	float sirka_ramena=0.2*Z/F->m2px;
-	float DT=0.35*Z/F->m2px;//délka trysky
-	float TW=sirka_ramena;//tryska šířka před zúžením, v místě z kloubu
-	float TZ=TW/2.0;//tryska ve zúžení
-	double DR=sqrt(pow(LO*pLOvC,2)+pow(DkRB-DT,2));//délka ruky/ramene obou částí (paže i předloktí) ///old model (tryska v extremní poloze stejný úhel jako rameno): double DR=(DkRB-DT)/cos(atan((LO*pLOvC)/DkRB));
+		//konstanty
+		double pLOvC=1/2.0;//část z LO v delší části (většinou v polovina),bude sloužit na vyosení LO mimo osu robota
+		double DkRB=1.2*Z/F->m2px;//délka k referenčnímu bodu od středu prvního kloubu ramena, respektive odsazení robota od linky
+		float tloustka_linie=1.05/3.0;if(stav==2)tloustka_linie*=1.3;//pokud má být zvýrazněn  //vykreslovací linie robota
+		float zaobleni=4*Z;//míra zaoblení základny
+		float sirka_zakladny=Robot_sirka_zakladny*Z/F->m2px;
+		float delka_zakladny=Robot_delka_zakladny*Z/F->m2px;
+		float sirka_ramena=0.2*Z/F->m2px;
+		float DT=0.35*Z/F->m2px;//délka trysky
+		float TW=sirka_ramena;//tryska šířka před zúžením, v místě z kloubu
+		float TZ=TW/2.0;//tryska ve zúžení
+		double DR=sqrt(pow(LO*pLOvC,2)+pow(DkRB-DT,2));//délka ruky/ramene obou částí (paže i předloktí) ///old model (tryska v extremní poloze stejný úhel jako rameno): double DR=(DkRB-DT)/cos(atan((LO*pLOvC)/DkRB));
 
-	//nastavení barev
-	TColor barva=clBlack; TColor clOzeh=(TColor)RGB(255,165,0);TColor clIon=(TColor)RGB(7,107,171);TColor clCO2=(TColor)RGB(135,206,250);
-	if(stav==-1 && F->OBJEKT_akt!=NULL)//pokud je aktivní nebo neaktivní
-	{
-		short I=m.get_intensity();
-		if(typ==0)I=180;//pro ikony v knihovně elementů
-		barva=m.clIntensive(barva,I); //180 původní hodnota
-		clOzeh=m.clIntensive(clOzeh,I);
-		clIon=m.clIntensive(clIon,I);
-	}
-
-  //rotace základny
-	if(rotace==90 || rotace==270){float temp=delka_zakladny;delka_zakladny=sirka_zakladny;sirka_zakladny=temp;}
-
-	//přidružené elementy
-	long pX=X;long pY=m.round(Y-sirka_zakladny/2.0-DkRB);
-	long lX=X;long lY=m.round(Y-sirka_zakladny/2.0);
-	if(rotace==90){pX=m.round(X+delka_zakladny/2.0+DkRB);pY=Y;lX=m.round(X+delka_zakladny/2.0);lY=Y;}
-	if(rotace==270){pX=m.round(X-delka_zakladny/2.0-DkRB);pY=Y;lX=m.round(X-delka_zakladny/2.0);lY=Y;}
-	if(rotace==180){pX=X;pY=m.round(Y+sirka_zakladny/2.0+DkRB);lX=X;lY=m.round(Y+sirka_zakladny/2.0);}
-	switch(eID)
-	{
-		case 1: case 7: case 11: case 15: if(typ==1 && scena<=1)	vykresli_lakovaci_okno(canv,lX,lY,LO1,0,0,DkRB,rotace,LO_pozice);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
-		case 2: case 8: case 12: case 16: if(scena==0 || scena>=3) vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
-		case 3: case 9: case 13: case 17: if(typ==1 && scena<=1) 	vykresli_lakovaci_okno(canv,lX,lY,LO1,OTOC_delka,LO2,DkRB,rotace,LO_pozice); vykresli_otoc(canv,scena,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
-		case 4: case 10: case 14:case 18: vykresli_otoc(canv,scena,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
-	}
-
-	//nastavení pera
-	TPenMode PenMode=pmCopy;
-	if(typ==-1)//typ kurzor
-	{
-		PenMode=pmNotXor;
-		canv->Pen->Style=psDot;
-		canv->Pen->Color=barva;
-		canv->Pen->Width=1;
-		canv->Brush->Style=bsClear;
-	}
-	else
-	{
-		canv->Pen->Style=psSolid;
-		canv->Pen->Width=F->m.round(tloustka_linie*Z);
-		canv->Brush->Style=bsSolid;
-	}
-	canv->Pen->Mode=PenMode;
-	canv->Pen->Color=barva;
-	canv->Brush->Color=clWhite;
-
-	////statická scéna
-	if(scena<=2)
-	{
-		////základna
-		TRect zakladna=TRect(m.round(X-delka_zakladny/2.0),m.round(Y-sirka_zakladny/2.0),m.round(X+delka_zakladny/2.0),m.round(Y+sirka_zakladny/2.0));
-		canv->RoundRect(zakladna,zaobleni,zaobleni);
-	}
-
-	//dynamická scéna
-	if(scena==0 || 3<=scena)
-	{
-		////tryska
-		long cX=X-aP;long cY=m.round(Y-sirka_zakladny/2.0-DkRB+DT);//skutečný referenční bod (nikoliv uchopovací, ten je u robota odlišný) minus výška trysky
-		if(rotace==90){cX=m.round(X+delka_zakladny/2.0+DkRB-DT);cY=Y-aP;}
-		if(rotace==270){cX=m.round(X-delka_zakladny/2.0-DkRB+DT);cY=Y+aP;}
-		if(rotace==180){cX=X+aP;cY=m.round(Y+sirka_zakladny/2.0+DkRB-DT);}
-		//typ trysky dle typu robota 														//zde bude TS (tryska sklon) pro animaci či parametrizování
-		if(1<=eID && eID<=4)polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);//lakovací
-		if(7<=eID && eID<=10){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,270+TS,rotace,pmMask,clWhite,clIon);}//ion
-		if(11<=eID && eID<=14){if(stav>0 && typ!=-1)polygonDleOsy(canv,cX,cY,DT,TW,TZ*6,270+TS,rotace,pmMask,clWhite,clOzeh);polygonDleOsy(canv,cX,cY,DT/2.0,TW,TZ*4,270+TS,rotace,PenMode,barva,clWhite);}//ožeh
-		if(15<=eID && eID<=18){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,270+TS,rotace,pmMask,clWhite,clCO2);}//CO2
-
-		////ramena
-		double Alfa1=atan((aP)/(DkRB-DT));
-		double Prepona=sqrt(pow(aP,2)+pow(DkRB-DT,2));//v dokumentaci označeno jako X
-		double Alfa2=acos(Prepona/DR);
-		double Alfa=Alfa2-Alfa1;
-		double Gama=180.0-(180.0-2*Alfa2)-Alfa;//dokumentace: Beta=180.0-2*Alfa2;Gama=180.0-Beta-Alfa;
-		//rotace i kloubu
-		pX=X;pY=Y-sirka_zakladny/2.0;
-		if(rotace==90){pX=X+delka_zakladny/2.0;pY=Y;}
-		if(rotace==270){pX=X-delka_zakladny/2.0;pY=Y;}
-		if(rotace==180){pY=Y+sirka_zakladny/2.0;}
-		//první část - od základny
-		TPoint S=polygonDleOsy(canv,m.round(pX),m.round(pY),DR/2,sirka_ramena,sirka_ramena,270+m.ToDeg(Alfa),rotace,PenMode,barva,clWhite);//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
-		//druhá část k trysce (kresleno směrem od trysky)
-		polygonDleOsy(canv,cX,cY,DR/2,sirka_ramena,sirka_ramena,270+180-m.ToDeg(Gama),rotace,PenMode,barva,clWhite);
-
-		////klouby
-		//první kloub mezi prvním ramenem a základnou
-		canv->Ellipse(m.round(pX-sirka_ramena/2.0),m.round(pY-sirka_ramena/2.0),m.round(pX+sirka_ramena/2.0),m.round(pY+sirka_ramena/2.0));
-		//druhý kloub mezi rameny
-		canv->Ellipse(m.round(S.x-sirka_ramena/2.0),m.round(S.y-sirka_ramena/2.0),m.round(S.x+sirka_ramena/2.0),m.round(S.y+sirka_ramena/2.0));
-		//třetí kloub mezi ramenem a tryskou
-		canv->Ellipse(m.round(cX-sirka_ramena/2.0),m.round(cY-sirka_ramena/2.0),m.round(cX+sirka_ramena/2.0),m.round(cY+sirka_ramena/2.0));
-	}
-
-	//	//testovací osa - smazat
-//	linie(canv,cX-100,cY,cX+100,cY,1,clRed);
-//	linie(canv,X,Y,cX,cY,1,clRed);
-	//name="Robot1";//prozatim
-	//short_name="R1";//prozatim
-
-	////text
-	if(typ!=-1 && scena<=2)//v módu kurzor se název nezobrazuje
-	{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
-		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
-		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
-		//if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
-		AnsiString T=short_name;
-		//if(Z>4*3) //short_name odstaveno
-		{T=name;if(F->aFont->Size==12)canv->Font->Size=m.round(2*Z); else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
-		if(typ==1)//pokud se jedná o standardní zobrazení
+		//nastavení barev
+		TColor barva=clBlack; TColor clOzeh=(TColor)RGB(255,165,0);TColor clIon=(TColor)RGB(7,107,171);TColor clCO2=(TColor)RGB(135,206,250);
+		if(stav==-1 && F->OBJEKT_akt!=NULL)//pokud je aktivní nebo neaktivní
 		{
-			if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
+			short I=m.get_intensity();
+			if(typ==0)I=180;//pro ikony v knihovně elementů
+			barva=m.clIntensive(barva,I); //180 původní hodnota
+			clOzeh=m.clIntensive(clOzeh,I);
+			clIon=m.clIntensive(clIon,I);
+		}
+
+		if(typ!=3)//pokud se nemá zobrazovat jenom popisek
+		{
+			//rotace základny
+			if(rotace==90 || rotace==270){float temp=delka_zakladny;delka_zakladny=sirka_zakladny;sirka_zakladny=temp;}
+
+			//přidružené elementy
+			long pX=X;long pY=m.round(Y-sirka_zakladny/2.0-DkRB);
+			long lX=X;long lY=m.round(Y-sirka_zakladny/2.0);
+			if(rotace==90){pX=m.round(X+delka_zakladny/2.0+DkRB);pY=Y;lX=m.round(X+delka_zakladny/2.0);lY=Y;}
+			if(rotace==270){pX=m.round(X-delka_zakladny/2.0-DkRB);pY=Y;lX=m.round(X-delka_zakladny/2.0);lY=Y;}
+			if(rotace==180){pX=X;pY=m.round(Y+sirka_zakladny/2.0+DkRB);lX=X;lY=m.round(Y+sirka_zakladny/2.0);}
+			switch(eID)
 			{
-		  	canv->Font->Name=F->aFont->Name;
-				if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-				float zAA=1.0;if(F->antialiasing)zAA=3.0;
-				TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
-				long x,y;
-				short w=canv->TextWidth(T);
-				short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC");
-				//pozn. pro 180° neobracím text vzhůru nohama
-				if(rotace==0 || rotace==180)//lze používat i drawRectText(canv,zakladna,T);//nefunguje správně při rotaci //pro po orototování o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
-		  	{
-		  		x=m.round(X-w/2.0);
-		  		y=m.round(Y-h/2.0);
-					aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA));//souřadnice pro citelnou oblast
-		  	}
-		  	else
-		  	{
-		  		rotace_textu(canv,-rotace*10);
-		  		if(rotace==90){x=m.round(X-h/2.0);y=m.round(Y-w/2.0);}
-		  		if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y-w/2.0);}
-		  		aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
-					if(rotace==90){x=m.round(X+h/2.0);y=m.round(Y-w/2.0);}//souřadnice vykreslení textu a souřadnice citelné oblasti nejsou totožné, nutné znova určit
-		  		if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y+w/2.0);}
+				case 1: case 7: case 11: case 15: if(typ==1 && scena<=1)	vykresli_lakovaci_okno(canv,lX,lY,LO1,0,0,DkRB,rotace,LO_pozice);break;//pokud se jedná o kontinuálního robota v normálním zobrazení, zobrazí se ještě lakovací okno
+				case 2: case 8: case 12: case 16: if(scena==0 || scena>=3) vykresli_stopku(canv,pX,pY,"","",typ,m.Rt90(rotace+180),stav);break;//robot se stopkou
+				case 3: case 9: case 13: case 17: if(typ==1 && scena<=1) 	vykresli_lakovaci_okno(canv,lX,lY,LO1,OTOC_delka,LO2,DkRB,rotace,LO_pozice); vykresli_otoc(canv,scena,pX,pY,"","",5,typ,rotace,stav);break;//s pasivní otočí
+				case 4: case 10: case 14:case 18: vykresli_otoc(canv,scena,pX,pY,"","",6,typ,m.Rt90(rotace+180),stav);break;//s aktivní otočí (tj. s otočí a se stopkou)
+			}
+
+			//nastavení pera
+			TPenMode PenMode=pmCopy;
+			if(typ==-1)//typ kurzor
+			{
+				PenMode=pmNotXor;
+				canv->Pen->Style=psDot;
+				canv->Pen->Color=barva;
+				canv->Pen->Width=1;
+				canv->Brush->Style=bsClear;
+			}
+			else
+			{
+				canv->Pen->Style=psSolid;
+				canv->Pen->Width=F->m.round(tloustka_linie*Z);
+				canv->Brush->Style=bsSolid;
+			}
+			canv->Pen->Mode=PenMode;
+			canv->Pen->Color=barva;
+			canv->Brush->Color=clWhite;
+
+			////statická scéna
+			if(scena<=2)
+			{
+				////základna
+				TRect zakladna=TRect(m.round(X-delka_zakladny/2.0),m.round(Y-sirka_zakladny/2.0),m.round(X+delka_zakladny/2.0),m.round(Y+sirka_zakladny/2.0));
+				canv->RoundRect(zakladna,zaobleni,zaobleni);
+			}
+
+			//dynamická scéna
+			if(scena==0 || 3<=scena)
+			{
+				////tryska
+				long cX=X-aP;long cY=m.round(Y-sirka_zakladny/2.0-DkRB+DT);//skutečný referenční bod (nikoliv uchopovací, ten je u robota odlišný) minus výška trysky
+				if(rotace==90){cX=m.round(X+delka_zakladny/2.0+DkRB-DT);cY=Y-aP;}
+				if(rotace==270){cX=m.round(X-delka_zakladny/2.0-DkRB+DT);cY=Y+aP;}
+				if(rotace==180){cX=X+aP;cY=m.round(Y+sirka_zakladny/2.0+DkRB-DT);}
+				//typ trysky dle typu robota 														//zde bude TS (tryska sklon) pro animaci či parametrizování
+				if(1<=eID && eID<=4)polygonDleOsy(canv,cX,cY,DT,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);//lakovací
+				if(7<=eID && eID<=10){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,270+TS,rotace,pmMask,clWhite,clIon);}//ion
+				if(11<=eID && eID<=14){if(stav>0 && typ!=-1)polygonDleOsy(canv,cX,cY,DT,TW,TZ*6,270+TS,rotace,pmMask,clWhite,clOzeh);polygonDleOsy(canv,cX,cY,DT/2.0,TW,TZ*4,270+TS,rotace,PenMode,barva,clWhite);}//ožeh
+				if(15<=eID && eID<=18){TPoint P=polygonDleOsy(canv,cX,cY,DT/1.5,TW,TZ,270+TS,rotace,PenMode,barva,clWhite);if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,270+TS,rotace,pmMask,clWhite,clCO2);}//CO2
+
+				////ramena
+				double Alfa1=atan((aP)/(DkRB-DT));
+				double Prepona=sqrt(pow(aP,2)+pow(DkRB-DT,2));//v dokumentaci označeno jako X
+				double Alfa2=acos(Prepona/DR);
+				double Alfa=Alfa2-Alfa1;
+				double Gama=180.0-(180.0-2*Alfa2)-Alfa;//dokumentace: Beta=180.0-2*Alfa2;Gama=180.0-Beta-Alfa;
+				//rotace i kloubu
+				pX=X;pY=Y-sirka_zakladny/2.0;
+				if(rotace==90){pX=X+delka_zakladny/2.0;pY=Y;}
+				if(rotace==270){pX=X-delka_zakladny/2.0;pY=Y;}
+				if(rotace==180){pY=Y+sirka_zakladny/2.0;}
+				//první část - od základny
+				TPoint S=polygonDleOsy(canv,m.round(pX),m.round(pY),DR/2,sirka_ramena,sirka_ramena,270+m.ToDeg(Alfa),rotace,PenMode,barva,clWhite);//vykreslí polygon dle osy, umí i kónický tvar, vratí souřadnice konce osy polygonu
+				//druhá část k trysce (kresleno směrem od trysky)
+				polygonDleOsy(canv,cX,cY,DR/2,sirka_ramena,sirka_ramena,270+180-m.ToDeg(Gama),rotace,PenMode,barva,clWhite);
+
+				////klouby
+				//první kloub mezi prvním ramenem a základnou
+				canv->Ellipse(m.round(pX-sirka_ramena/2.0),m.round(pY-sirka_ramena/2.0),m.round(pX+sirka_ramena/2.0),m.round(pY+sirka_ramena/2.0));
+				//druhý kloub mezi rameny
+				canv->Ellipse(m.round(S.x-sirka_ramena/2.0),m.round(S.y-sirka_ramena/2.0),m.round(S.x+sirka_ramena/2.0),m.round(S.y+sirka_ramena/2.0));
+				//třetí kloub mezi ramenem a tryskou
+				canv->Ellipse(m.round(cX-sirka_ramena/2.0),m.round(cY-sirka_ramena/2.0),m.round(cX+sirka_ramena/2.0),m.round(cY+sirka_ramena/2.0));
+			}
+
+			//	//testovací osa - smazat
+		//	linie(canv,cX-100,cY,cX+100,cY,1,clRed);
+		//	linie(canv,X,Y,cX,cY,1,clRed);
+			//name="Robot1";//prozatim
+			//short_name="R1";//prozatim
+		}
+
+		////text
+		if(typ!=-1 && scena<=2  && typ!=2)//v módu kurzor se název nezobrazuje
+		{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
+			if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
+			canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
+			//if(F->aFont->Size==12)canv->Font->Size=m.round(5.4*Z);else canv->Font->Size=m.round(5*Z);
+			AnsiString T=short_name;
+			//if(Z>4*3) //short_name odstaveno
+			{T=name;if(F->aFont->Size==12)canv->Font->Size=m.round(2*Z); else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
+			if(typ==1)//pokud se jedná o standardní zobrazení
+			{
+				if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
+				{
+					canv->Font->Name=F->aFont->Name;
+					if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
+					float zAA=1.0;if(F->antialiasing)zAA=3.0;
+					TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
+					long x,y;
+					short w=canv->TextWidth(T);
+					short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC");
+					//pozn. pro 180° neobracím text vzhůru nohama
+					if(rotace==0 || rotace==180)//lze používat i drawRectText(canv,zakladna,T);//nefunguje správně při rotaci //pro po orototování o 180:canv->TextOutW(m.round(X+canv->TextWidth(T)/2.0),m.round(Y+canv->TextHeight(T)/2.0),name);
+					{
+						x=m.round(X-w/2.0);
+						y=m.round(Y-h/2.0);
+						aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA));//souřadnice pro citelnou oblast
+					}
+					else
+					{
+						rotace_textu(canv,-rotace*10);
+						if(rotace==90){x=m.round(X-h/2.0);y=m.round(Y-w/2.0);}
+						if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y-w/2.0);}
+						aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+h)/zAA),m.round((y+w)/zAA));//souřadnice pro citelnou oblast
+						if(rotace==90){x=m.round(X+h/2.0);y=m.round(Y-w/2.0);}//souřadnice vykreslení textu a souřadnice citelné oblasti nejsou totožné, nutné znova určit
+						if(rotace==270){x=m.round(X-h/2.0);y=m.round(Y+w/2.0);}
+					}
+					TextFraming(canv,x,y,name);//samotný vypis
+					if(E!=NULL)E->citelna_oblast.rect3=aktOblast;//uložení zjištěné aktuální citelné oblasti do dat elementu
 				}
-				TextFraming(canv,x,y,name);//samotný vypis
-				if(E!=NULL)E->citelna_oblast.rect3=aktOblast;//uložení zjištěné aktuální citelné oblasti do dat elementu
+			}
+			else//ikona
+			{
+				canv->Font->Name=F->aFont->Name;//musí tu být, jinak chyba popisku u prvního robota  //canv->Font->Name="Arial";
+				canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
+				canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+sirka_zakladny/2.0+1*Z),name); //1 pouze korekce
+				canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+sirka_zakladny/2.0+1*Z+1*Z+canv->TextHeight(name)),short_name);
 			}
 		}
-		else//ikona
-		{
-			canv->Font->Name=F->aFont->Name;//musí tu být, jinak chyba popisku u prvního robota  //canv->Font->Name="Arial";
-			canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
-			canv->TextOutW(X-canv->TextWidth(name)/2,m.round(Y+sirka_zakladny/2.0+1*Z),name); //1 pouze korekce
-			canv->TextOutW(X-canv->TextWidth(short_name)/2,m.round(Y+sirka_zakladny/2.0+1*Z+1*Z+canv->TextHeight(name)),short_name);
-		}
-	}
 	}catch(...){if(DEBUG)MessageBeep(0);}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -3723,8 +3731,8 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		clIon=m.clIntensive(clIon,I);
 	}//pokud je aktivní nebo neaktivní
 
-	////dynamická scéna
-	if(scena==0 || 3<=scena)
+	////dynamická scéna + pokud se nemá zobrazovat jenom popisek
+	if(typ!=3 && (scena==0 || 3<=scena))
 	{
 		////nastavení pera
 		float W=0.02;if(F->antialiasing)W*=3;
@@ -3834,7 +3842,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 	}
 
 	////text
-	if(typ!=-1 && scena<=2)//v módu kurzor se název nezobrazuje
+	if(typ!=-1 && scena<=2 && typ!=2)//v módu kurzor se název nezobrazuje
 	{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 		canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
@@ -3897,76 +3905,79 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,short scena,long X,long Y,AnsiString
 			barva=m.clIntensive(barva,I);
 		}
 
-		if(typ==-1)//v módu kurzor
+		if(typ!=3)//pokud se nemá zobrazovat jenom popisek
 		{
-			canv->Pen->Color=clBlack;
-			canv->Pen->Mode=pmNotXor;
-			canv->Pen->Style=psDot;
-			canv->Pen->Width=1;
-			canv->Brush->Color=clWhite;
-			canv->Brush->Style=bsClear;
-		}
-		else
-		{
-			canv->Pen->Mode=pmCopy;
-			canv->Pen->Style=psSolid;
-			canv->Pen->Width=width;
-			canv->Pen->Color=barva;
-			canv->Brush->Color=clWhite;
-			canv->Brush->Style=bsClear;
-		}
-
-		//vykreslení elementu
-		canv->Ellipse(X-size,Y-size,X+size,Y+size);
-
-		double R=rotace;
-		if(R==0 || R==180)
-		{
-			R=0;//nerozlišuje se zda 0 nebo 180, v těchto případech je symbol stejně orotován
-			if(typ==-1)//mód kurzor
+			if(typ==-1)//v módu kurzor
 			{
-				//šipka                                     //pokud bych chtěl rotovat
-				sipka(canv,m.round(X-size),m.round(Y+width),/*rotace*/R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno s Z slouží na negaci *Zoom v metodě šipka
-				sipka(canv,m.round(X+size),m.round(Y-width),/*rotace*/R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
+				canv->Pen->Color=clBlack;
+				canv->Pen->Mode=pmNotXor;
+				canv->Pen->Style=psDot;
+				canv->Pen->Width=1;
+				canv->Brush->Color=clWhite;
+				canv->Brush->Style=bsClear;
 			}
 			else
 			{
-				canv->Pen->Color=clWhite;
-				canv->Brush->Style=bsSolid;
-
-				//přeříznutí pod šipkou
-				canv->Rectangle(X-size,Y-width,m.round(X-size+1*Z),Y);//přežíznutí, možná lépe řešit obloukem
-				canv->Rectangle(m.round(X+size-1*Z),Y,X+size,Y+width);//přežíznutí, možná lépe řešit obloukem
-				//šipka
-				sipka(canv,m.round(X-size),m.round(Y+width),R-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
-				sipka(canv,m.round(X+size),m.round(Y-width),R-180-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
+				canv->Pen->Mode=pmCopy;
+				canv->Pen->Style=psSolid;
+				canv->Pen->Width=width;
+				canv->Pen->Color=barva;
+				canv->Brush->Color=clWhite;
+				canv->Brush->Style=bsClear;
 			}
-		}
-		else
-		{
-			R=90;//nerozlišuje se zda 90 nebo 270, v těchto případech je symbol stejně orotován
-			if(typ==-1)//mód kurzor
+
+			//vykreslení elementu
+			canv->Ellipse(X-size,Y-size,X+size,Y+size);
+
+			double R=rotace;
+			if(R==0 || R==180)
 			{
-				//šipka
-				sipka(canv,m.round(X-width),m.round(Y-size),R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
-				sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
+				R=0;//nerozlišuje se zda 0 nebo 180, v těchto případech je symbol stejně orotován
+				if(typ==-1)//mód kurzor
+				{
+					//šipka                                     //pokud bych chtěl rotovat
+					sipka(canv,m.round(X-size),m.round(Y+width),/*rotace*/R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno s Z slouží na negaci *Zoom v metodě šipka
+					sipka(canv,m.round(X+size),m.round(Y-width),/*rotace*/R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
+				}
+				else
+				{
+					canv->Pen->Color=clWhite;
+					canv->Brush->Style=bsSolid;
+
+					//přeříznutí pod šipkou
+					canv->Rectangle(X-size,Y-width,m.round(X-size+1*Z),Y);//přežíznutí, možná lépe řešit obloukem
+					canv->Rectangle(m.round(X+size-1*Z),Y,X+size,Y+width);//přežíznutí, možná lépe řešit obloukem
+					//šipka
+					sipka(canv,m.round(X-size),m.round(Y+width),R-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
+					sipka(canv,m.round(X+size),m.round(Y-width),R-180-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
+				}
 			}
 			else
 			{
-				canv->Pen->Color=clWhite;
-				canv->Brush->Style=bsSolid;
+				R=90;//nerozlišuje se zda 90 nebo 270, v těchto případech je symbol stejně orotován
+				if(typ==-1)//mód kurzor
+				{
+					//šipka
+					sipka(canv,m.round(X-width),m.round(Y-size),R-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
+					sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,true,m.round(width/Z),clBlack,clWhite,pmNotXor,psDot);//děleno Z slouží  na negaci *Zoom v metodě šipka
+				}
+				else
+				{
+					canv->Pen->Color=clWhite;
+					canv->Brush->Style=bsSolid;
 
-				//přeříznutí pod šipkou
-				canv->Rectangle(X+width,Y-size,m.round(X+width-1*Z),m.round(Y-size+width+1*Z));//přežíznutí, možná lépe řešit obloukem
-				canv->Rectangle(X+width,Y+size,m.round(X+width-1.5*Z),m.round(Y+size+width-1*Z));//přežíznutí, možná lépe řešit obloukem
-				//šipka
-				sipka(canv,m.round(X-width),m.round(Y-size),R-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
-				sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
+					//přeříznutí pod šipkou
+					canv->Rectangle(X+width,Y-size,m.round(X+width-1*Z),m.round(Y-size+width+1*Z));//přežíznutí, možná lépe řešit obloukem
+					canv->Rectangle(X+width,Y+size,m.round(X+width-1.5*Z),m.round(Y+size+width-1*Z));//přežíznutí, možná lépe řešit obloukem
+					//šipka
+					sipka(canv,m.round(X-width),m.round(Y-size),R-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
+					sipka(canv,m.round(X+width),m.round(Y+size),R-180-25,false,width/Z,barva,barva);//děleno Z slouží na negaci *Zoom v metodě šipka
+				}
 			}
 		}
 
 		//text
-		if(typ!=-1)//v módu kurzor se název nezobrazuje
+		if(typ!=-1 && typ!=2)//v módu kurzor se název nezobrazuje
 		{
 			canv->Brush->Color=clWhite;
 			canv->Brush->Style=bsClear;
@@ -4007,8 +4018,8 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,short scena,long X,long Y,AnsiString
 		}
 	}
 
-	//pokud je otoč aktivní tj. se stopkou
-	if(eID==6 && (scena==0 || scena>=3))//a zároveň pokud je vše v dynamické nebo se jedná o zobrazení dynamické stop buď ve statické sceně nebo dynamické 3-4
+	//pokud je otoč aktivní tj. se stopkou a pokud se nemá zobrazovat jenom popisek
+	if(eID==6 && typ!=3 && (scena==0 || scena>=3))//a zároveň pokud je vše v dynamické nebo se jedná o zobrazení dynamické stop buď ve statické sceně nebo dynamické 3-4
 	vykresli_stopku(canv,X,Y,"","",typ,rotace,stav);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4039,59 +4050,62 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		clIon=m.clIntensive(clIon,I);
 	}
 
-	////nastavení pera - dle typu zobrazení
-	TPenMode PenMode=pmCopy;
-	if(typ==-1)//typ kurzor
+	if(typ!=3)//pokud se nemá zobrazovat jenom popisek
 	{
-		PenMode=pmNotXor;
-		canv->Pen->Style=psDot;
-		canv->Pen->Color=barva;
-		canv->Pen->Width=1;
-		canv->Brush->Style=bsClear;
-	}
-	else
-	{
-		canv->Pen->Style=psSolid;
-		canv->Pen->Width=F->m.round(tloustka_linie*Z);
-		canv->Brush->Style=bsSolid;
-	}
+		////nastavení pera - dle typu zobrazení
+		TPenMode PenMode=pmCopy;
+		if(typ==-1)//typ kurzor
+		{
+			PenMode=pmNotXor;
+			canv->Pen->Style=psDot;
+			canv->Pen->Color=barva;
+			canv->Pen->Width=1;
+			canv->Brush->Style=bsClear;
+		}
+		else
+		{
+			canv->Pen->Style=psSolid;
+			canv->Pen->Width=F->m.round(tloustka_linie*Z);
+			canv->Brush->Style=bsSolid;
+		}
 
-	////vykreslení elementu
-	if (rotace==0 || rotace==180)//svislé vykreslení
-	{
-		//horní tryska
-		TPoint P=polygonDleOsy(canv,X,Y-vzdalenost+polomer-TO,DT/1.5,TW,TZ,90+TS,0,PenMode,barva,clWhite);
-		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2,TZ*4,90+TS,0,pmMask,clWhite,clIon);
+		////vykreslení elementu
+		if (rotace==0 || rotace==180)//svislé vykreslení
+		{
+			//horní tryska
+			TPoint P=polygonDleOsy(canv,X,Y-vzdalenost+polomer-TO,DT/1.5,TW,TZ,90+TS,0,PenMode,barva,clWhite);
+			if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2,TZ*4,90+TS,0,pmMask,clWhite,clIon);
 
-		//dolní tryska
-		P=polygonDleOsy(canv,X,Y+vzdalenost-polomer+TO,DT/1.5,TW,TZ,270+TS,0,PenMode,barva,clWhite);
-		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,0,pmMask,clWhite,clIon);
+			//dolní tryska
+			P=polygonDleOsy(canv,X,Y+vzdalenost-polomer+TO,DT/1.5,TW,TZ,270+TS,0,PenMode,barva,clWhite);
+			if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2,TW/2,TZ*4,270+TS,0,pmMask,clWhite,clIon);
 
-		//vykreslení kružnic
-		canv->Pen->Mode=PenMode;
-		canv->Pen->Color=barva;
-		canv->Ellipse(X-polomer,Y-vzdalenost-polomer,X+polomer,Y-vzdalenost+polomer);
-		canv->Ellipse(X-polomer,Y+vzdalenost+polomer,X+polomer,Y+vzdalenost-polomer);
-	}
-	else//vodorovne vykreslení
-	{
-		//levá tryska
-		TPoint P=polygonDleOsy(canv,X-vzdalenost+polomer-TO,Y,DT/1.5,TW,TZ,0+TS,0,PenMode,barva,clWhite);
-		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,0+TS,0,pmMask,clWhite,clIon);
+			//vykreslení kružnic
+			canv->Pen->Mode=PenMode;
+			canv->Pen->Color=barva;
+			canv->Ellipse(X-polomer,Y-vzdalenost-polomer,X+polomer,Y-vzdalenost+polomer);
+			canv->Ellipse(X-polomer,Y+vzdalenost+polomer,X+polomer,Y+vzdalenost-polomer);
+		}
+		else//vodorovne vykreslení
+		{
+			//levá tryska
+			TPoint P=polygonDleOsy(canv,X-vzdalenost+polomer-TO,Y,DT/1.5,TW,TZ,0+TS,0,PenMode,barva,clWhite);
+			if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,0+TS,0,pmMask,clWhite,clIon);
 
-		//pravá tryska
-		P=polygonDleOsy(canv,X+vzdalenost-polomer+TO,Y,DT/1.5,TW,TZ,180+TS,0,PenMode,barva,clWhite);
-		if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,180+TS,0,pmMask,clWhite,clIon);
+			//pravá tryska
+			P=polygonDleOsy(canv,X+vzdalenost-polomer+TO,Y,DT/1.5,TW,TZ,180+TS,0,PenMode,barva,clWhite);
+			if(stav>0 && typ!=-1)polygonDleOsy(canv,P.x,P.y,DT/2.0,TW/2.0,TZ*4,180+TS,0,pmMask,clWhite,clIon);
 
-		//vykreslení kružnic
-		canv->Pen->Mode=PenMode;
-		canv->Pen->Color=barva;
-		canv->Ellipse(X-vzdalenost-polomer,Y-polomer,X-vzdalenost+polomer,Y+polomer);
-		canv->Ellipse(X+vzdalenost-polomer,Y-polomer,X+vzdalenost+polomer,Y+polomer);
+			//vykreslení kružnic
+			canv->Pen->Mode=PenMode;
+			canv->Pen->Color=barva;
+			canv->Ellipse(X-vzdalenost-polomer,Y-polomer,X-vzdalenost+polomer,Y+polomer);
+			canv->Ellipse(X+vzdalenost-polomer,Y-polomer,X+vzdalenost+polomer,Y+polomer);
+		}
 	}
 
 	////text
-	if(typ!=-1 /* name!=""*/)// módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje
+	if(typ!=-1 && typ!=2)// módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje
 	{
 		//nastavení písma  //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 		if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
