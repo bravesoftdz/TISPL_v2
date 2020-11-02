@@ -198,11 +198,8 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 			//vykreslení elementu a pozic
 			if(F->MOD!=F->SIMULACE && scena<=2 && stav!=-2 && stav!=0)vykresli_pozice_a_zony(canv,E);
 			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
-			//uložení citelné oblasti pro další použití se již používá přímo v elementu, toto možné časem smazat
-			//E->citelna_oblast.rect3=aktOblast;
 			//vykreslení kót
-			if(scena!=0 && F->OBJEKT_akt!=NULL && F->pom_element_temp!=NULL && F->pom_element_temp==E && F->editace_textu && F->index_kurzoru==-11);
-			else if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
+			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty && !(scena!=0 && F->pom_element_temp!=NULL && F->pom_element_temp==E && (F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU)))vykresli_kotu(canv,E);//mezi elementy
 			pom=E->dalsi;
 
 			////vykreslení spojnic pokud geometrie nenavazuje
@@ -471,7 +468,7 @@ void Cvykresli::vykresli_kabinu(TCanvas *canv,Cvektory::TObjekt *O,int stav,bool
 	//nastavení normálního, disabled nebo highlight textu
 	nastavit_text_popisu_objektu_v_nahledu(canv);
   //highlight názvu
-	if((F->JID==-6 || F->editace_textu && F->index_kurzoru==-6) && (F->pom!=NULL && F->pom->n==O->n || F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==O->n))canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
+	if((F->JID==-6 || (F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU) && F->index_kurzoru==-6) && (F->pom!=NULL && F->pom->n==O->n || F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==O->n))canv->Font->Color=clStenaHaly; else canv->Font->Color=clStenaKabiny;
   if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n)canv->Font->Color=m.clIntensive(clAkt,I);//pro neaktivní objekty při editaci
 	//samotné vypsání názvu
 	if(!(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=O->n && F->scGPTrackBar_intenzita->Value<5))TextFraming(canv,X,Y,Tn);//záměrně Tl,aby se ztučněním nepřepozivávalo - působilo to moc dynamacky
@@ -5553,7 +5550,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	sipka(canv,x2,y2,m.azimut(X1,Y1,X2,Y2)*(-1)-180,false,0.5*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
 
 	////záměna (podsunutí editovaného) textu v případě EDITACE právě touto metodou vykreslované kóty - editovaného textu (abychom mohli text koty refreshovat, ale aby ještě nebylo nutné měnit rozměry) (protože se cyklem vykreslují všechny kóty i při platném JID)
-	if(F->editace_textu)//ošetření proti vykreslování editovaného textu na kótě mezi lak. okny
+	if(F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU)//ošetření proti vykreslování editovaného textu na kótě mezi lak. okny
 	{
 		if(aktElement==NULL)//předpokládá se, že je to kóta kabiny
 		{
@@ -5570,12 +5567,12 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 			}
 		}
 	}
-	if(F->editace_textu&&komora!=NULL)//zobrazování editovaného textu v kótách komor
+	if((F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU) && komora!=NULL)//zobrazování editovaného textu v kótách komor
 	{
 		if(F->pom_komora_temp!=NULL)if(komora->n==F->pom_komora_temp->n)//ošetření + aktuální vykreslovaná kóta
 		{if(F->editovany_text=="")Text="";else Text=F->editovany_text;}
 	}
-	if(F->editace_textu&&bod!=NULL)//zobrazování editovaného textu v kótách komor
+	if((F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU) && bod!=NULL)//zobrazování editovaného textu v kótách komor
 	{
 		if(F->pom_bod_temp!=NULL)if(bod->n==F->pom_bod_temp->n)//ošetření + aktuální vykreslovaná kóta
 		{if(F->editovany_text=="")Text="";else Text=F->editovany_text;}
@@ -5725,13 +5722,13 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	if(HeightDeep>0)
 	{
 		Text=pocatek;
-		if(F->editace_textu && F->index_kurzoru==-14 && F->pom_element_temp==Element)Text=F->editovany_text;
+		if((F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU) && F->index_kurzoru==-14 && F->pom_element_temp==Element)Text=F->editovany_text;
 		if(X1!=X2)W=canv->TextWidth(Text);
 	}
 	else
   {
 		Text=konec;
-		if(F->editace_textu && F->index_kurzoru==-13 && F->pom_element_temp==Element)Text=F->editovany_text;
+		if((F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU) && F->index_kurzoru==-13 && F->pom_element_temp==Element)Text=F->editovany_text;
 		if(X1!=X2)W=canv->TextWidth(Text);
 		i=1;
 	}
@@ -5743,12 +5740,12 @@ void Cvykresli::vykresli_stoupani_klesani(TCanvas *canv,Cvektory::TElement *Elem
 	if(HeightDeep>0)
 	{
 		Text=konec;
-		if(F->editace_textu && F->index_kurzoru==-13 && F->pom_element_temp==Element)Text=F->editovany_text;
+		if((F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU) && F->index_kurzoru==-13 && F->pom_element_temp==Element)Text=F->editovany_text;
 	}
 	else
 	{
 		Text=pocatek;
-    if(F->editace_textu && F->index_kurzoru==-14 && F->pom_element_temp==Element)Text=F->editovany_text;
+    if((F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU) && F->index_kurzoru==-14 && F->pom_element_temp==Element)Text=F->editovany_text;
 	}
 	if(X1!=X2)W=canv->TextWidth(Text);
 	x=points[2].x-W/2.0;y=points[2].y-H;

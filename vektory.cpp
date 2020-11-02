@@ -2271,7 +2271,7 @@ void Cvektory::vloz_element(TElement *Element)
 Cvektory::TElement *Cvektory::vloz_element_pred(TObjekt *Objekt,TElement *Element)
 {
 	Cvektory::TElement *ret=NULL;//návratová proměnná, defaultně prázdn
-	if((F->Akce==F->ADD || F->Akce==F->VYH || F->Akce==F->MOVE_ELEMENT || F->editace_textu))// && Objekt!=NULL && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
+	if((F->Akce==F->ADD || F->Akce==F->VYH || F->Akce==F->MOVE_ELEMENT || F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU))// && Objekt!=NULL && Objekt->element!=NULL/* && Objekt->element->dalsi!=NULL*/)//ošetření proti spouštění při zavírání a otvírání náhledu
 	{
 		TElement *p=ELEMENTY->dalsi;//začnu od prvního elementu v projektu
 		if(Objekt!=NULL)p=Objekt->element;//začnu od prvního elementu v objektu
