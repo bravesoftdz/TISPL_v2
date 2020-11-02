@@ -90,6 +90,7 @@
 #include "scWebBrowser.hpp"
 #include <SHDocVw.hpp>
 #include <Vcl.OleCtrls.hpp>
+#include <gdiplus.h>
 
 #include "MyString.h"
 #include "my.h"
@@ -487,7 +488,7 @@ public:
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y,posun_ind_ld,posun_ind_pd,editace_posun,info,close,posun_editace_obj,editace_obj};
 	////instance
   TStringList *ls;
-Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
+	Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
 private:
 	enum Tedice{DEVELOPER,ARCHITECT,CLIENT,VIEWER,DEMO};Tedice EDICE;
 	struct Tnastaveni{bool autosave;unsigned short int minut;bool posledni_file;};Tnastaveni nastaveni;
@@ -495,7 +496,6 @@ private:
 	////ukazatele
 	Cvektory::TProces *proces_pom;
 	TFileStream *LogFileStream;
-	//Graphics::TBitmap *Staticka_scena;//bitmapa statické scény
 	Graphics::TBitmap *Pan_bmp_ALL;//kvùli mGridu jinak staèí private
 	vlakno_panCreate *vlakno_PanCreate;
 
@@ -609,8 +609,9 @@ private:
 	void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
 
 	////promìnné
-	UINT TimerSimulaceID;
-	UINT TimerPresnost;
+	ULONG_PTR gdiplusToken;
+	//UINT TimerSimulaceID;
+	//UINT TimerPresnost;
 	TDateTime TIME;
 	short n_prihlaseni;
 	bool logovat;
@@ -666,7 +667,7 @@ public:		// User declarations
 	TMyString ms;
 	Cmy m;
 	Cvykresli d;
-	Cgrafy g;
+	//Cgrafy g;
 	TPO_math pm;//INSTANCE NA VÝPOÈETNÍ ÈÁST PO tj. PO_math
 	//uklazatele
 	Graphics::TBitmap *Pan_bmp;//kvùli mGridu jinak staèí private
