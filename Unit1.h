@@ -481,7 +481,7 @@ __published:	// IDE-managed Components
 public:
 	enum Tmod{NO=0,LAYOUT,CASOVAOSA,TECHNOPROCESY,SIMULACE,EDITACE,TVORBA_CESTY};Tmod MOD;
 	enum Tstatus{NAVRH,OVEROVANI};Tstatus STATUS;
-	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK,GEOMETRIE_LIGHT,MAGNETICKE_LASO,POSUN_TEPLOMER,S_K};Takce Akce;Takce Akce_temp;//akce temp slouží ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudíž Akce_temp=OFFSET_KOTY
+	enum Takce{NIC=0,PAN,PAN_MOVE,ZOOM_W,ZOOM_W_MENU,ADD,MOVE,VYH,MEASURE,KALIBRACE,ADJUSTACE,MOVE_ELEMENT,MOVE_TABLE,OFFSET_KOTY,MOVE_KOMORA,ROZMER_KOMORA,DRAW_HALA,MOVE_HALA,MOVE_BOD,MOVE_USECKA,MOVE_TEXT,GEOMETRIE,BLOK,GEOMETRIE_LIGHT,MAGNETICKE_LASO,POSUN_TEPLOMER,S_K,EDITACE_TEXTU};Takce Akce;Takce Akce_temp;//akce temp slouží ke spuštìní akce pøi akci, pø. Akce=GEOMETRIE a pøi ní je potøeba pøesunout kóty geo. elementù, tudíž Akce_temp=OFFSET_KOTY
 	enum Tm_mm{M=0,MM,SEKUNDY,MINUTY};Tm_mm DOtocunit,DKunit,LOunit,Runit,Rzunit;//pøepínaè jednotek vzdálenost,rozšíøen o SEKUNDY,MINUTY (problém pøi použití SEC a MIN) z dùvodu èasových a vzdálenostních kót
 	enum Tminsec{SEC=0,MIN};Tminsec PTunit,aRDunit ;//pøepínaè jednotek èasu
 	enum TKurzory {standard=0,posun_v,posun_b,posun_p,posun_l,posun_t,kalibrovat,pan,pan_move,window,add_o,neco,posun_ind,zmena_j,edit_text,zmena_d_x,zmena_d_y,posun_ind_ld,posun_ind_pd,editace_posun,info,close,posun_editace_obj,editace_obj};
@@ -570,8 +570,6 @@ private:
 	void vykresli_kurzor(int index);
 	void zmenJednotekKot();
 	int pocet_vyskytu_elementu_s_otoci(Cvektory::TObjekt *Objekt);//prohledá elementy v objektu, vrátí 0 pokud je rotace v objektu všude stejná, vrátí 1 pokud je pøítomno více rotací
-	void vytvor_edit();//vytvoøí edit na místì hlavièky tabulky, slouží ke zmìnì názvu elementu
-	void smaz_edit(bool refresh=true);//smaže edit, který sloužil pro zmìnu názvu elementu a nový název zapíše do elementu, defaultnì provede refresh, pokud není pøedáno parametrem jinak
 	void vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E);//vykreslí spojnici mezi tabulkou a elementem z nejbližšího rohu tabulky
 	void nacti_podklad(TCanvas *Canv);
 	unsigned short load_language(Tlanguage language,bool akt_mGrid=false);
@@ -713,7 +711,6 @@ public:		// User declarations
   int knihovna_id; // id drawgrid knihovny
 	int element_id;  // id vybraneho elementu z knihoven
 	AnsiString TIP;//uchovává text TIPu
-	bool editace_textu;//mimo enum akce z dùvodu zobrazování kurozù pøi editaci a pøepínání na jiné akce
 	UnicodeString editovany_text;//uchovává editovanou hodnotu kót
 	int index_kurzoru;
 	bool posun_dalsich_elementu;//indikuje zda je požadován posun dalších elementù

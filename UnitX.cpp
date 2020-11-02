@@ -30,7 +30,8 @@ __fastcall TFormX::TFormX(TComponent* Owner)
 	validovat_pohon=false;
 	aut_mazani_PM=false;//je true pouze v èase automatického odmazávání PM
 	popisky_pouzivany_pohon=false;
-  vykresli_vetev=0;
+	vykresli_vetev=0;
+  posledni_row=-1;
 	//pokud dojde ke zmìnì poøadí øádku, nastavit nové pozice zde, + pøepsání switche pro tabulku pohonu v OnChange + pøepsaní switche v korelace_tab_pohonu()
 }
 //---------------------------------------------------------------------------
@@ -193,7 +194,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 		E->mGrid->exBUTTON->Hint=Hint;//navrácení pùvodního textu hintu
 		E=NULL;delete E;
 	}
-	if(F->OBJEKT_akt!=NULL && F->editace_textu)F->smaz_kurzor();
+	if(F->OBJEKT_akt!=NULL && (F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU))F->smaz_kurzor();
 	//uvolnìní inputu
 	input_state=NOTHING;
 }
@@ -265,7 +266,8 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 		//F->posledni_editovany_element=E;//odstaveno, narušuje tvorbu geometrie
 		if(F->OBJEKT_akt->pohon!=E->pohon)F->OBJEKT_akt->pohon=E->pohon;
 		validovat_pohon=false;
-    popisky_pouzivany_pohon=false;
+		popisky_pouzivany_pohon=false;
+		posledni_row=Row;
 		////výpoèty
 		switch(E->eID)
 		{
@@ -1622,8 +1624,12 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 			}break;
 			case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí (resp. s otoèí a stop stanicí), naplnìní dopPT 
 			{
-				E->data.PT1=E->data.PT2=(E->VID_value-E->PTotoc)/2.0;
+				if(E->VID==10)E->data.PT1=E->data.PT2=(E->VID_value-E->PTotoc)/2.0;
+				if(E->VID==11)E->data.PT1=E->VID_value;
+				if(E->VID==12)E->PTotoc=E->VID_value;
+				if(E->VID==13)E->data.PT2=E->VID_value;
 				E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->data.PT1),3);
+				E->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(E->PTotoc),3);
 				E->mGrid->Cells[1][4].Text=F->m.round2double(F->outPT(E->data.PT2),3);
 				F->d.v.reserve_time(E);
 				validace_PT(E);
@@ -2151,22 +2157,33 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 		//ukazatelové záležitosti
 		p=NULL;p1=NULL;p2=NULL;
 		delete p;delete p1;delete p2;
-	}    
+	}
 	validovat_pohon=false;
   //aktualizace povolení nebo zákazu uložení
 	povolit_zakazat_editaci();
 }
 //---------------------------------------------------------------------------
 //kontrola a validace PT podle RT u S&G elementù kromì stopky
-void TFormX::validace_PT(Cvektory::TElement *E)
+void TFormX::validace_PT(Cvektory::TElement *E,int Row)
 {
 	//kontrola existence elementu
 	if(E!=NULL)
 	{
-    if(F->d.v.vrat_druh_elementu(E)==0 && E->mGrid!=NULL && (E->eID!=0))
+		if(F->d.v.vrat_druh_elementu(E)==0 && E->mGrid!=NULL && (E->eID!=0))
 		{
 			//kontrola, zda je RT záporné
-			if(F->m.round2double(E->data.RT,5)<0)zadat_validaci(9,E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT,E);//"Dop. hodnota PT je maximálnì"
+			if(F->m.round2double(E->data.RT,5)<0)
+			{
+				if(E->eID!=4 && E->eID!=10 && E->eID!=14 && E->eID!=18 && E->eID!=104 && E->eID!=108)Row=-2;//pokud se nejedná o element s více PT
+				switch(Row)
+				{
+					case -2:zadat_validaci(9,E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT,E);break;//"Dop. hodnota PT je maximálnì"
+					default:zadat_validaci(10,E->data.PT1+E->data.PT2+E->PTotoc+E->data.RT,E);break;//"Dop. hodnota souètu PT je maximálnì"
+					case 1:zadat_validaci(11,E->data.PT1+E->data.RT,E);break;//"Dop. hodnota PT1 je maximálnì"
+					case 3:zadat_validaci(12,E->PTotoc+E->data.RT,E);break;//"Dop. hodnota PTo je maximálnì"
+					case 4:zadat_validaci(13,E->data.PT2+E->data.RT,E);break;//"Dop. hodnota PT2 je maximálnì"
+				}
+      }
 			else zadat_validaci(0,0,E);
 		}
     //aktualizace povolení nebo zákazu uložení
@@ -2845,17 +2862,21 @@ UnicodeString TFormX::getVID(unsigned int VID)
 	switch(VID)
 	{
 		//case 0:break;//žádný validaèní výpis
-		case 1:Text=F->ls->Strings[220];break;//"Rychlost neodpovídá rozmezí!"
-		case 2:Text=F->ls->Strings[221];break;//"Zadejte doporuèenou rychlost pohonu:"
-		case 3:Text=F->ls->Strings[222];break;//"Neplatná hodnota rychlosti pohonu!"
-		case 4:Text=F->ls->Strings[250];break;//"Max. poèet vozikù musí být menší nebo roven"
-		case 5:Text=F->ls->Strings[251];break;//"Nelze, pøed Stopstanicí se nachází oblouk"
-		case 6:Text=F->ls->Strings[426];break;//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
-		case 7:Text=F->ls->Strings[493];break;//"Tato zmìna ovlivní všechny prvky na tomto pohonu."
-		case 8:Text=F->ls->Strings[421];break;//"RT není relevantní, nìkterý z objektù nemá pohon!"
-		case 9:Text=F->ls->Strings[505];break;//"Dop. hodnota PT je maximálnì"
+		case 1: Text=F->ls->Strings[220];break;//"Rychlost neodpovídá rozmezí!"
+		case 2: Text=F->ls->Strings[221];break;//"Zadejte doporuèenou rychlost pohonu:"
+		case 3: Text=F->ls->Strings[222];break;//"Neplatná hodnota rychlosti pohonu!"
+		case 4: Text=F->ls->Strings[250];break;//"Max. poèet vozikù musí být menší nebo roven"
+		case 5: Text=F->ls->Strings[251];break;//"Nelze, pøed Stopstanicí se nachází oblouk"
+		case 6: Text=F->ls->Strings[426];break;//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
+		case 7: Text=F->ls->Strings[493];break;//"Tato zmìna ovlivní všechny prvky na tomto pohonu."
+		case 8: Text=F->ls->Strings[421];break;//"RT není relevantní, nìkterý z objektù nemá pohon!"
+		case 9: Text=F->ls->Strings[505];break;//"Dop. hodnota PT je maximálnì"
+		case 10:Text=F->ls->Strings[512];break;//"Dop. hodnota souètu PT je maximálnì"
+		case 11:Text=F->ls->Strings[513];break;//"Dop. hodnota PT1 je maximálnì"
+		case 12:Text=F->ls->Strings[514];break;//"Dop. hodnota PTo je maximálnì"
+		case 13:Text=F->ls->Strings[515];break;//"Dop. hodnota PT2 je maximálnì"
 		default:break;
-  }
+	}
 	return Text;
 }
 //---------------------------------------------------------------------------
@@ -2874,7 +2895,7 @@ UnicodeString TFormX::getVID_value_out(unsigned int VID,double VID_value)
 		}
 		case 4:Text=" <a>"+String(VID_value)+"</a>";break;//"Max. poèet vozikù musí být menší nebo roven"
 		case 6:Text=" <a>"+String(VID_value)+"</a>";break;//"Kvùli pøekryvu jigù nelze nastavit vìtší poèet vozíkù než"
-		case 9:
+		case 9:case 10:case 11:case 12:case 13:
 		{
 			if(F->PTunit==F->Tminsec::MIN)jednotky=" [min]";
 			else jednotky=" [s]";

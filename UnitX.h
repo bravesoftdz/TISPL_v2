@@ -32,7 +32,7 @@ private:	// User declarations
 
 	//promìnné pro UnitX
 	bool editace_pohonu;
-	long rychlost, roztec_palce, nasobek_roztece, roztec_jigu, mezera_podvozky, mezera_jig1, mezera_jig2;
+	long rychlost, roztec_palce, nasobek_roztece, roztec_jigu, mezera_podvozky, mezera_jig1, mezera_jig2;//posledni_row;
 	double dopRD;
 	//     aRD       R,roztec          Rx          Rz,rozestup
 public:		// User declarations
@@ -46,7 +46,7 @@ public:		// User declarations
 	void odstranit_korelaci(bool predat_focus=true);//odstraní veškerou korelaci, nepoviný prametr urèuje zda má být pøedán focus z mGridu, defaultnì focus pøedává
 	void validace_aRD(bool pouze_rozmezi=false);//validace zadávané aktuální rychlosti
 	void validace_max_voziku();//validace maximálního poètu vozíkù na stopce
-  void validace_PT(Cvektory::TElement *E);//kontrola a validace PT podle RT u S&G elementù kromì stopky
+  void validace_PT(Cvektory::TElement *E,int Row=-1);//kontrola a validace PT podle RT u S&G elementù kromì stopky
 	void povolit_zakazat_editaci();//zakazuje èi povolí ukládání editace na základì VID
   bool existuje_validace();//zkontroluje zda existuje v objektu validace na úrovní mGridù, vrátí výsledek
 	void naplneni_dopRD();//doplni doporuèenou rychlost do tabulky pohonu
@@ -70,6 +70,7 @@ public:		// User declarations
 	Cvektory::TElement *posledni_E;//slouží pro uložení editovaného elementu, nemusím pøi každém stisku klávesy vracet E
 	Cvektory::TCesta *posledni_c;
 	unsigned int validovany_pohon;
+  int posledni_row;
 	bool aut_mazani_PM;
 	bool validovat_pohon;
 	bool popisky_pouzivany_pohon;
