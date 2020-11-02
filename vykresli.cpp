@@ -5181,6 +5181,18 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 	else set_pen(canv,color,m.round(F->Zoom*1),PS_ENDCAP_FLAT);//nastavení geometrického pera
 	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
 
+	////GDI+
+	tagPOINT P[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
+
+	Gdiplus::Graphics g(canv->Handle);
+	g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+	Gdiplus::Pen myPen(Gdiplus::Color(255,255,0,0));
+	myPen.SetWidth(20);
+	//g.DrawBezier(&myPen,(float)m.L2Px(PL[0].x),(float)m.L2Py(PL[0].y),(float)m.L2Px(PL[1].x),(float)m.L2Py(PL[1].y),(float)m.L2Px(PL[2].x),(float)m.L2Py(PL[2].y),(float)m.L2Px(PL[3].x),(float)m.L2Py(PL[3].y));
+
+
+
+
 	////popisek, je-li požadován
 	if(popisek)
 	{
