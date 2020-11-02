@@ -2414,7 +2414,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////vykreslení magnetického lasa
 		if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_total->Canvas);
 		////smart kurzor pro geometrii
-		if(Akce==GEOMETRIE && Akce_temp==NIC && !editace_textu)d.smart_kurzor(bmp_total->Canvas,posledni_editovany_element,typElementu);//0,1,2
+		if(Akce==GEOMETRIE && Akce_temp==NIC)d.smart_kurzor(bmp_total->Canvas,posledni_editovany_element,typElementu);//0,1,2
 		////FINALNÍ vykreslení bmp_total do Canvasu
 		Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
 		delete (bmp_total);//velice nutné
