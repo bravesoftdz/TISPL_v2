@@ -723,6 +723,8 @@ void TmGrid::DrawNote(TCanvas *C)
 			Note.NoteArea=TRect(Left+leftOffset,Top+Height,Left+W+rightOffset+margin_left+margin_right,Top+Height+Border.Width+C->TextHeight(Note.Text)+margin_bootom);
 		}                                                      //zpětná korekce, takže +
 		FontLink=NULL;delete FontLink;FontActiveLink=NULL;delete FontActiveLink;
+		helpBUTTON->Visible=true;
+		helpBUTTON->Left=Note.NoteArea.Left+m.round(W/3.0)-helpBUTTON->Width-helpBUTTON->Options->FrameWidth;helpBUTTON->Top=Note.NoteArea.Top+m.round(Note.NoteArea.Height()/3.0)-helpBUTTON->Height-helpBUTTON->Options->FrameWidth;
 	}
 	else
 	{
@@ -731,6 +733,7 @@ void TmGrid::DrawNote(TCanvas *C)
 			InvalidateRect(Form->Handle,&Note.NoteArea,true);
 			Note.NoteArea=TRect(-1,-1,-1,-1);
 		}
+		helpBUTTON->Visible=false;
 	}
 }
 //---------------------------------------------------------------------------
