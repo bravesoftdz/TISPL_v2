@@ -197,7 +197,8 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 			}
 			//vykreslení elementu a pozic
 			if(F->MOD!=F->SIMULACE && scena<=2 && stav!=-2 && stav!=0)vykresli_pozice_a_zony(canv,E);
-			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
+			short typ=1;if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==1 && F->pom_element_temp!=NULL && F->pom_element_temp==E)typ=2;
+			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,typ,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
 			//vykreslení kót
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty && !(scena!=0 && F->pom_element_temp!=NULL && F->pom_element_temp==E && (F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU)))vykresli_kotu(canv,E);//mezi elementy
 			pom=E->dalsi;
@@ -1804,10 +1805,12 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 				short width=m.round(m.m2px(F->velikost_citelne_oblasti_elementu));
 				set_pen(canv,clMeridlo,width,PS_ENDCAP_FLAT);//nastavení geometrického pera
 				canv->Ellipse(m.L2Px(F->pom_element->X)-width,m.L2Py(F->pom_element->Y)-width,m.L2Px(F->pom_element->X)+width,m.L2Py(F->pom_element->Y)+width);
-      }
+			}
 			////vykreslení teploměrů
-			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,1,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
-			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,1,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
+			short typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
+			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,typ,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
+			typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
+			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,typ,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty
 			if(F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::MOVE_ELEMENT)
@@ -4181,44 +4184,49 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	canv->Brush->Style=bsSolid;
 
 	////vykreslení elementu
-	//obrys
-	canv->Ellipse(X-polomer1,Y-polomer1-vzdalenostY,X+polomer1,Y+polomer1-vzdalenostY);//baňka
-	canv->RoundRect(X-polomer2,Y-polomer1*DT-vzdalenostY,X+polomer2,Y-vzdalenostY,polomer1,polomer1);//tyčka
-	//bílá výplň
-	canv->Pen->Color=canv->Brush->Color;canv->Ellipse(X-polomer1+canv->Pen->Width,Y-polomer1+canv->Pen->Width-vzdalenostY,X+polomer1-canv->Pen->Width,Y+polomer1-canv->Pen->Width-vzdalenostY);//baňka bílá výplň pozadí
-	//barevná výplň - rtuť
-	canv->Brush->Color=barva_vypln;canv->Pen->Color=canv->Brush->Color;
-	canv->Ellipse(X-polomer2,Y-polomer2-vzdalenostY,X+polomer2,Y+polomer2-vzdalenostY);//baňka
-	canv->Rectangle(X-polomer8,Y-polomer2*DT-vzdalenostY,X+polomer8,Y-vzdalenostY);//rtuť ve stupnici
-	//stupnice
-	canv->Pen->Color=barva;
-	for(short i=0;i<=4;i++)
+	if(typ!=3)//pokud se nemá zobrazovat jenom popisek
 	{
-		long y=Y-polomer1-polomer8-polomer2*i-vzdalenostY;
-		long x1=X+polomer1;
-		long x2=x1+polomer2;if(i%2)x2=x1+polomer8;//stupnice na přeskáčku
-		line(canv,x1,y,x2,y);
+  	//obrys
+  	canv->Ellipse(X-polomer1,Y-polomer1-vzdalenostY,X+polomer1,Y+polomer1-vzdalenostY);//baňka
+  	canv->RoundRect(X-polomer2,Y-polomer1*DT-vzdalenostY,X+polomer2,Y-vzdalenostY,polomer1,polomer1);//tyčka
+  	//bílá výplň
+  	canv->Pen->Color=canv->Brush->Color;canv->Ellipse(X-polomer1+canv->Pen->Width,Y-polomer1+canv->Pen->Width-vzdalenostY,X+polomer1-canv->Pen->Width,Y+polomer1-canv->Pen->Width-vzdalenostY);//baňka bílá výplň pozadí
+  	//barevná výplň - rtuť
+  	canv->Brush->Color=barva_vypln;canv->Pen->Color=canv->Brush->Color;
+  	canv->Ellipse(X-polomer2,Y-polomer2-vzdalenostY,X+polomer2,Y+polomer2-vzdalenostY);//baňka
+  	canv->Rectangle(X-polomer8,Y-polomer2*DT-vzdalenostY,X+polomer8,Y-vzdalenostY);//rtuť ve stupnici
+  	//stupnice
+  	canv->Pen->Color=barva;
+  	for(short i=0;i<=4;i++)
+  	{
+  		long y=Y-polomer1-polomer8-polomer2*i-vzdalenostY;
+  		long x1=X+polomer1;
+  		long x2=x1+polomer2;if(i%2)x2=x1+polomer8;//stupnice na přeskáčku
+  		line(canv,x1,y,x2,y);
+		}
 	}
 
 	////popisek
-	//name="185";//provizorně pro testy
-	canv->Brush->Color=clWhite;
-	canv->Brush->Style=bsClear;
-	canv->Font->Color=clBlack;
-	canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
-	canv->Font->Name=F->aFont->Name;//je nutné nastavovat kvůli správnosti zobrazení framingu
-	if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();
-	short Tw=canv->TextWidth(name);short Th=canv->TextHeight(name);if(name=="")Th=canv->TextHeight("°C");
-	long x=m.round(X-Tw/2.0-canv->TextWidth("°C")/2.0);long y=Y-polomer1*DT-vzdalenostY-Th;
-	TextFraming(canv,x,y,name);
-	//citelná oblast popisku
-	float zAA=1.0;if(F->antialiasing)zAA=3.0;
-	Element->citelna_oblast.rect3=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(name))/zAA),m.round((y+Th)/zAA));//souřadnice pro citelnou oblast, pro vykreslení oblasti by muselo být použito bez /zAA
-	//°C
-	canv->Font->Style = TFontStyles();
-	x=x+Tw;
-	TextFraming(canv,x,y,"°C");
-	Element->citelna_oblast.rect4=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth("°C"))/zAA),m.round((y+Th)/zAA));//citelná oblast popisku "°C"
+	if(typ!=-1 && typ!=2)// módu kurzor nebo pokud je součástí nadřazeného elementu se název nezobrazuje
+	{
+  	canv->Brush->Color=clWhite;
+  	canv->Brush->Style=bsClear;
+  	canv->Font->Color=clBlack;
+  	canv->Font->Size=F->m.round(2.8*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*Z);
+  	canv->Font->Name=F->aFont->Name;//je nutné nastavovat kvůli správnosti zobrazení framingu
+  	if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;else canv->Font->Style = TFontStyles();
+  	short Tw=canv->TextWidth(name);short Th=canv->TextHeight(name);if(name=="")Th=canv->TextHeight("°C");
+  	long x=m.round(X-Tw/2.0-canv->TextWidth("°C")/2.0);long y=Y-polomer1*DT-vzdalenostY-Th;
+  	TextFraming(canv,x,y,name);
+  	//citelná oblast popisku
+  	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+  	Element->citelna_oblast.rect3=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(name))/zAA),m.round((y+Th)/zAA));//souřadnice pro citelnou oblast, pro vykreslení oblasti by muselo být použito bez /zAA
+  	//°C
+  	canv->Font->Style = TFontStyles();
+  	x=x+Tw;
+  	TextFraming(canv,x,y,"°C");
+		Element->citelna_oblast.rect4=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth("°C"))/zAA),m.round((y+Th)/zAA));//citelná oblast popisku "°C"
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_zarazku(TCanvas *canv,long X,long Y,double orientace,unsigned long objekt_n,String name)
