@@ -197,7 +197,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 			}
 			//vykreslení elementu a pozic
 			if(F->MOD!=F->SIMULACE && scena<=2 && stav!=-2 && stav!=0)vykresli_pozice_a_zony(canv,E);
-			short typ=1;if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==1 && F->pom_element_temp!=NULL && F->pom_element_temp==E)typ=2;
+			short typ=1;//if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==1 && F->pom_element_temp!=NULL && F->pom_element_temp==E)typ=2;
 			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,typ,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
 			//vykreslení kót
 			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty && !(scena!=0 && F->pom_element_temp!=NULL && F->pom_element_temp==E && (F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU)))vykresli_kotu(canv,E);//mezi elementy
@@ -954,19 +954,20 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka
 void Cvykresli::vykresli_meridlo(TCanvas *canv)
 {
 	////zjistění, zda se jedná o meření po trendu nebo proti
-	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && F->pom_element==v.MAG_LASO->sparovany && m.Rt90(m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))!=m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel)) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
-		F->mereni_po_trendu=false;
-	else
-		F->mereni_po_trendu=true;
+//	bool mereni_po_trendu;
+//	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && F->pom_element==v.MAG_LASO->sparovany && m.Rt90(m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))!=m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel)) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
+//		mereni_po_trendu=false;
+//	else
+//		mereni_po_trendu=true;
 
 	////vykreslní citelných oblastí
 	bool prichyceno=vykresli_cit_oblasti_lasa(canv);
 
 	////přesměrování podle typu vykreslení
-	if(F->mereni_po_trendu)
+//	if(F->mereni_po_trendu)
 		vykresli_meridlo_po_trendu(canv,prichyceno);
-	else
-		vykresli_meridlo_proti_trendu(canv,prichyceno);
+//	else
+//		vykresli_meridlo_proti_trendu(canv,prichyceno);
 
   ////měření na časových osách při simulaci
 	if(F->pocatek_mereni.x!=-1 && F->pocatek_mereni.y!=-1)
@@ -1807,9 +1808,9 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 				canv->Ellipse(m.L2Px(F->pom_element->X)-width,m.L2Py(F->pom_element->Y)-width,m.L2Px(F->pom_element->X)+width,m.L2Py(F->pom_element->Y)+width);
 			}
 			////vykreslení teploměrů
-			short typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
+			short typ=1;//if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
 			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,typ,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
-			typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
+			//typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
 			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,typ,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty

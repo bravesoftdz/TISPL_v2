@@ -337,7 +337,6 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	velikost_citelne_oblasti_elementu=0.12;//v metrech, 0.114285714285714 šířka pouzdra pohonu
 	zobrazit_upozorneni_teplomery=true;
 	typElementu=0;
-	mereni_po_trendu=true;
 	CAS=0;
   pouzivane_pohony=NULL;
 
@@ -5036,14 +5035,14 @@ void TForm1::getJobID(int X, int Y)
 			konec_mereni.y=V;
 		}
 
-//		Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;Memo_testy->Clear();
+//		Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;Memo_testy->Clear();     int pocet=0;
 //		if(d.v.MAG_LASO->sparovany!=NULL)Memo("sparovany0: "+d.v.MAG_LASO->sparovany->name);
 //		while(C!=NULL)
-//		{
+//		{         pocet++;
 //			Memo(C->Element->name);
 //			C=C->dalsi;
 //		}
-//		delete C;C=NULL;
+//		delete C;C=NULL;  Memo("pocet = "+String(pocet));
 
 		//přichycení souřadnic na pohon, až na konec před vykreslením, aby první element neovlivnil hledání dalších elementu
 		akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);//přichycení souřadnic na pohon, užitečné do budoucna
