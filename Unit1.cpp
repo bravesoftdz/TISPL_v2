@@ -35,7 +35,6 @@
 #include "Tvlakno_sound.h"
 #include <idattachmentfile.hpp>//přílohy mailů
 //#include <mmsystem.h>//multimediální timer
-//#include <gdiplus.h>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //#pragma link "RzPanel"
@@ -75,11 +74,15 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 {
 	srand(time(NULL));//nutno tady tj. úplně první!!!
 
+  //start GDI+
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
 	Akce=BLOK;Akce_temp=NIC;MOD=NO;Screen->Cursor=crDefault;//změní kurzor na default + zapniti blokace akce, zabrání spouštění onclick událostí
 
 	F=Form1;//pouze zkrácení zápisu
 
-	db_connection();//připojení k DB
+	//db_connection();//připojení k DB
 
 	//Form1->Width=1290;//workaround bílé mezery v záložkové liště - nefunguje
 
@@ -2374,11 +2377,10 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		////vykreslení GRIDu
 		if(grid && Zoom_predchozi_AA>0.5 && (Akce==MOVE_BOD||Akce==DRAW_HALA) && prichytavat_k_mrizce==1 && MOD!=SIMULACE)d.vykresli_grid(bmp_total->Canvas,size_grid);//pokud je velké přiblížení tak nevykreslí//vykreslení gridu
 		////VEKTORY
-		if((d.SCENA==1111111 || d.SCENA==111111)/* && Akce!=GEOMETRIE*/ && MOD!=TVORBA_CESTY)//vše STATICKÁ scéna - totální statická scena a nejsou žádně akce nebo případně, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
+		if((d.SCENA==1111111 || d.SCENA==111111) && MOD!=TVORBA_CESTY)//vše STATICKÁ scéna - totální statická scena a nejsou žádně akce nebo případně, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
 		{
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
-			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA
-			if(OBJEKT_akt!=NULL && pom_element_temp!=NULL && (Akce_temp==EDITACE_TEXTU || (Akce==EDITACE_TEXTU && (index_kurzoru==-11 || index_kurzoru==-101))))d.vykresli_kotu(bmp_total->Canvas,pom_element_temp);//pokud je editavaná hodnota na kótě elementu, vykreslení pouze kóty, ale je zde bez AA
+			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA			
 			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_total->Canvas,2,OBJEKT_akt);//vykreslení teploměrů
 		}
 		else
@@ -2407,9 +2409,12 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		if(d.v.SIM!=NULL)d.vykresli_svislici_na_casove_osy(bmp_total->Canvas);
 		////grafické MĚŘÍTKO
 		//již nepoužíváno if(MOD!=SIMULACE && zobrazit_meritko && Akce!=MOVE_HALA && MOD!=TVORBA_CESTY)d.meritko(bmp_total->Canvas);
+		//kóta elementu
+		if(OBJEKT_akt!=NULL && pom_element_temp!=NULL && (Akce_temp==EDITACE_TEXTU || (Akce==EDITACE_TEXTU && (index_kurzoru==-11 || index_kurzoru==-101))))d.vykresli_kotu(bmp_total->Canvas,pom_element_temp);//pokud je editavaná hodnota na kótě elementu, vykreslení pouze kóty, ale je zde bez AA
 		////vykreslení magnetického lasa
 		if(Akce==MAGNETICKE_LASO)d.vykresli_meridlo(bmp_total->Canvas);
-		if(Akce==GEOMETRIE && Akce_temp==NIC)d.smart_kurzor(bmp_total->Canvas,posledni_editovany_element,typElementu);//0,1,2
+		////smart kurzor pro geometrii
+		if(Akce==GEOMETRIE && Akce_temp==NIC && !editace_textu)d.smart_kurzor(bmp_total->Canvas,posledni_editovany_element,typElementu);//0,1,2
 		////FINALNÍ vykreslení bmp_total do Canvasu
 		Canvas->Draw(0,0,bmp_total);//finální předání bmp_out do Canvasu
 		delete (bmp_total);//velice nutné
@@ -2441,7 +2446,7 @@ void TForm1::vytvor_statickou_scenu()
 	{
 		Zoom_predchozi_AA=Zoom;//záloha původního zoomu
 		Zoom*=3;//*3 vyplývá z logiky algoritmu antialiasingu
-		if((d.SCENA==1111111 || d.SCENA==111111) && Akce!=GEOMETRIE && MOD!=TVORBA_CESTY && Akce!=MAGNETICKE_LASO)//vše STATICKÁ scéna, nejsou žádně akce, pokud se jedná o kompletně statickou scenu, vytvoří již bmp Staticka_scena rovnou přeantialiasingovanoou
+		if((d.SCENA==1111111 || d.SCENA==111111) && MOD!=TVORBA_CESTY /* toto tu bylo proč? && Akce!=MAGNETICKE_LASO*/)//vše STATICKÁ scéna, nejsou žádně akce, pokud se jedná o kompletně statickou scenu, vytvoří již bmp Staticka_scena rovnou přeantialiasingovanoou
 		{
 			Graphics::TBitmap *bmp_in=new Graphics::TBitmap;
 			bmp_in->Width=ClientWidth*3;bmp_in->Height=ClientHeight*3;//velikost canvasu//*3 vyplývá z logiky algoritmu antialiasingu
@@ -12755,6 +12760,7 @@ void __fastcall TForm1::FormCloseQuery(TObject *Sender, bool &CanClose)
 	{
     //AnimateWindow(Handle,500,0x00080000|0x00010000);//pouze efekt při ukončování asi vyhodit, nesmí být zcela na konci, jinak paměťová chyba
 		log(__func__,"CanClose");//logování
+		Gdiplus::GdiplusShutdown(gdiplusToken);//vypnutí GDI+, nesmí být ve vse_odstranit, jinak paměťová chyba
 		d.v.vymaz_seznam_KATALOG();
 		//pro ochranu v případě pádu programu
 		writeINI("Konec","status","OK");
