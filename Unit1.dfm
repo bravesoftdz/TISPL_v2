@@ -8750,7 +8750,7 @@ object Form1: TForm1
         DefaultRowHeight = 50
         FixedColor = clWhite
         FixedCols = 0
-        RowCount = 4
+        RowCount = 2
         FixedRows = 0
         GridLineWidth = 0
         Options = []
@@ -8815,7 +8815,7 @@ object Form1: TForm1
         DefaultRowHeight = 57
         FixedColor = clWhite
         FixedCols = 0
-        RowCount = 4
+        RowCount = 1
         FixedRows = 0
         GridLineWidth = 0
         Options = []
@@ -8878,7 +8878,7 @@ object Form1: TForm1
         DefaultRowHeight = 57
         FixedColor = clWhite
         FixedCols = 0
-        RowCount = 4
+        RowCount = 1
         FixedRows = 0
         GridLineWidth = 0
         Options = []
@@ -8940,7 +8940,7 @@ object Form1: TForm1
         DefaultRowHeight = 57
         FixedColor = clWhite
         FixedCols = 0
-        RowCount = 4
+        RowCount = 2
         FixedRows = 0
         GridLineWidth = 0
         Options = []
@@ -9003,7 +9003,7 @@ object Form1: TForm1
         DefaultRowHeight = 57
         FixedColor = clWhite
         FixedCols = 0
-        RowCount = 4
+        RowCount = 1
         FixedRows = 0
         GridLineWidth = 0
         Options = []

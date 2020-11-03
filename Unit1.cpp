@@ -2866,8 +2866,9 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
   		if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
   		pom_element_temp->mGrid->Cells[prvni_sloupec][prvni_sloupec].Text="<a>"+pom_element_temp->name+"</a>";//nasazení linku
   		//znovusloučení buňěk
-  		if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
-  		REFRESH(true);
+			if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
+      pom_element_temp->mGrid->Refresh();//refresh pouze aktuální tabulky
+			REFRESH(false);
   	}
 		if(index_kurzoru==-8 && pom_element_temp!=NULL)//editace popisku teploměrů
   	{
