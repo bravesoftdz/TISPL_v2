@@ -74,6 +74,7 @@ class Cvykresli
 	void vykresli_ikonu_textu(TCanvas *canv,int X,int Y,AnsiString Popisek="text",short stav=0);
 	void vykresli_ikonu_sipky(TCanvas *canv,int X,int Y,AnsiString Popisek="spojnice",short stav=0);
 	void vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popisek="komora",short typ=0,short stav=0,double orientace=90);//typ: -2 kurzor se sprchy, -1 kurzor bez sprchy, 0 ikona bez sprchy, 1 ikona se sprchou, stav: -1 disabled, 0 normál
+  void vykresli_editovane_polozky(TCanvas *canv);//vykresli nad statickou scénu aktuálnì editované položky, používá se pøi editaci textu, ale je zde bez AA
 	Graphics::TBitmap *nacti_nahled_cesty(Cvektory::TZakazka *zakazka);//vytvoøí bmp pro zakázku
 	void vypis_zpravy(TCanvas *canv);//metoda vypíše zprávy ze seznamu zpráv a zároveò uloží jejich citelné oblasti
 	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv);

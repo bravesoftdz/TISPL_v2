@@ -167,8 +167,8 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 		O=O->dalsi;
 	}
 	delete O;O=NULL;
-	////vykreslení aktuálně editovaného objektu nad všechny ostatní objekty
-	if(F->OBJEKT_akt!=NULL)vykresli_objekt(canv,F->OBJEKT_akt);
+	////vykreslení aktuálně editovaného objektu nad všechny ostatní objekty, nevykreslovat pokud je zapnutá editace kót objektu nebo jeho názvu (plně statická scéna)
+	if(F->OBJEKT_akt!=NULL && (F->Akce!=F->Takce::EDITACE_TEXTU || (F->Akce==F->Takce::EDITACE_TEXTU && F->index_kurzoru!=-5 && F->index_kurzoru!=-6)))vykresli_objekt(canv,F->OBJEKT_akt);
 }
 //---------------------------------------------------------------------------
 //cyklem prochází všechny elementy a ty následně "selectí" dle: scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény 5 - zobrazit jenom popisky
@@ -197,10 +197,10 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 			}
 			//vykreslení elementu a pozic
 			if(F->MOD!=F->SIMULACE && scena<=2 && stav!=-2 && stav!=0)vykresli_pozice_a_zony(canv,E);
-			short typ=1;//if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==1 && F->pom_element_temp!=NULL && F->pom_element_temp==E)typ=2;
+			short typ=1;if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==1 && F->pom_element_temp!=NULL && F->pom_element_temp==E)typ=2;
 			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,typ,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
 			//vykreslení kót
-			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty && !(scena!=0 && F->pom_element_temp!=NULL && F->pom_element_temp==E && (F->Akce==F->EDITACE_TEXTU || F->Akce_temp==F->EDITACE_TEXTU)))vykresli_kotu(canv,E);//mezi elementy
+			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty && !(scena!=0 && F->pom_element_temp!=NULL && F->pom_element_temp==E && ((F->Akce==F->EDITACE_TEXTU && (F->index_kurzoru==-11 || F->index_kurzoru==-101)) || F->Akce_temp==F->EDITACE_TEXTU)))vykresli_kotu(canv,E);//mezi elementy
 			pom=E->dalsi;
 
 			////vykreslení spojnic pokud geometrie nenavazuje
@@ -1808,9 +1808,9 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 				canv->Ellipse(m.L2Px(F->pom_element->X)-width,m.L2Py(F->pom_element->Y)-width,m.L2Px(F->pom_element->X)+width,m.L2Py(F->pom_element->Y)+width);
 			}
 			////vykreslení teploměrů
-			short typ=1;//if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
+			short typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
 			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,typ,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
-			//typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
+			typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->posledni)typ=2;
 			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,typ,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty
@@ -4625,6 +4625,30 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 		canv->Brush->Style=bsClear;
 		canv->TextOutW(X+W/2-canv->TextWidth(Popisek)/2,Y+H+oT,Popisek);
 	}
+}
+////------------------------------------------------------------------------------------------------------------------------------------------------------
+//vykresli nad statickou scénu aktuálně editované položky, používá se při editaci textu, ale je zde bez AA
+void Cvykresli::vykresli_editovane_polozky(TCanvas *canv)
+{
+	if(F->OBJEKT_akt!=NULL && F->pom_element_temp!=NULL && F->Akce==F->Takce::EDITACE_TEXTU)
+	{
+		switch(F->index_kurzoru)
+		{
+			//editace textu kóty elementu, nebo kóty mezi LO
+			case -101:case -11:
+			{
+				vykresli_kotu(canv,F->pom_element_temp);
+				break;
+			}
+			//editace názvu teploměrů, nebo editace názvu elementu
+			case -8:case 1:
+			{
+				vykresli_element(canv,0,m.L2Px(F->pom_element_temp->X),m.L2Py(F->pom_element_temp->Y),F->pom_element_temp->name,F->pom_element_temp->short_name,F->pom_element_temp->eID,3,F->pom_element_temp->orientace,1,F->pom_element_temp->data.LO1,F->pom_element_temp->OTOC_delka,F->pom_element_temp->data.LO2,F->pom_element_temp->data.LO_pozice,F->pom_element_temp);
+				break;
+			}
+			default:break;
+    }
+  }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 Graphics::TBitmap *Cvykresli::nacti_nahled_cesty(Cvektory::TZakazka *zakazka)
