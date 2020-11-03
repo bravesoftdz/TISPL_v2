@@ -125,7 +125,8 @@ class Cmy
 	short get_intensity();//přepočítá hodnotu posuvníku intenzity z menu nastavení na změnu barevné intenzity při vykreslění objektů či elementů
 	TColor getBlackOrWhiteInvert(TColor color);//vrátí černou pro světlé barvy a bílou pro tmavé barvy, používá se např. na volbu barvy textu s barevným pozadím
 	TColor getColorOfPalette(unsigned int input);//vratí dle hodnoty input barvu z nadefinované barevné palety, v případě "přetečení barvy opakuje
-	short getValueFromPosition(long GlobalValue,short Position);
+  Gdiplus::Color aRGB(TColor color,short alfa=255);//převede RGB do ARGB, pokud se alfa neuvede, použije se implicitně 255 tj. výstupem bude totožná hodnota
+	short getValueFromPosition(long GlobalValue,short Position);//vrátí číslici dle pozice z daného celkového čísla
 	double RAND(double MIN, double MAX,unsigned short precision=0,bool MINin=true,bool MAXin=true);//vrátí náhodné číslo v daném rozsahu o požadované přesnosti, MIN a MAX mohou být součástí navrácených hodnot (jedná se o oboustranně uzavřený interval - implicitně), pokud není nastaveno jinak posledními dvěma parametry, které umožňují nastavení z jedne či obou stran otevřený interval//srand(time(NULL)); v knihovně ktéré se tato metoda volá je nutno volat jako úplně první toto (nejvýše v kódu knihovny)
   double getZoomValue(double Zoom);//vrátí Zoom upravený na používané stupnici
 	protected:

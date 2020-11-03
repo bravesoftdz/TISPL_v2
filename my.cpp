@@ -1454,7 +1454,14 @@ TColor Cmy::getColorOfPalette(unsigned int input)
 	}
 }
 /////////////////////////////////////////////////////////////////////////////
+//převede RGB do ARGB, pokud se alfa neuvede, použije se implicitně 255 tj. výstupem bude totožná hodnota
+Gdiplus::Color Cmy::aRGB(TColor color,short alfa)
+{
+	return Gdiplus::Color(alfa,GetRValue(color),GetGValue(color),GetBValue(color));
+}
 /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+//vrátí číslici dle pozice z daného celkového čísla
 short Cmy::getValueFromPosition(long GlobalValue,short Position)
 {
 	double base=GlobalValue/pow(10.0,Position);
