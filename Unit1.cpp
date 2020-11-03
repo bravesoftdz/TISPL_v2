@@ -2380,7 +2380,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		{
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
 			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA, také slouží k vykreslení aktuálně editovaných položek objektu (editace názvu objektu)
-			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_total->Canvas,2,OBJEKT_akt);//vykreslení teploměrů
+			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE/* && Akce!=EDITACE_TEXTU námět k dalšímu rozvoji...*/)d.vykresli_oblast_teplomery(bmp_total->Canvas,2,OBJEKT_akt);//vykreslení teploměrů
 		}
 		else
 		{

@@ -3408,8 +3408,8 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,AnsiString short_name,short typ,double rotace,short stav,Cvektory::TElement *E)
 {
-	double Z=Form1->Zoom;
-	short size=m.round(8*F->Zoom); if(stav==2)size=m.round(9*F->Zoom);
+	double Z=F->Zoom;
+	short size=m.round(8*Z); if(stav==2)size=m.round(9*Z);
 	short sklon=50;
 	rotace=m.Rt90(rotace+180);//kvůli převrácenému symbolu
 
@@ -3472,14 +3472,14 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 		canv->Brush->Style=bsClear;
 		AnsiString T1="STOP";//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
 		AnsiString T2=name.SubString(T1.Length()+1,name.Length());//pouze index stopky, +1 je mezera
-		if(typ==1)//normální zobrazení typ==1
+		if(typ==1 || typ==3)//pokud se jedná o standardní zobrazení nebo je požadavek jenom na zobrazení popisku
 		{
 			if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 			{
 		  	if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
 		  	short h=0,w=canv->TextWidth(T2);
 				canv->Font->Style = TFontStyles();h=canv->TextHeight(T1);w+=canv->TextWidth(T1+" ");//pro normální písmo
-				float zAA=1.0;if(F->antialiasing)zAA=3.0;
+				float zAA=1.0;if(F->antialiasing && typ!=3)zAA=3.0;
 				TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 				long x,y;
 				//rotace
@@ -3852,7 +3852,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		//if(Z>4*3) //short_name odstaveno
 		{T=name;if(F->aFont->Size==12)canv->Font->Size=m.round(2*Z); else canv->Font->Size=m.round(2.8*Z);}//od daného zoomu zobrazuje celý název
 		float Odsazeni=3.5*Z/*+41*/;//+41 z důvodu vycentrování ikony člověka v knihovně elementů
-		if(typ==1)//pokud se jedná o standardní zobrazení
+		if(typ==1 || typ==3)//pokud se jedná o standardní zobrazení nebo je požadavek jenom na zobrazení popisku
 		{
 			if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 			{
@@ -3862,6 +3862,7 @@ void Cvykresli::vykresli_cloveka(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				long x,y;
 				short w=canv->TextWidth(T);
 				short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC");
+				if(typ==3)zAA=1;//pro situaci zobrazení jenom popisku citelným oblastem musí vrátit bez uvažovaného AA tj. /3
 				//pozn. pro 180° neobracím text vzhůru nohama
 		  	if(rotace90==0 || rotace90==180)
 		  	{
@@ -3987,14 +3988,14 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,short scena,long X,long Y,AnsiString
 			canv->Font->Name=F->aFont->Name;
 			canv->Font->Style = TFontStyles();
 			AnsiString T=name;//short_name;if(Z>3)T=name;//od daného zoomu zobrazuje celý název
-			if(typ==1)//normální zobrazení
+			if(typ==1 || typ==3)//pokud se jedná o standardní zobrazení nebo je požadavek jenom na zobrazení popisku
 			{
 				if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 				{
 					if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
 					short w=canv->TextWidth(T);
 					short h=canv->TextHeight(T);if(T=="")h=canv->TextHeight("NIC");
-					float zAA=1.0;if(F->antialiasing)zAA=3.0;
+					float zAA=1.0;if(F->antialiasing && typ!=3)zAA=3.0;
 					TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 					long x,y;
 					//rotace
@@ -4012,7 +4013,6 @@ void Cvykresli::vykresli_otoc(TCanvas *canv,short scena,long X,long Y,AnsiString
 			}
 			else//ikona
 			{
-				//canv->Font->Name="Arial";
 				canv->Font->Size=F->m.round(sizeP*Z);if(F->aFont->Size==12)canv->Font->Size=F->m.round(3*Z);
 				canv->TextOutW(X-canv->TextWidth(name)/2,Y+size+1*Z,name); //1 pouze korekce
 			}
@@ -4116,12 +4116,12 @@ void Cvykresli::vykresli_ion(TCanvas *canv,long X,long Y,AnsiString name,AnsiStr
 		canv->Brush->Color=clWhite;
 		canv->Brush->Style=bsClear;
 
-		if(typ==1)//normální zobrazení typ==1
+		if(typ==1 || typ==3)//pokud se jedná o standardní zobrazení nebo je požadavek jenom na zobrazení popisku
 		{
 			if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 			{
 		  	if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-				float zAA=1.0;if(F->antialiasing)zAA=3.0;
+				float zAA=1.0;if(F->antialiasing && typ!=3)zAA=3.0;
 
 				TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 				AnsiString Text=short_name;/*if(Z>4*3) */Text=name;//odstaveno
@@ -4183,27 +4183,27 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
 	canv->Pen->Mode=PenMode;
 	canv->Pen->Color=barva;
 	canv->Brush->Style=bsSolid;
-
+	F->Memo(typ);
 	////vykreslení elementu
 	if(typ!=3)//pokud se nemá zobrazovat jenom popisek
 	{
-  	//obrys
-  	canv->Ellipse(X-polomer1,Y-polomer1-vzdalenostY,X+polomer1,Y+polomer1-vzdalenostY);//baňka
-  	canv->RoundRect(X-polomer2,Y-polomer1*DT-vzdalenostY,X+polomer2,Y-vzdalenostY,polomer1,polomer1);//tyčka
-  	//bílá výplň
-  	canv->Pen->Color=canv->Brush->Color;canv->Ellipse(X-polomer1+canv->Pen->Width,Y-polomer1+canv->Pen->Width-vzdalenostY,X+polomer1-canv->Pen->Width,Y+polomer1-canv->Pen->Width-vzdalenostY);//baňka bílá výplň pozadí
-  	//barevná výplň - rtuť
-  	canv->Brush->Color=barva_vypln;canv->Pen->Color=canv->Brush->Color;
-  	canv->Ellipse(X-polomer2,Y-polomer2-vzdalenostY,X+polomer2,Y+polomer2-vzdalenostY);//baňka
-  	canv->Rectangle(X-polomer8,Y-polomer2*DT-vzdalenostY,X+polomer8,Y-vzdalenostY);//rtuť ve stupnici
-  	//stupnice
-  	canv->Pen->Color=barva;
-  	for(short i=0;i<=4;i++)
-  	{
-  		long y=Y-polomer1-polomer8-polomer2*i-vzdalenostY;
-  		long x1=X+polomer1;
-  		long x2=x1+polomer2;if(i%2)x2=x1+polomer8;//stupnice na přeskáčku
-  		line(canv,x1,y,x2,y);
+		//obrys
+		canv->Ellipse(X-polomer1,Y-polomer1-vzdalenostY,X+polomer1,Y+polomer1-vzdalenostY);//baňka
+		canv->RoundRect(X-polomer2,Y-polomer1*DT-vzdalenostY,X+polomer2,Y-vzdalenostY,polomer1,polomer1);//tyčka
+		//bílá výplň
+		canv->Pen->Color=canv->Brush->Color;canv->Ellipse(X-polomer1+canv->Pen->Width,Y-polomer1+canv->Pen->Width-vzdalenostY,X+polomer1-canv->Pen->Width,Y+polomer1-canv->Pen->Width-vzdalenostY);//baňka bílá výplň pozadí
+		//barevná výplň - rtuť
+		canv->Brush->Color=barva_vypln;canv->Pen->Color=canv->Brush->Color;
+		canv->Ellipse(X-polomer2,Y-polomer2-vzdalenostY,X+polomer2,Y+polomer2-vzdalenostY);//baňka
+		canv->Rectangle(X-polomer8,Y-polomer2*DT-vzdalenostY,X+polomer8,Y-vzdalenostY);//rtuť ve stupnici
+		//stupnice
+		canv->Pen->Color=barva;
+		for(short i=0;i<=4;i++)
+		{
+			long y=Y-polomer1-polomer8-polomer2*i-vzdalenostY;
+			long x1=X+polomer1;
+			long x2=x1+polomer2;if(i%2)x2=x1+polomer8;//stupnice na přeskáčku
+			line(canv,x1,y,x2,y);
 		}
 	}
 
@@ -4219,8 +4219,8 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
   	short Tw=canv->TextWidth(name);short Th=canv->TextHeight(name);if(name=="")Th=canv->TextHeight("°C");
   	long x=m.round(X-Tw/2.0-canv->TextWidth("°C")/2.0);long y=Y-polomer1*DT-vzdalenostY-Th;
   	TextFraming(canv,x,y,name);
-  	//citelná oblast popisku
-  	float zAA=1.0;if(F->antialiasing)zAA=3.0;
+		//citelná oblast popisku
+		float zAA=1.0;if(F->antialiasing && typ!=3)zAA=3.0;
   	Element->citelna_oblast.rect3=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(name))/zAA),m.round((y+Th)/zAA));//souřadnice pro citelnou oblast, pro vykreslení oblasti by muselo být použito bez /zAA
   	//°C
   	canv->Font->Style = TFontStyles();
