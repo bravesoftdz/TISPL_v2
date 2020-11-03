@@ -3632,7 +3632,7 @@ void Cvykresli::vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiStri
 		}
 
 		////text
-		if(typ!=-1 && scena<=2  && typ!=2)//v módu kurzor se název nezobrazuje
+		if(typ!=-1 && typ!=2 && scena<=2)//v módu kurzor se název nezobrazuje
 		{              //pokud by tu nebylo ošetření zdisablovaného stavu, tak by se font již vypisoval bílou barvou....
 			if(typ==0 && stav!=-1)canv->Font->Color=m.clIntensive(barva,100);else canv->Font->Color=barva;//ikona vs. normální zobrazení
 			canv->Font->Style = TFontStyles();//normání font (vypnutí tučné, kurzívy, podtrženo atp.)
@@ -3640,13 +3640,13 @@ void Cvykresli::vykresli_robota(TCanvas *canv,short scena,long X,long Y,AnsiStri
 			AnsiString T=short_name;
 			//if(Z>4*3) //short_name odstaveno
 			{T=name;if(F->aFont->Size==12)canv->Font->Size=m.round(2*Z); else canv->Font->Size=m.round(2.4*Z);}//od daného zoomu zobrazuje celý název
-			if(typ==1)//pokud se jedná o standardní zobrazení
+			if(typ==1 || typ==3)//pokud se jedná o standardní zobrazení nebo je požadavek jenom na zobrazení popisku
 			{
 				if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 				{
 					canv->Font->Name=F->aFont->Name;
 					if(/*stav==2 || */stav==3)canv->Font->Style = TFontStyles()<< fsBold;//došlo k vybrání elementu-tato část odstavena nebo přímo jeho textu
-					float zAA=1.0;if(F->antialiasing)zAA=3.0;
+					float zAA=1.0;if(F->antialiasing && typ!=3)zAA=3.0;
 					TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 					long x,y;
 					short w=canv->TextWidth(T);
@@ -5215,19 +5215,15 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 	//nastavení geometrického pera
 	if(F->scGPCheckBox_zobrazit_koleje->Checked && popisek)	set_pen(canv,color,m.round(F->Zoom*0.5),PS_ENDCAP_FLAT);//popisek v tomto případě vybraný gelement
 	else set_pen(canv,color,m.round(F->Zoom*1),PS_ENDCAP_FLAT);//nastavení geometrického pera
-	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+	//canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
 
 	////GDI+
-	tagPOINT P[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
-
 	Gdiplus::Graphics g(canv->Handle);
 	g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
-	Gdiplus::Pen myPen(Gdiplus::Color(255,255,0,0));
-	myPen.SetWidth(20);
-	//g.DrawBezier(&myPen,(float)m.L2Px(PL[0].x),(float)m.L2Py(PL[0].y),(float)m.L2Px(PL[1].x),(float)m.L2Py(PL[1].y),(float)m.L2Px(PL[2].x),(float)m.L2Py(PL[2].y),(float)m.L2Px(PL[3].x),(float)m.L2Py(PL[3].y));
-
-
-
+	Gdiplus::Pen myPen(Gdiplus::Color(255,GetRValue(color),GetGValue(color),GetBValue(color)));
+myPen.SetWidth(F->Zoom*1);
+//nahoru do ifu + koleje také zkusit předělat do gdi, ale ty pouze s parametra zda gdi ano či ne...
+	g.DrawBezier(&myPen,m.L2Pxf(PL[0].x),m.L2Pyf(PL[0].y),m.L2Pxf(PL[1].x),m.L2Pyf(PL[1].y),m.L2Pxf(PL[2].x),m.L2Pyf(PL[2].y),m.L2Pxf(PL[3].x),m.L2Pyf(PL[3].y));
 
 	////popisek, je-li požadován
 	if(popisek)

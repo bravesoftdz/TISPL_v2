@@ -142,11 +142,11 @@ TPoint Cmy::L2P(TPointD logicke)
 }
 long Cmy::L2Px(double logicka)
 {
-	return round(F->Zoom*(logicka/F->m2px-F->Posun.x));
+	return round(L2Pxf(logicka));
 }
 long Cmy::L2Py(double logicka)
 {
-	return round(F->Zoom*(-1*logicka/F->m2px-F->Posun.y));
+	return round(L2Pyf(logicka));
 }
 TPoint *Cmy::L2P(TPointD *POLE,long posledni_prvek)
 {
@@ -158,6 +158,20 @@ TPoint *Cmy::L2P(TPointD *POLE,long posledni_prvek)
 void Cmy::L2P(TPointD *POLE,TPoint *POLEpx)
 {
 	//POLEpx=L2P(POLE);
+}
+/////////////////////////////////////////////////////////////////////////////
+//převody souřadnic pro gdi+ (které nevyužívá celé pixely) nebo jako nativní souřadnicové metody
+float Cmy::L2Pxf(double logicka)
+{
+	return F->Zoom*(logicka/F->m2px-F->Posun.x);
+}
+float Cmy::L2Pyf(double logicka)
+{
+	return F->Zoom*(-1*logicka/F->m2px-F->Posun.y);
+}
+TPointF Cmy::L2Pf(double logickaX, double logickaY)
+{
+	return TPointF(logickaX,logickaY);
 }
 /////////////////////////////////////////////////////////////////////////////
 //Převede  fyzické na logické souřadnice (displej zařízení) , vraci logické souřadnice

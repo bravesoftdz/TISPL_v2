@@ -36,6 +36,9 @@ class Cmy
 	void L2P(TPointD *POLE,TPoint *POLEpx);
 	long L2Px(double logicka);
 	long L2Py(double logicka);
+	float L2Pxf(double logicka);
+	float L2Pyf(double logicka);
+	TPointF L2Pf(double logickaX, double logickaY);
 	long m2px(double meter);//převede vzdálenost v metrech na vzdálenost monitoru dle konstanty m2px (metrů na pixel) a aktuální hodnoty proměnné Zoom
 	double px2m(long px);//převede logické jednotky (metry) na pixely monitoru dle konstanty m2px (metrů na pixel) a aktuální hodnoty proměnné Zoom
 	long double getResolution(int puvX,int puvY,int aktX,int aktY,double metry);//dle změřeného úseku na monitoru převede tuto pixelovou vzádlenost a hodnotu v podobě uživatelského vstupu v metrech na hodnotu rozlišení podkladu
