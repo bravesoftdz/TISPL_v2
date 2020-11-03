@@ -4630,6 +4630,7 @@ void Cvykresli::vykresli_ikonu_komory(TCanvas *canv,int X,int Y,AnsiString Popis
 //vykresli nad statickou scénu aktuálně editované položky, používá se při editaci textu, ale je zde bez AA
 void Cvykresli::vykresli_editovane_polozky(TCanvas *canv)
 {
+	//běžná editace textu
 	if(F->OBJEKT_akt!=NULL && F->pom_element_temp!=NULL && F->Akce==F->Takce::EDITACE_TEXTU)
 	{
 		switch(F->index_kurzoru)
@@ -4648,6 +4649,11 @@ void Cvykresli::vykresli_editovane_polozky(TCanvas *canv)
 			}
 			default:break;
     }
+	}
+	//editace textu při geometrii
+	if(F->OBJEKT_akt!=NULL && F->pom_element_temp!=NULL && F->Akce_temp==F->Takce::EDITACE_TEXTU)
+	{
+    vykresli_kotu(canv,F->pom_element_temp);
   }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
