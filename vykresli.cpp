@@ -134,7 +134,7 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 	if(m.getValueFromPosition(SCENA,4)==scena)vykresli_elementy(canv,scena);//implicitně statická sekce (může být ale i v dynamické scéně), popř. pokud se vykresluje vše do dynamické vykresluje jak statickou tak dynamickou sekci společně
 	if(m.getValueFromPosition(SCENA,5)==scena && SCENA!=0)vykresli_elementy(canv,scena+2);//implicitně dynamická sekce (může být ale i ve statické scéně), pokud se vykresluje vše do dynamické, tato se již kvůli zbytečnému dalšímu průchodu cyklu již nevykresluje, protože výše vykresluje statickou tak dynamickou sekci společně
 
-  /////Vykreslení teploměrů
+	/////Vykreslení teploměrů
 	if(F->OBJEKT_akt!=NULL && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vykresli_oblast_teplomery(canv,scena,F->OBJEKT_akt);
 
 	/////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
@@ -171,7 +171,7 @@ void Cvykresli::vykresli_objekty(TCanvas *canv)
 	}
 	delete O;O=NULL;
 	////vykreslení aktuálně editovaného objektu nad všechny ostatní objekty, nevykreslovat pokud je zapnutá editace kót objektu nebo jeho názvu (plně statická scéna)
-	if(F->OBJEKT_akt!=NULL && (F->Akce!=F->Takce::EDITACE_TEXTU || (F->Akce==F->Takce::EDITACE_TEXTU && F->index_kurzoru!=-5 && F->index_kurzoru!=-6)))vykresli_objekt(canv,F->OBJEKT_akt);
+	if(F->OBJEKT_akt!=NULL && (F->Akce!=F->Takce::EDITACE_TEXTU || (F->Akce==F->Takce::EDITACE_TEXTU && F->index_kurzoru!=-5 && F->index_kurzoru!=-6)) && F->Akce!=F->Takce::MOVE_USECKA && F->Akce!=F->Takce::MOVE_TEXT)vykresli_objekt(canv,F->OBJEKT_akt);
 }
 //---------------------------------------------------------------------------
 //cyklem prochází všechny elementy a ty následně "selectí" dle: scena 0 - vše do dynamické, scena 1 - implicitně statické elementy do statické scény, scena 2 - implicitně statické elementy do dynamické scény, scena 3 - implicitně dynamické elementy do statické scény, scena 4 - implicitně dynamické elementy do dynamické scény 5 - zobrazit jenom popisky

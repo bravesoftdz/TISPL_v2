@@ -3060,7 +3060,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						if(100<JID && JID<900){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 						if(JID==100 || JID==1000)redesign_element();//popisky jednotek v tabulce teplomerů
 						//if(JID==-6) {nastav_focus();stav_kurzoru=false;Akce=EDITACE_TEXTU;index_kurzoru=-6;nazev_puvodni=OBJEKT_akt->name;TimerKurzor->Enabled=true;}//editace názvu
-						if(JID==-6) {Akce=MOVE_TEXT;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun názvu
+						if(JID==-6) {Akce=MOVE_TEXT;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);d.SCENA=1111111;vytvor_statickou_scenu();REFRESH();}//posun názvu
 						if(JID==-10)zmenJednotekKot();//přepnutí jednotek všech kót                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    //ZprVozEledElesDopObjHal
 						if((JID==-11 || JID==-101) && OBJEKT_akt->id!=3){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;Akce=EDITACE_TEXTU;stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;if(JID!=-101){editovany_text=pom_element_temp->geo.delka;if(pom_element_temp->geo.HeightDepp!=0)editovany_text=pom_element_temp->geo.delkaPud;}else editovany_text=vzdalenost_meziLO(pom_element,OBJEKT_akt->orientace);if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;editovany_text=outDK(ms.MyToDouble(editovany_text));puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;editovany_text=m.round2double(ms.MyToDouble(editovany_text),0);d.SCENA=1111111;vytvor_statickou_scenu();REFRESH();}//editace kót elementu
 						if(JID==-9&OBJEKT_akt->id==3){Akce=ROZMER_KOMORA;pom_komora_temp=pom_komora;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;}
@@ -3075,7 +3075,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 						//if(JID==-8);//popisek teploměru
 						if(JID==0&&pom_komora!=NULL&&pom_element==NULL){Akce=MOVE_KOMORA;pom_komora_temp=pom_komora;}//uchopení a přesun komory, sloužící k jejímu odstranění
 						//nové JID pro objekt
-						if(JID==-2){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//posun úsečky
+						if(JID==-2){Akce=MOVE_USECKA;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);d.SCENA=1111111;vytvor_statickou_scenu();REFRESH();}//posun úsečky
 						if(JID==-3){Akce=MOVE_BOD;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;ortogonalizace_stav=false;nahled_ulozit(true);}//posun jednoho bodu
 						if(JID==-4){Akce=OFFSET_KOTY;minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;nahled_ulozit(true);}//změna offsetu kóty
 						if(JID==-5){nastav_focus();nahled_ulozit(true);TimerKurzor->Enabled=true;Akce=EDITACE_TEXTU;stav_kurzoru=false;index_kurzoru=JID;pom_bod_temp=pom_bod;if(pom_bod_temp->n!=1)editovany_text=m.round2double(m.delka(pom_bod_temp->predchozi->X,pom_bod_temp->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);else editovany_text=m.round2double(m.delka(OBJEKT_akt->body->predchozi->X,OBJEKT_akt->body->predchozi->Y,pom_bod_temp->X,pom_bod_temp->Y),3);if(DKunit==2||DKunit==3)editovany_text=m.round2double(editovany_text/OBJEKT_akt->pohon->aRD,3);editovany_text=outDK(ms.MyToDouble(editovany_text));nahled_ulozit(true);d.SCENA=1111111;vytvor_statickou_scenu();REFRESH();}//editace kót kabiny
@@ -4306,9 +4306,9 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				vytvor_obraz();
 				break;
 			}
-			case MOVE_TEXT:if(OBJEKT_akt!=NULL && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();nahled_ulozit(true);Akce=EDITACE_TEXTU;index_kurzoru=-6;nazev_puvodni=OBJEKT_akt->name;stav_kurzoru=false;TimerKurzor->Enabled=true;d.SCENA=1111111;vytvor_statickou_scenu();REFRESH();}else Akce=NIC;kurzor(standard);pom_vyhybka=NULL;vytvor_obraz();break;
+			case MOVE_TEXT:if(OBJEKT_akt!=NULL && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();nahled_ulozit(true);Akce=EDITACE_TEXTU;index_kurzoru=-6;nazev_puvodni=OBJEKT_akt->name;stav_kurzoru=false;TimerKurzor->Enabled=true;}else {Akce=NIC;d.SCENA=0;REFRESH();}kurzor(standard);pom_vyhybka=NULL;vytvor_obraz();break;
 			case MOVE_BOD:
-			case MOVE_USECKA:JID=-1;Akce=NIC;kurzor(standard);vytvor_obraz();REFRESH();break;
+			case MOVE_USECKA:JID=-1;Akce=NIC;kurzor(standard);vytvor_obraz();if(OBJEKT_akt!=NULL)d.SCENA=0;REFRESH();break;
 			case MOVE_HALA:Akce=NIC;kurzor(standard);vytvor_obraz();REFRESH();break;//refresh z důvodu znovu zapnutí měřítka a gridu
 			case ROZMER_KOMORA:Akce=NIC;break;
 			case OFFSET_KOTY:Akce=NIC;break;
@@ -5156,10 +5156,11 @@ void TForm1::setJobIDOnMouseMove(int X, int Y)
 			if((pom_element_puv!=NULL && pom_element==NULL) || (pom_element_puv==NULL && pom_element!=NULL) && !(JID<=-11 && JID>=-100) && !(JID<=99 && JID>=13) && (d.v.vrat_druh_elementu(E)!=-1 || E->eID==200 || E->eID==300 || E->eID==301 || E->eID==400 || E->eID==401 || E->eID==402) && E->eID!=100)
 				REFRESH();
 			E=NULL;delete E;
-		}     
+			if(JID==-6 || JID==-3 || JID==-2 || puvJID==-6 || puvJID==-3 || puvJID==-2)REFRESH(false);//highlighty kabiny
+		}
 		if(puvVV!=FormX->vykresli_vetev)REFRESH();
 		if(puvJID==-1 && JID==-1 && PmG!=NULL && PmG->Highlight){PmG->Highlight=false;REFRESH();}//odstranění highlightu tab pohonu pokud je třeba, zamezuje problikávání highlightu
-
+		if(JID==puvJID && (JID==-2 || JID==-3))REFRESH(false);//highlighty kabiny
   	////oblasti poznámek pod čarou - NOTE, nejdou přes JID
 //  	if(JID==-1)
 //		{                                                       //zajištuje unhighlight odkazu
