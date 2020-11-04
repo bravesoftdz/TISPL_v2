@@ -2379,7 +2379,7 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		if((d.SCENA==1111111 || d.SCENA==111111) && MOD!=TVORBA_CESTY)//vše STATICKÁ scéna - totální statická scena a nejsou žádně akce nebo případně, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu
 		{
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
-			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA, také slouží k vykreslení aktuálně editovaných položek objektu (editace názvu objektu)
+			if(pom!=NULL && (Akce!=EDITACE_TEXTU || (Akce==EDITACE_TEXTU && index_kurzoru!=-8)) && Akce!=POSUN_TEPLOMER)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA, také slouží k vykreslení aktuálně editovaných položek objektu (editace názvu objektu)
 		}
 		else
 		{
@@ -2626,7 +2626,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		}
 		break;
 		//MEZERNÍK
-		case 32: if(Akce!=PAN_MOVE){Akce=PAN;kurzor(pan);pan_non_locked=true;}break;
+		case 32: if(Akce!=PAN_MOVE && Akce!=EDITACE_TEXTU && Akce_temp!=EDITACE_TEXTU){Akce=PAN;kurzor(pan);pan_non_locked=true;}break;
 		//DELETE
 		case 46:
 		{
@@ -2863,9 +2863,8 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
   		int prvni_sloupec=0;
   		if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
   		pom_element_temp->mGrid->Cells[prvni_sloupec][prvni_sloupec].Text="<a>"+pom_element_temp->name+"</a>";//nasazení linku
-  		//znovusloučení buňěk
+			//znovusloučení buňěk
 			if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
-      pom_element_temp->mGrid->Refresh();//refresh pouze aktuální tabulky
 			REFRESH(false);
   	}
 		if(index_kurzoru==-8 && pom_element_temp!=NULL)//editace popisku teploměrů
@@ -16918,8 +16917,8 @@ void TForm1::vykresli_kurzor(int index)
 		{
 			Canvas->Pen->Color=clGray;
 			Canvas->Pen->Width=1.5;
-			Canvas->MoveTo(pom_bod_temp->kota.rect1.right+1,pom_bod_temp->kota.rect1.top);
-			Canvas->LineTo(pom_bod_temp->kota.rect1.right+1,pom_bod_temp->kota.rect1.bottom);
+			Canvas->MoveTo(pom_bod_temp->kota.rect1.right*3.0+1,pom_bod_temp->kota.rect1.top*3.0);
+			Canvas->LineTo(pom_bod_temp->kota.rect1.right*3.0+1,pom_bod_temp->kota.rect1.bottom*3.0);
 			stav_kurzoru=!stav_kurzoru;
 		}break;
 		case -6://název objektu
@@ -17258,7 +17257,7 @@ void TForm1::smaz_kurzor()
 	if(duvod_validovat==1)duvod_validovat=2;
 	if(Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT){d.SCENA=1111111;vytvor_statickou_scenu();}
 	else d.SCENA=0;
-	REFRESH();//uvolnění rastru
+	REFRESH(true);//uvolnění rastru, překreslení i tabulek (editace názvu elementu
 	//nahled_ulozit(true);//přesunuto na začátek editace textů (mousedown)
 	vytvor_obraz();
 }
