@@ -134,6 +134,9 @@ void Cvykresli::vykresli_vektory(TCanvas *canv, short scena)//scena 0 - vše, sc
 	if(m.getValueFromPosition(SCENA,4)==scena)vykresli_elementy(canv,scena);//implicitně statická sekce (může být ale i v dynamické scéně), popř. pokud se vykresluje vše do dynamické vykresluje jak statickou tak dynamickou sekci společně
 	if(m.getValueFromPosition(SCENA,5)==scena && SCENA!=0)vykresli_elementy(canv,scena+2);//implicitně dynamická sekce (může být ale i ve statické scéně), pokud se vykresluje vše do dynamické, tato se již kvůli zbytečnému dalšímu průchodu cyklu již nevykresluje, protože výše vykresluje statickou tak dynamickou sekci společně
 
+  /////Vykreslení teploměrů
+	if(F->OBJEKT_akt!=NULL && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)vykresli_oblast_teplomery(canv,scena,F->OBJEKT_akt);
+
 	/////VALIDACE její samotné provední, vnitřek metody se provede jen pokud duvod_validovat==2
 	if(m.getValueFromPosition(SCENA,7)==scena)v.VALIDACE();//odstaveno MV, 19.8.2020, způsobuje chyby při editaci objektu
 
@@ -1783,7 +1786,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 		Cvektory::TTeplomery *teplomery=v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,v.ZAKAZKA_akt);
 		if(teplomery!=NULL)
 		{
-      //nastavení barev
+			//nastavení barev
 			TColor clTeplomery=clBlack;//default, vytěkání
 			if(teplomery->prvni->eID==400)clTeplomery=clRed;//sušení
 			if(teplomery->prvni->eID==401)clTeplomery=clBlue;//chlazení
@@ -1809,9 +1812,9 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			}
 			////vykreslení teploměrů
 			short typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->prvni)typ=2;
-			vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,typ,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
+			if(F->Akce!=F->Takce::POSUN_TEPLOMER || (F->Akce==F->Takce::POSUN_TEPLOMER && F->pom_element!=teplomery->prvni))vykresli_element(canv,scena,m.L2Px(teplomery->prvni->X),m.L2Py(teplomery->prvni->Y),teplomery->prvni->name,"",teplomery->prvni->eID,typ,m.Rt90(teplomery->prvni->geo.orientace-teplomery->prvni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->prvni);
 			typ=1;if(F->OBJEKT_akt!=NULL && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==-8 && F->pom_element_temp!=NULL && F->pom_element_temp==teplomery->posledni)typ=2;
-			vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,typ,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
+			if(F->Akce!=F->Takce::POSUN_TEPLOMER || (F->Akce==F->Takce::POSUN_TEPLOMER && F->pom_element!=teplomery->posledni))vykresli_element(canv,scena,m.L2Px(teplomery->posledni->X),m.L2Py(teplomery->posledni->Y),teplomery->posledni->name,"",teplomery->posledni->eID,typ,m.Rt90(teplomery->posledni->geo.orientace-teplomery->posledni->geo.rotacni_uhel-90),1,1.5,0,0,0,teplomery->posledni);
 
 			/////vykresení cesty
 			if(F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::MOVE_ELEMENT)
@@ -1839,8 +1842,8 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 		  			;//nelze aplikovat stejnou metodu vykreslení jako u mag_lasa, kreslí se na prázdný prostor, zde nopomůže barva kolejí
 		  		}
 		  	}
-		  	Cvektory::TCesta *ct=teplomery->cesta->dalsi;
-		  	while(ct!=NULL)
+				Cvektory::TCesta *ct=teplomery->cesta->dalsi;
+				while(ct!=NULL)
 		  	{
 					vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
 		  		//posun na další segment cesty
@@ -4654,7 +4657,12 @@ void Cvykresli::vykresli_editovane_polozky(TCanvas *canv)
 	if(F->OBJEKT_akt!=NULL && F->pom_element_temp!=NULL && F->Akce_temp==F->Takce::EDITACE_TEXTU)
 	{
     vykresli_kotu(canv,F->pom_element_temp);
-  }
+	}
+	//vykreslení přesouvaného teploměru
+	if(F->OBJEKT_akt!=NULL && F->pom_element!=NULL && F->Akce==F->Takce::POSUN_TEPLOMER)
+	{
+		vykresli_element(canv,0,m.L2Px(F->pom_element->X),m.L2Py(F->pom_element->Y),F->pom_element->name,"",F->pom_element->eID,1,m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel-90),1,1.5,0,0,0,F->pom_element);
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 Graphics::TBitmap *Cvykresli::nacti_nahled_cesty(Cvektory::TZakazka *zakazka)

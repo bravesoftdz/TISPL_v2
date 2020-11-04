@@ -2380,7 +2380,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 		{
 			bmp_total->Canvas->Draw(0,0,Staticka_scena);//varianta, kdy je už přeantialiasingovaná
 			if(pom!=NULL)d.vykresli_objekt(bmp_total->Canvas,pom);//případne, že je v totálně statické označen (vybrán) nějaká objekt resp. hrana tohoto objektu, ale je zde bez AA, také slouží k vykreslení aktuálně editovaných položek objektu (editace názvu objektu)
-			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE/* && Akce!=EDITACE_TEXTU námět k dalšímu rozvoji...*/)d.vykresli_oblast_teplomery(bmp_total->Canvas,2,OBJEKT_akt);//vykreslení teploměrů
 		}
 		else
 		{
@@ -2391,7 +2390,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
 			//if(Akce==GEOMETRIE && Akce_temp==NIC)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element,typElementu);//0,1,2
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
-			if(OBJEKT_akt!=NULL && Akce!=GEOMETRIE)d.vykresli_oblast_teplomery(bmp_in->Canvas,s,OBJEKT_akt);//vykreslení teploměrů
 			if(antialiasing)
 			{
 				Zoom=Zoom_predchozi_AA;//navrácení zoomu na původní hodnotu
@@ -4512,7 +4510,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				d.v.posun_teplomeru(pom_element);//ukončení posunu, rozhodnutí zda uložit cestu, neuložit, dolnující dotaz na výhybce
 				Akce=NIC;
 				TIP="";
-				if(OBJEKT_akt!=NULL && JID==-8 && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();nahled_ulozit(true);stav_kurzoru=false;index_kurzoru=JID;nazev_puvodni=pom_element->name;pom_element_temp=pom_element;Akce=EDITACE_TEXTU;TimerKurzor->Enabled=true;}
+				if(OBJEKT_akt!=NULL && JID==-8 && vychozi_souradnice_kurzoru.x==minule_souradnice_kurzoru.x && vychozi_souradnice_kurzoru.y==minule_souradnice_kurzoru.y){nastav_focus();nahled_ulozit(true);stav_kurzoru=false;index_kurzoru=JID;nazev_puvodni=pom_element->name;pom_element_temp=pom_element;Akce=EDITACE_TEXTU;TimerKurzor->Enabled=true;vytvor_statickou_scenu();}
 				else {nahled_ulozit(true);d.SCENA=0;}
         REFRESH();
 				pom_element=NULL;
@@ -15148,8 +15146,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-//	Memo("");
-  vytvor_statickou_scenu();REFRESH();
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
