@@ -3480,18 +3480,19 @@ void Cvykresli::vykresli_stopku(TCanvas *canv,long X,long Y,AnsiString name,Ansi
 			if(F->scGPCheckBox1_popisky->Checked)//pokud je povoleno zobrazení popisků elementů
 			{
 		  	if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;//zvýraznění
-		  	short h=0,w=canv->TextWidth(T2);
+				short h=0,w=canv->TextWidth(T2);
 				canv->Font->Style = TFontStyles();h=canv->TextHeight(T1);w+=canv->TextWidth(T1+" ");//pro normální písmo
 				float zAA=1.0;if(F->antialiasing && typ!=3)zAA=3.0;
+				float wa=1;if(F->antialiasing && typ==3)wa=1.2;//WA ošetření pro editaci kurzoru
 				TRect aktOblast;//aktuální citelná oblast popisku elementu určená k uložení
 				long x,y;
 				//rotace
 				switch((int)rotace)//posun referenčního bodu kvůli bílému orámování
 				{                                                                                                                                                                             //nechat duplicitně        //vypsání indexu stopky, v případě editace i tučně
-					case 0: 	rotace_textu(canv,0+900); x=m.round(X-h/2.0);   		y=m.round(Y-size+2*Z);	aktOblast=TRect(m.round(x/zAA),m.round((y-w)/zAA),m.round((x+h)/zAA),m.round(y/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3){canv->Font->Style = TFontStyles()<< fsBold;rotace_textu(canv,0+900);}TextFraming(canv,x,y-canv->TextWidth(T1+" "),T2);break;
-					case 90:	rotace_textu(canv,0);		  x=m.round(X+size-2*Z);		y=m.round(Y-h/2);     	aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;TextFraming(canv,x+canv->TextWidth(T1+" "),y,T2);break;
-					case 180:	rotace_textu(canv,2700);  x=m.round(X+h/2.0);   		y=m.round(Y+size-2*Z);	aktOblast=TRect(m.round((x-h)/zAA),m.round(y/zAA),m.round(x/zAA),m.round((y+w)/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3){canv->Font->Style = TFontStyles()<< fsBold;rotace_textu(canv,2700);}TextFraming(canv,x,y+canv->TextWidth(T1+" "),T2);break;
-					case 270:	rotace_textu(canv,0);	    x=m.round(X-w-size+2.0*Z);y=m.round(Y-h/2); 			aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;TextFraming(canv,x+canv->TextWidth(T1+" "),y,T2);break;
+					case 0: 	rotace_textu(canv,0+900); x=m.round(X-h/2.0);   		y=m.round(Y-size/wa+2*Z/wa);	aktOblast=TRect(m.round(x/zAA),m.round((y-w)/zAA),m.round((x+h)/zAA),m.round(y/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3){canv->Font->Style = TFontStyles()<< fsBold;rotace_textu(canv,0+900);}TextFraming(canv,x,y-canv->TextWidth(T1+" "),T2);break;
+					case 90:	rotace_textu(canv,0);		  x=m.round(X+size-2*Z*wa);		y=m.round(Y-h/2.0);     			aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;TextFraming(canv,x+canv->TextWidth(T1+" "),y,T2);break;
+					case 180:	rotace_textu(canv,2700);  x=m.round(X+h/2.0);   		y=m.round(Y+size/wa-2*Z/wa);	aktOblast=TRect(m.round((x-h)/zAA),m.round(y/zAA),m.round(x/zAA),m.round((y+w)/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3){canv->Font->Style = TFontStyles()<< fsBold;rotace_textu(canv,2700);}TextFraming(canv,x,y+canv->TextWidth(T1+" "),T2);break;
+					case 270:	rotace_textu(canv,0);	    x=m.round(X-w-size+2.0*Z*wa);y=m.round(Y-h/2.0); 					aktOblast=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+w)/zAA),m.round((y+h)/zAA)); TextFraming(canv,x,y,T1+" ");if(stav==3)canv->Font->Style = TFontStyles()<< fsBold;TextFraming(canv,x+canv->TextWidth(T1+" "),y,T2);break;
 				}
 				rotace_textu(canv,0);//vrací nastavení do původního stavu
 				if(E!=NULL)E->citelna_oblast.rect3=aktOblast;//uložení zjištěné aktuální citelné oblasti do dat elementu
