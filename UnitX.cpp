@@ -1617,7 +1617,7 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 			}break;
 			case 2:case 8:case 12:case 16:case 102:case 106://robot se stop stanicí, naplnìní dopPT
 			{
-        E->data.PT1=E->VID_value;
+				E->data.PT1=E->VID_value;
 				E->mGrid->Cells[1][1].Text=F->m.round2double(F->outPT(E->data.PT1),3);
 				F->d.v.reserve_time(E);
 				validace_PT(E);
@@ -1634,6 +1634,14 @@ bool TFormX::check_click_Note(double X,double Y,bool check_for_highlight)
 				F->d.v.reserve_time(E);
 				validace_PT(E);
 			}break;
+			case 6://aktivní otoè
+			{
+				E->PTotoc=E->VID_value;
+				E->mGrid->Cells[1][2].Text=F->m.round2double(F->outPT(E->PTotoc),3);
+				F->d.v.reserve_time(E);
+				validace_PT(E);
+				break;
+      }
 		}
 		//refresh + pøekreslení vozíkù + aktualizace erroru
 		F->duvod_validovat=2;

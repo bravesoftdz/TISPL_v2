@@ -2811,58 +2811,58 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 	if(Akce==EDITACE_TEXTU || Akce_temp==EDITACE_TEXTU)
 	{
 		if(index_kurzoru==-6 && funkcni_klavesa==0)//editace nadpisu kabiny, není třeba nic provádět
-  	{
-  		//pokud je stisknut backspace
-  		if(Key==8)OBJEKT_akt->name=OBJEKT_akt->name.SubString(1,OBJEKT_akt->name.Length()-1);
-  		else OBJEKT_akt->name+=Key;
-  		REFRESH(false);
-  	}
+		{
+			//pokud je stisknut backspace
+			if(Key==8)OBJEKT_akt->name=OBJEKT_akt->name.SubString(1,OBJEKT_akt->name.Length()-1);
+			else OBJEKT_akt->name+=Key;
+			REFRESH(false);
+		}
 		if(index_kurzoru==-7)//editace short nadpisu kabiny
-  	{
-  		if(Key==8)//pokud je stisknut backspace
-  			OBJEKT_akt->short_name=OBJEKT_akt->short_name.SubString(1,OBJEKT_akt->short_name.Length()-1);
-  		else if(OBJEKT_akt->short_name.Length()!=4)
-  			OBJEKT_akt->short_name+=Key;
-  		else MessageBeep(0);
-  		REFRESH(false);
+		{
+			if(Key==8)//pokud je stisknut backspace
+				OBJEKT_akt->short_name=OBJEKT_akt->short_name.SubString(1,OBJEKT_akt->short_name.Length()-1);
+			else if(OBJEKT_akt->short_name.Length()!=4)
+				OBJEKT_akt->short_name+=Key;
+			else MessageBeep(0);
+			REFRESH(false);
 		}
 		if(index_kurzoru==-101||index_kurzoru==-14||index_kurzoru==-13||index_kurzoru==-11||index_kurzoru==-2||index_kurzoru==-5)//editace vzdálenosti LO,začatek S/K elementu,konec S/K elementu,kót elementů,kót haly nebo objektu, kót kabiny
   	{
   		if(Key==8)//pokud je stisknut backspace
-  			editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
+				editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
   		else
   		{
   			editovany_text+=key;
-  			if(key=="")MessageBeep(0);
+				if(key=="")MessageBeep(0);
   		}
-  		duvod_validovat=1;
-  		REFRESH(false);
-  	}
+			duvod_validovat=1;
+			REFRESH(false);
+		}
 		if(index_kurzoru==1)//editace názvu elementu skrze popisek elementu
-  	{
+		{
   		//2 rozdílné přistupy, u robotu a u totočí jiné
-  		if(pom_element_temp->eID!=0)//roboti+otoče
+			if(pom_element_temp->eID!=0)//roboti+otoče
   		{
   			if(Key==8)//pokud je stisknut backspace
-  				pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
+					pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
   			else
   				pom_element_temp->name+=Key;//nutné Key s velkým K, toto Key neprochází numerickým filtrem
-  		}
-  		else//stopka
-  		{
-  			if(Key==8)//pokud je stisknut backspace
-  			{
-  				if(pom_element_temp->name.Length()>5)//v tomto případě povolit pouze editaci čísla, názvem "Stop " needitovatelný
-  					pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
+			}
+			else//stopka
+			{
+				if(Key==8)//pokud je stisknut backspace
+				{
+					if(pom_element_temp->name.Length()>5)//v tomto případě povolit pouze editaci čísla, názvem "Stop " needitovatelný
+						pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
   				else MessageBeep(0);
-  			}
+				}
   			else
   				pom_element_temp->name+=key;//key s malým k, prochází numerickým filtrem, v tomto případě žádoucí
-  		}
+			}
   		//propsání nového názvu do mGridu
   		int prvni_sloupec=0;
-  		if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
-  		pom_element_temp->mGrid->Cells[prvni_sloupec][prvni_sloupec].Text="<a>"+pom_element_temp->name+"</a>";//nasazení linku
+			if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
+			pom_element_temp->mGrid->Cells[prvni_sloupec][prvni_sloupec].Text="<a>"+pom_element_temp->name+"</a>";//nasazení linku
 			//znovusloučení buňěk
 			if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
 			REFRESH(false);
@@ -2876,7 +2876,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			else
   		{
   			pom_element_temp->name+=key;
-  			if(key=="")MessageBeep(0);
+				if(key=="")MessageBeep(0);
   		}
   		REFRESH(false);
 		}
@@ -4722,13 +4722,13 @@ void TForm1::getJobID(int X, int Y)
     			if(IdxRow>0)//nějaký z řádků mimo nultého tj. hlavičky, nelze použít else, protože IdxRow -1 bude také možný výsledek
 					{
 						int IdxCol=pom_element->mGrid->GetIdxColumn(X,Y);
-  					if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
+						if(IdxCol!=-1 && pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
 						else if(IdxCol==0)//řádky v prvním sloupeci
   					{
   						//if(pom_element->mGrid->CheckLink(X,Y,IdxCol,IdxRow))JID=100+IdxRow;//na daném řádku a daných myších souřadnicích se nachází odkaz
   						/*else */if(OBJEKT_akt->uzamknout_nahled==false)JID=1000+IdxRow;//řádky bez odkazu možné posouvat tabulku je možné pouze při odemčeném náhledu
 						}
-						else if(OBJEKT_akt->uzamknout_nahled==false)JID=(IdxCol+1)*1000+IdxRow;//řádky v druhém a dalších sloupcích
+						else if(IdxCol!=-1 && OBJEKT_akt->uzamknout_nahled==false)JID=(IdxCol+1)*1000+IdxRow;//řádky v druhém a dalších sloupcích
 						//nastavenní vykreslovací větve
 						if(pom_element->eID==300 && ((JID>=4001 && JID<=4010) || (JID>=5001 && JID<=5010)))
 						{
