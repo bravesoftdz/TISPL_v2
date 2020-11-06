@@ -274,7 +274,6 @@ __published:	// IDE-managed Components
   TscGPButton *scGPButton_bug_report;
 	TTimer *Timer_getjobid;
 	TscGPCheckBox *scGPCheckBox_popisek_pohonu;
-	TEdit *Edit_proFocus;
 	TscLabel *scLabel_statusbar_1;
 	TscLabel *scLabel_statusbar_0;
 	TscLabel *scLabel_statusbar_2;
@@ -288,6 +287,7 @@ __published:	// IDE-managed Components
 	TscGPGlyphButton *scGPGlyphButton_PLAYminus;
 	TscGPGlyphButton *scGPGlyphButton_PLAYplus;
 	TscGPLabel *scGPLabel_zamerovac;
+	TscEdit *Edit_proFocus;
 	void __fastcall Konec1Click(TObject *Sender);
 	void __fastcall FormMouseMove(TObject *Sender, TShiftState Shift, int X, int Y);
 	void __fastcall FormPaint(TObject *Sender);
@@ -474,6 +474,8 @@ __published:	// IDE-managed Components
 	void __fastcall scGPGlyphButton_PLAYplusClick(TObject *Sender);
 	void __fastcall scGPGlyphButton_PLAYminusClick(TObject *Sender);
 	void __fastcall scGPCheckBox_antialiasingClick(TObject *Sender);
+
+
 
 
 

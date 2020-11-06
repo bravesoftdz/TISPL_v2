@@ -6332,16 +6332,6 @@ object Form1: TForm1
     AllowAllUp = False
     ToggleMode = False
   end
-  object Edit_proFocus: TEdit
-    Left = -1000
-    Top = -1000
-    Width = 121
-    Height = 21
-    TabOrder = 18
-    OnKeyDown = FormKeyDown
-    OnKeyPress = FormKeyPress
-    OnKeyUp = FormKeyUp
-  end
   object scSplitView_OPTIONS: TscSplitView
     Left = 0
     Top = 34
@@ -9316,7 +9306,7 @@ object Form1: TForm1
     Font.Style = []
     ParentFont = False
     FluentUIOpaque = False
-    TabOrder = 19
+    TabOrder = 18
     Visible = False
     DragForm = False
     DragTopForm = True
@@ -9345,6 +9335,66 @@ object Form1: TForm1
     AutoSize = True
     Alignment = taCenter
     Caption = 'scGPLabel_zamerovac'
+  end
+  object Edit_proFocus: TscEdit
+    Left = -1000
+    Top = -1000
+    Width = 121
+    Height = 21
+    FluentUIOpaque = False
+    UseFontColorToStyleColor = False
+    ContentMarginLeft = 0
+    ContentMarginRight = 0
+    ContentMarginTop = 0
+    ContentMarginBottom = 0
+    CustomBackgroundImageNormalIndex = -1
+    CustomBackgroundImageHotIndex = -1
+    CustomBackgroundImageDisabledIndex = -1
+    PromptTextColor = clNone
+    HidePromptTextIfFocused = False
+    WallpaperIndex = -1
+    LeftButton.ComboButton = False
+    LeftButton.Enabled = True
+    LeftButton.Visible = False
+    LeftButton.ShowHint = False
+    LeftButton.ShowEllipses = False
+    LeftButton.StyleKind = scbsPushButton
+    LeftButton.Width = 18
+    LeftButton.ImageIndex = -1
+    LeftButton.ImageHotIndex = -1
+    LeftButton.ImagePressedIndex = -1
+    LeftButton.RepeatClick = False
+    LeftButton.RepeatClickInterval = 200
+    LeftButton.CustomImageNormalIndex = -1
+    LeftButton.CustomImageHotIndex = -1
+    LeftButton.CustomImagePressedIndex = -1
+    LeftButton.CustomImageDisabledIndex = -1
+    RightButton.ComboButton = False
+    RightButton.Enabled = True
+    RightButton.Visible = False
+    RightButton.ShowHint = False
+    RightButton.ShowEllipses = False
+    RightButton.StyleKind = scbsPushButton
+    RightButton.Width = 18
+    RightButton.ImageIndex = -1
+    RightButton.ImageHotIndex = -1
+    RightButton.ImagePressedIndex = -1
+    RightButton.RepeatClick = False
+    RightButton.RepeatClickInterval = 200
+    RightButton.CustomImageNormalIndex = -1
+    RightButton.CustomImageHotIndex = -1
+    RightButton.CustomImagePressedIndex = -1
+    RightButton.CustomImageDisabledIndex = -1
+    Transparent = False
+    BorderKind = scebFrame
+    CustomDraw = False
+    FrameColor = clBtnShadow
+    FrameActiveColor = clHighlight
+    Text = 'Edit_proFocus'
+    TabOrder = 19
+    OnKeyDown = FormKeyDown
+    OnKeyPress = FormKeyPress
+    OnKeyUp = FormKeyUp
   end
   object ImageList1: TImageList
     Left = 520

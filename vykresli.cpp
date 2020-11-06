@@ -957,20 +957,20 @@ void Cvykresli::vykresli_meridlo(TCanvas *canv,int X,int Y,bool kalibracni_sipka
 void Cvykresli::vykresli_meridlo(TCanvas *canv)
 {
 	////zjistění, zda se jedná o meření po trendu nebo proti
-//	bool mereni_po_trendu;
-//	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && F->pom_element==v.MAG_LASO->sparovany && m.Rt90(m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))!=m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel)) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
-//		mereni_po_trendu=false;
-//	else
-//		mereni_po_trendu=true;
+	bool mereni_po_trendu;
+	if(F->pom_element!=NULL && ((v.MAG_LASO->dalsi==NULL && F->pom_element==v.MAG_LASO->sparovany && m.Rt90(m.azimut(v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y))!=m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel)) || (v.MAG_LASO->dalsi!=NULL && v.MAG_LASO->sparovany!=NULL && ((v.MAG_LASO->predchozi->n==1 && ((F->pom_element->dalsi==v.MAG_LASO->sparovany || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->sparovany)) || F->pom_element->dalsi2==v.MAG_LASO->sparovany)) || (v.MAG_LASO->predchozi->n>1 && (v.MAG_LASO->dalsi->dalsi->Element->dalsi==v.MAG_LASO->sparovany || (v.MAG_LASO->dalsi->dalsi->Element->dalsi!=NULL && v.MAG_LASO->dalsi->dalsi->Element->dalsi->dalsi==v.MAG_LASO->sparovany) || v.MAG_LASO->dalsi->dalsi->Element->dalsi2==v.MAG_LASO->sparovany))))))
+		mereni_po_trendu=false;
+	else
+		mereni_po_trendu=true;
 
 	////vykreslní citelných oblastí
 	bool prichyceno=vykresli_cit_oblasti_lasa(canv);
 
 	////přesměrování podle typu vykreslení
-//	if(F->mereni_po_trendu)
+	if(mereni_po_trendu)
 		vykresli_meridlo_po_trendu(canv,prichyceno);
-//	else
-//		vykresli_meridlo_proti_trendu(canv,prichyceno);
+	else
+		vykresli_meridlo_proti_trendu(canv,prichyceno);
 
   ////měření na časových osách při simulaci
 	if(F->pocatek_mereni.x!=-1 && F->pocatek_mereni.y!=-1)
@@ -1187,7 +1187,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		}
 	}
 
-  return ret;
+	return ret;
 }
 ////---------------------------------------------------------------------------
 //vykreslí měření po trendu linky
@@ -1201,7 +1201,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 	if(F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->n==0 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || F->pom_element==v.MAG_LASO->predchozi->Element || (F->pom_element->eID==301 && F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element)))
 	{
 		Cvektory::TCesta *C=v.MAG_LASO->dalsi;
-  	while(C!=NULL)
+		while(C!=NULL)
 		{
 			//nastavení parametrů pro vykreslení + výpočet délky
 			X=C->Element->geo.X1;Y=C->Element->geo.Y1;
@@ -1350,7 +1350,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			R=F->pom_element->geo.radius;
 			RA=F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
 			OR=F->pom_element->geo.orientace;
-   		X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
+			X=F->pom_element->geo.X1,Y=F->pom_element->geo.Y1;
 
 			//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
 			uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
@@ -1390,7 +1390,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			delka_Pud=d=m.delka(X,Y,konec.x,konec.y);
 			d=m.castPrepony(d,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 			delka+=d;
-      delka_pom+=delka_Pud;
+			delka_pom+=delka_Pud;
 
 			//vypočet času
 			if(F->pom_element->pohon!=NULL && d!=0)
@@ -1479,7 +1479,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 
 	//uložení naměřených hodnot
 	F->mereni_delka.x=delka;
-  F->mereni_delka.y=delka_pom;
+	F->mereni_delka.y=delka_pom;
 	F->mereni_cas.x=cas;
 	if(prichyceno && v.vrat_druh_elementu(F->pom_element)!=0)cas_pom=cas;//pokud jsem přichycený na elementu (např. zarážka) srovnat pro jistotu cas a cas_pom
 	F->mereni_cas.y=cas_pom;
@@ -1492,204 +1492,204 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,d=0;
 	String popisek="";
 
-	////výpočty délky a času pro segmenty v mag. lasu
-	if(F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->predchozi->Element) || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element))
-	{
-		Cvektory::TCesta *C=v.MAG_LASO->dalsi;
-		while(C!=NULL)
-		{
-			//nastavení parametrů pro vykreslení + výpočet délky
-			X=C->Element->geo.X1;Y=C->Element->geo.Y1;
-			RA=C->Element->geo.rotacni_uhel;
-			OR=C->Element->geo.orientace;
-			uhel=0;
-			if(C->n==1)
-			{
-				X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
-				RA=v.MAG_LASO->sparovany->geo.rotacni_uhel;
-				OR=m.Rt90(v.MAG_LASO->sparovany->geo.orientace-180);
-			}
-			//výpočet delky
-			if(C->Element->n!=MaxInt && C->n!=1)d=C->Element->geo.delka;
-			else if(C->Element->geo.typ==0)
-			{
-				d=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
-				d=m.castPrepony(d,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
-			}
-			else
-			{
-				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
-				uhel=m.T2Aarc(C->Element->geo.radius,d);
-				d=m.R2Larc(C->Element->geo.radius,uhel);
-			}
-			delka+=d;
-
-			if(C->Element->geo.typ==0)
-			{
-  			R=d;
-				uhel=0;
-			}
-  		else
-			{
-				R=C->Element->geo.radius;
-				if(C->n==1)R=v.MAG_LASO->sparovany->geo.radius;
-				if(uhel==0)uhel=RA;//max z rotačního úhlu
-			}
-			//výpočet času
-			if(C->Element!=NULL && C->Element->pohon!=NULL)
-			{
-				if(C->Element->eID!=0 || (C->Element->eID==0 && (v.MAG_LASO->sparovany!=C->Element || (v.MAG_LASO->sparovany!=C->Element && d==C->Element->geo.delka))))
-				{
-					cas+=d/C->Element->pohon->aRD;
-					cas_pom+=d/C->Element->pohon->aRD;
-					if(!prichyceno || (prichyceno && F->pom_element!=C->Element))
-					{
-						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;
-						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;
-					}
-					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element->dalsi)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->WT+F->pom_element->PTotoc+F->pom_element->data.WTstop;
-					if(C->Element->eID==0)
-					{
-						if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
-						{
-							cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-              cas_pom-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
-						}
-					}
-				}
-				else
-				{
-					//řešit pouze část bufferu
-					//kontrola + vypočet WT na vozík v bufferu
-					double d_pom=d;
-					if(C->Element->eID==0)
-					{
-						//výpočet vzdálenosti od stopstanice
-						double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,C->Element->geo.X4,C->Element->geo.Y4);
-						check=m.castPrepony(check,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
-						double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
-						s=m.castPrepony(s,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
-						//výpočet velikosti bufferu stopstanice
-						double buf=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
-						//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
-	    			if(s<=buf)
-	    			{
-							cas+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
-              cas_pom+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);
-							if(check<buf)d_pom=0;//nepočítám žádný další čas
-							else d_pom-=buf-s;//zmenšení délky jen na délku pojezdu
-						}
-					}
-      		//vypočet času přejezdu
-					cas+=d_pom/C->Element->pohon->aRD;
-					cas_pom+=d_pom/C->Element->pohon->aRD;
-				}
-			}
-			//vykreslení segmentu
-			short typ=0;
-			if(C->n==1)typ=1;
-			if(C->n==1 && C->Element->geo.typ!=0)//pokud je první segment část oblouku nutné pozměnit vykreslení
-			{
-				X=C->Element->geo.X1;Y=C->Element->geo.Y1;
-				OR=C->Element->geo.orientace;
-				uhel=90-uhel;
-				if(C->Element->geo.rotacni_uhel<0)uhel=-uhel;
-				typ=2;
-			}
-			//vykreslení segmentu
-			String t1="",t2="";
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,t1,t2,typ);
-			//posun na další segment
-			C=C->dalsi;
-		}
-		delete C;C=NULL;
-	}
-
-	////magnetické laso
-	if(v.MAG_LASO->dalsi!=NULL && F->pom_element!=NULL && (F->pom_element->dalsi==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->predchozi->Element) || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element))
-	{
-		//vykreslení části oblouku
-		if(F->pom_element->geo.typ!=0)
-		{
-			//načítání parametrů
-			R=F->pom_element->geo.radius;
-			RA=-F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
-			OR=m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel-180);
-			X=F->pom_element->geo.X4,Y=F->pom_element->geo.Y4;
-
-			//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
-			uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-			d=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
-			delka+=d;
-      //vypočet času
-			if(F->pom_element->pohon!=NULL)
-			{
-				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
-		  	{
-					cas+=d/F->pom_element->pohon->aRD;
-					cas_pom+=d/F->pom_element->pohon->aRD;
-					if(!prichyceno && v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
-				}
-		  	else
-		  	{
-					cas+=d/F->pom_element->pohon->aRD;
-          cas_pom+=d/F->pom_element->pohon->aRD;
-					if(!prichyceno && v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
-				}
-			}
-
-			//vykreslovací část
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
-		}
-		//vykreslení části linie
-		else
-		{
-			//načítání parametrů
-			double delka_Pud;
-			X=F->pom_element->geo.X4;Y=F->pom_element->geo.Y4;
-			if(v.MAG_LASO->dalsi==NULL || prichyceno){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
-			OR=m.Rt90(F->pom_element->geo.orientace-180);
-			//výpočetní část
-			TPointD konec=v.bod_na_geometrii(F->pom_element);
-			d=m.delka(X,Y,konec.x,konec.y);
-			delka_Pud=d;
-			d=m.castPrepony(d,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
-			delka+=d;
-
-			//vypočet času
-			if(F->pom_element->pohon!=NULL)
-			{
-				double d_pom=d;
-				//přičítání času čekání při přejíždění nad pozicemi bufferu
-				if(F->pom_element->eID==0 && !prichyceno)
-				{
-					double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
-					cas+=F->pom_element->data.WTstop+F->pom_element->WT;
-					cas_pom+=F->pom_element->data.WTstop+F->pom_element->WT;
-					if(d<=buf)d_pom=0;
-					else d_pom-=buf;//odstranění přejezdu přes buffer
-				}
-				//vypočet času přejezdu a WTpalec
-				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
-				{
-					cas+=d_pom/F->pom_element->pohon->aRD;
-					cas_pom+=d_pom/F->pom_element->pohon->aRD;
-				}
-				else
-				{
-					cas+=d_pom/F->pom_element->pohon->aRD;
-					cas_pom+=d_pom/F->pom_element->pohon->aRD;
-				}
-			}
-			if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->WT+F->pom_element->PTotoc+F->pom_element->data.WTstop;
-
-			//vykreslovací část
-			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
-		}
-	}
+//	////výpočty délky a času pro segmenty v mag. lasu
+//	if(F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->predchozi->Element) || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element))
+//	{
+//		Cvektory::TCesta *C=v.MAG_LASO->dalsi;
+//		while(C!=NULL)
+//		{
+//			//nastavení parametrů pro vykreslení + výpočet délky
+//			X=C->Element->geo.X1;Y=C->Element->geo.Y1;
+//			RA=C->Element->geo.rotacni_uhel;
+//			OR=C->Element->geo.orientace;
+//			uhel=0;
+//			if(C->n==1)
+//			{
+//				X=v.MAG_LASO->Element->geo.X1;Y=v.MAG_LASO->Element->geo.Y1;
+//				RA=v.MAG_LASO->sparovany->geo.rotacni_uhel;
+//				OR=m.Rt90(v.MAG_LASO->sparovany->geo.orientace-180);
+//			}
+//			//výpočet delky
+//			if(C->Element->n!=MaxInt && C->n!=1)d=C->Element->geo.delka;
+//			else if(C->Element->geo.typ==0)
+//			{
+//				d=m.delka(X,Y,C->Element->geo.X1,C->Element->geo.Y1);
+//				d=m.castPrepony(d,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+//			}
+//			else
+//			{
+//				d=m.delka(X,Y,C->Element->geo.X4,C->Element->geo.Y4);
+//				uhel=m.T2Aarc(C->Element->geo.radius,d);
+//				d=m.R2Larc(C->Element->geo.radius,uhel);
+//			}
+//			delka+=d;
+//
+//			if(C->Element->geo.typ==0)
+//			{
+//  			R=d;
+//				uhel=0;
+//			}
+//  		else
+//			{
+//				R=C->Element->geo.radius;
+//				if(C->n==1)R=v.MAG_LASO->sparovany->geo.radius;
+//				if(uhel==0)uhel=RA;//max z rotačního úhlu
+//			}
+//			//výpočet času
+//			if(C->Element!=NULL && C->Element->pohon!=NULL)
+//			{
+//				if(C->Element->eID!=0 || (C->Element->eID==0 && (v.MAG_LASO->sparovany!=C->Element || (v.MAG_LASO->sparovany!=C->Element && d==C->Element->geo.delka))))
+//				{
+//					cas+=d/C->Element->pohon->aRD;
+//					cas_pom+=d/C->Element->pohon->aRD;
+//					if(!prichyceno || (prichyceno && F->pom_element!=C->Element))
+//					{
+//						cas+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;
+//						cas_pom+=C->Element->data.PT1+C->Element->data.PT2+C->Element->WT+C->Element->PTotoc+C->Element->data.WTstop;
+//					}
+//					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element->dalsi)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->WT+F->pom_element->PTotoc+F->pom_element->data.WTstop;
+//					if(C->Element->eID==0)
+//					{
+//						if(d>=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)
+//						{
+//							cas-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+//              cas_pom-=(C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice)/C->Element->pohon->aRD;
+//						}
+//					}
+//				}
+//				else
+//				{
+//					//řešit pouze část bufferu
+//					//kontrola + vypočet WT na vozík v bufferu
+//					double d_pom=d;
+//					if(C->Element->eID==0)
+//					{
+//						//výpočet vzdálenosti od stopstanice
+//						double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,C->Element->geo.X4,C->Element->geo.Y4);
+//						check=m.castPrepony(check,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+//						double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,C->Element->geo.X4,C->Element->geo.Y4);
+//						s=m.castPrepony(s,C->Element->geo.delkaPud,C->Element->geo.HeightDepp);
+//						//výpočet velikosti bufferu stopstanice
+//						double buf=C->Element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
+//						//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+//	    			if(s<=buf)
+//	    			{
+//							cas+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
+//              cas_pom+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);
+//							if(check<buf)d_pom=0;//nepočítám žádný další čas
+//							else d_pom-=buf-s;//zmenšení délky jen na délku pojezdu
+//						}
+//					}
+//      		//vypočet času přejezdu
+//					cas+=d_pom/C->Element->pohon->aRD;
+//					cas_pom+=d_pom/C->Element->pohon->aRD;
+//				}
+//			}
+//			//vykreslení segmentu
+//			short typ=0;
+//			if(C->n==1)typ=1;
+//			if(C->n==1 && C->Element->geo.typ!=0)//pokud je první segment část oblouku nutné pozměnit vykreslení
+//			{
+//				X=C->Element->geo.X1;Y=C->Element->geo.Y1;
+//				OR=C->Element->geo.orientace;
+//				uhel=90-uhel;
+//				if(C->Element->geo.rotacni_uhel<0)uhel=-uhel;
+//				typ=2;
+//			}
+//			//vykreslení segmentu
+//			String t1="",t2="";
+//			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,t1,t2,typ);
+//			//posun na další segment
+//			C=C->dalsi;
+//		}
+//		delete C;C=NULL;
+//	}
+//
+//	////magnetické laso
+//	if(v.MAG_LASO->dalsi!=NULL && F->pom_element!=NULL && (F->pom_element->dalsi==v.MAG_LASO->predchozi->Element || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element || (F->pom_element->dalsi!=NULL && F->pom_element->dalsi->dalsi==v.MAG_LASO->predchozi->Element) || F->pom_element->dalsi2==v.MAG_LASO->predchozi->Element))
+//	{
+//		//vykreslení části oblouku
+//		if(F->pom_element->geo.typ!=0)
+//		{
+//			//načítání parametrů
+//			R=F->pom_element->geo.radius;
+//			RA=-F->pom_element->geo.rotacni_uhel;//rotační úhel, pod kterým je oblouk rotován - směřován (proti směru hodinových ručiček), může být záporný (po směru hodinových ručiček)
+//			OR=m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel-180);
+//			X=F->pom_element->geo.X4,Y=F->pom_element->geo.Y4;
+//
+//			//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
+//			uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//			d=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
+//			delka+=d;
+//      //vypočet času
+//			if(F->pom_element->pohon!=NULL)
+//			{
+//				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
+//		  	{
+//					cas+=d/F->pom_element->pohon->aRD;
+//					cas_pom+=d/F->pom_element->pohon->aRD;
+//					if(!prichyceno && v.MAG_LASO->predchozi->sparovany->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+//				}
+//		  	else
+//		  	{
+//					cas+=d/F->pom_element->pohon->aRD;
+//          cas_pom+=d/F->pom_element->pohon->aRD;
+//					if(!prichyceno && v.MAG_LASO->predchozi->Element->pohon!=F->pom_element->pohon)cas+=m.cekani_na_palec(0,F->pom_element->pohon->roztec,F->pom_element->pohon->aRD,3);
+//				}
+//			}
+//
+//			//vykreslovací část
+//			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
+//		}
+//		//vykreslení části linie
+//		else
+//		{
+//			//načítání parametrů
+//			double delka_Pud;
+//			X=F->pom_element->geo.X4;Y=F->pom_element->geo.Y4;
+//			if(v.MAG_LASO->dalsi==NULL || prichyceno){X=v.MAG_LASO->predchozi->Element->geo.X1;Y=v.MAG_LASO->predchozi->Element->geo.Y1;}
+//			OR=m.Rt90(F->pom_element->geo.orientace-180);
+//			//výpočetní část
+//			TPointD konec=v.bod_na_geometrii(F->pom_element);
+//			d=m.delka(X,Y,konec.x,konec.y);
+//			delka_Pud=d;
+//			d=m.castPrepony(d,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+//			delka+=d;
+//
+//			//vypočet času
+//			if(F->pom_element->pohon!=NULL)
+//			{
+//				double d_pom=d;
+//				//přičítání času čekání při přejíždění nad pozicemi bufferu
+//				if(F->pom_element->eID==0 && !prichyceno)
+//				{
+//					double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
+//					cas+=F->pom_element->data.WTstop+F->pom_element->WT;
+//					cas_pom+=F->pom_element->data.WTstop+F->pom_element->WT;
+//					if(d<=buf)d_pom=0;
+//					else d_pom-=buf;//odstranění přejezdu přes buffer
+//				}
+//				//vypočet času přejezdu a WTpalec
+//				if(v.MAG_LASO->predchozi->Element->n==MaxInt && v.MAG_LASO->predchozi->sparovany!=NULL)
+//				{
+//					cas+=d_pom/F->pom_element->pohon->aRD;
+//					cas_pom+=d_pom/F->pom_element->pohon->aRD;
+//				}
+//				else
+//				{
+//					cas+=d_pom/F->pom_element->pohon->aRD;
+//					cas_pom+=d_pom/F->pom_element->pohon->aRD;
+//				}
+//			}
+//			if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->WT+F->pom_element->PTotoc+F->pom_element->data.WTstop;
+//
+//			//vykreslovací část
+//			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
+//		}
+//	}
 
   ////lineární měření
-	else if(v.MAG_LASO->Element!=NULL && v.MAG_LASO->predchozi->n==0)
+	/*else */if(v.MAG_LASO->Element!=NULL && v.MAG_LASO->predchozi->n==0)
 	{
 		//načtení parametrů
 		X=v.MAG_LASO->Element->geo.X4;Y=v.MAG_LASO->Element->geo.Y4;
@@ -1698,78 +1698,78 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 		if(F->pom_element!=NULL)delka=m.castPrepony(delka,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		//výpočt času a vykreslení
-		if(F->pom_element->pohon!=NULL)
-		{
-			//vykreslení části linie + výpočet času v bufferu
-			if(F->pom_element->geo.typ==0)
-			{
-		  	//kontrola + vypočet WT na vozík v bufferu
-		  	d=delka;
-		  	if(F->pom_element->eID==0)
-				{
-  	  		//výpočet vzdálenosti od stopstanice
-					double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-					check=m.castPrepony(check,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
-					double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
-          s=m.castPrepony(s,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
-		  		//výpočet velikosti bufferu stopstanice
-		  		double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
-		  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
-		  		if(s<=buf)
-		  		{
-						cas+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
-            cas_pom+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);
-		  			if(check<buf)delka=0;//nepočítám žádný další čas
-						else delka-=buf-s;//zmenšení délky jen na délku pojezdu
-					}
-				}
-		  	//vypočet času přejezdu
-				cas+=delka/F->pom_element->pohon->aRD;
-				cas_pom+=delka/F->pom_element->pohon->aRD;
-				if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+F->pom_element->data.WTstop;
-				//vykreslení
-				vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
-			}
-			//vykreslení části oblouku, na pohonu
-			else
-			{
-				X=v.MAG_LASO->sparovany->geo.X1;Y=v.MAG_LASO->sparovany->geo.Y1;
-				double u1,u2;
-				u1=m.uhelObloukuVsMys(X,Y,v.MAG_LASO->sparovany->geo.orientace,v.MAG_LASO->sparovany->geo.rotacni_uhel,v.MAG_LASO->sparovany->geo.radius,v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-				u2=m.uhelObloukuVsMys(X,Y,v.MAG_LASO->sparovany->geo.orientace,v.MAG_LASO->sparovany->geo.rotacni_uhel,v.MAG_LASO->sparovany->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
-				//měření proti trendu, zaměnit u1 za u2
-				if((u2-u1<0 && u1>0 && u2>0) || (u2-u1>0 && u1<0 && u2<0))
-				{
-					delka=u1;
-					u1=u2;
-					u2=delka;
-        }
-				delka=m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u1);
-				cas=delka/F->pom_element->pohon->aRD;
-				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u2,v.MAG_LASO->sparovany->geo.radius,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","",2);
-				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2,clMeridlo);
-			}
-		}
-		//vykreslení části oblouky bez pohonu
-		else if(F->pom_element->geo.typ!=0 && F->pom_element==v.MAG_LASO->sparovany)
-		{
-			X=v.MAG_LASO->sparovany->geo.X1;Y=v.MAG_LASO->sparovany->geo.Y1;
-			double u1,u2;
-			u1=m.uhelObloukuVsMys(X,Y,v.MAG_LASO->sparovany->geo.orientace,v.MAG_LASO->sparovany->geo.rotacni_uhel,v.MAG_LASO->sparovany->geo.radius,v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-			u2=m.uhelObloukuVsMys(X,Y,v.MAG_LASO->sparovany->geo.orientace,v.MAG_LASO->sparovany->geo.rotacni_uhel,v.MAG_LASO->sparovany->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
-			//měření proti trendu, zaměnit u1 za u2
-			if((u2-u1<0 && u1>0 && u2>0) || (u2-u1>0 && u1<0 && u2<0))
-			{
-				delka=u1;
-				u1=u2;
-				u2=delka;
-			}
-			delka=m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u1);
-			vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u2,v.MAG_LASO->sparovany->geo.radius,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","",2);
-			vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2,clMeridlo);
-		}
+//		if(F->pom_element->pohon!=NULL)
+//		{
+//			//vykreslení části linie + výpočet času v bufferu
+//			if(F->pom_element->geo.typ==0)
+//			{
+//		  	//kontrola + vypočet WT na vozík v bufferu
+//				d=delka;
+//				if(F->pom_element->eID==0)
+//				{
+//  	  		//výpočet vzdálenosti od stopstanice
+//					double check=m.delka(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+//					check=m.castPrepony(check,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+//					double s=m.delka(v.MAG_LASO->Element->geo.X4,v.MAG_LASO->Element->geo.Y4,F->pom_element->geo.X4,F->pom_element->geo.Y4);
+//          s=m.castPrepony(s,F->pom_element->geo.delkaPud,F->pom_element->geo.HeightDepp);
+//		  		//výpočet velikosti bufferu stopstanice
+//					double buf=F->pom_element->data.pocet_voziku*v.PP.delka_podvozek-v.PP.uchyt_pozice;
+//		  		//pokud je vzdálenost od stopstanice menší nž buffer, tzn. jsem v bufferu
+//					if(s<=buf)
+//		  		{
+//						cas+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);//připočítání WT na aktuálním vozíku
+//						cas_pom+=m.V2WT(ceil((buf-s)/v.PP.delka_podvozek),v.PP.TT);
+//		  			if(check<buf)delka=0;//nepočítám žádný další čas
+//						else delka-=buf-s;//zmenšení délky jen na délku pojezdu
+//					}
+//				}
+//				//vypočet času přejezdu
+//				cas+=delka/F->pom_element->pohon->aRD;
+//				cas_pom+=delka/F->pom_element->pohon->aRD;
+//				if(prichyceno)cas_pom+=F->pom_element->data.PT1+F->pom_element->data.PT2+F->pom_element->PTotoc+F->pom_element->WT+F->pom_element->data.WTstop;
+//				//vykreslení
+//				vykresli_Gelement(canv,X,Y,azimut,0,d,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
+//			}
+//			//vykreslení části oblouku, na pohonu
+//			else
+//			{
+//				X=v.MAG_LASO->sparovany->geo.X1;Y=v.MAG_LASO->sparovany->geo.Y1;
+//				double u1,u2;
+//				u1=m.uhelObloukuVsMys(X,Y,v.MAG_LASO->sparovany->geo.orientace,v.MAG_LASO->sparovany->geo.rotacni_uhel,v.MAG_LASO->sparovany->geo.radius,v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//				u2=m.uhelObloukuVsMys(X,Y,v.MAG_LASO->sparovany->geo.orientace,v.MAG_LASO->sparovany->geo.rotacni_uhel,v.MAG_LASO->sparovany->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
+//				//měření proti trendu, zaměnit u1 za u2
+//				if((u2-u1<0 && u1>0 && u2>0) || (u2-u1>0 && u1<0 && u2<0))
+//				{
+//					delka=u1;
+//					u1=u2;
+//					u2=delka;
+//        }
+//				delka=m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u1);
+//				cas=delka/F->pom_element->pohon->aRD;
+//				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u2,v.MAG_LASO->sparovany->geo.radius,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","",2);
+//				vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2,clMeridlo);
+//			}
+//		}
+//		//vykreslení části oblouky bez pohonu
+//		else if(F->pom_element->geo.typ!=0 && F->pom_element==v.MAG_LASO->sparovany)
+//		{
+//			X=v.MAG_LASO->sparovany->geo.X1;Y=v.MAG_LASO->sparovany->geo.Y1;
+//			double u1,u2;
+//			u1=m.uhelObloukuVsMys(X,Y,v.MAG_LASO->sparovany->geo.orientace,v.MAG_LASO->sparovany->geo.rotacni_uhel,v.MAG_LASO->sparovany->geo.radius,v.MAG_LASO->Element->geo.X1,v.MAG_LASO->Element->geo.Y1);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+//			u2=m.uhelObloukuVsMys(X,Y,v.MAG_LASO->sparovany->geo.orientace,v.MAG_LASO->sparovany->geo.rotacni_uhel,v.MAG_LASO->sparovany->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
+//			//měření proti trendu, zaměnit u1 za u2
+//			if((u2-u1<0 && u1>0 && u2>0) || (u2-u1>0 && u1<0 && u2<0))
+//			{
+//				delka=u1;
+//				u1=u2;
+//				u2=delka;
+//			}
+//			delka=m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u2)-m.R2Larc(v.MAG_LASO->sparovany->geo.radius,u1);
+//			vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u2,v.MAG_LASO->sparovany->geo.radius,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]","",2);
+//			vykresli_Gelement(canv,X,Y,v.MAG_LASO->sparovany->geo.orientace,u1,v.MAG_LASO->sparovany->geo.radius,(TColor) RGB(255,69,0),2,"","",2,clMeridlo);
+//		}
     //vykreslení linie bez pohonu
-		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
+		/*else*/ vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
 
   //uložení naměřených hodnot
@@ -1823,7 +1823,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 		  	{
 		  		vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,clTeplomery,1);//vykreslení cesty od prvního teploměru
 					vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
-		  	}
+				}
 		  	//vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
 		  	else
 		  	{
@@ -1838,7 +1838,7 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 					}
 		  		//vykrelsení čísti úseku mezi teploměry
 		  		else
-		  		{
+					{
 		  			;//nelze aplikovat stejnou metodu vykreslení jako u mag_lasa, kreslí se na prázdný prostor, zde nopomůže barva kolejí
 		  		}
 		  	}
@@ -1879,20 +1879,20 @@ void Cvykresli::vykresli_segment_cesty_teplomeru(TCanvas *canv,Cvektory::TElemen
 		if(Element->sparovany->geo.typ==0)R=m.delka(X1,Y1,X2,Y2);
 		else
 		{
-      //výpočet RA
+			//výpočet RA
 			OR=Element->sparovany->geo.orientace;
 			R=Element->sparovany->geo.radius;
 			double d=m.delka(X1,Y1,X2,Y2);
 			RA=m.T2Aarc(R,d);
-      //kontrola zda sem dostal validní výsledek, pokud ne obrácení RA
+			//kontrola zda sem dostal validní výsledek, pokud ne obrácení RA
 			if(teplomer==2 && ((Element->sparovany->geo.rotacni_uhel<0 && RA>0) || (Element->sparovany->geo.rotacni_uhel>0 && RA<0)))RA=-RA;
 			//vykreslit opačně
 			if(teplomer==1)
 			{
-				d=X1;X1=X2;X2;d;
-				d=Y1;Y1=Y2;Y2;d;
 				OR=m.Rt90(Element->sparovany->geo.orientace-Element->sparovany->geo.rotacni_uhel-180);//obrácení orientace
 				if((Element->sparovany->geo.rotacni_uhel<0 && RA<0) || (Element->sparovany->geo.rotacni_uhel>0 && RA>0))RA=-RA;
+				X1=Element->sparovany->geo.X4;Y1=Element->sparovany->geo.Y4;
+				X2=Element->geo.X4;Y2=Element->geo.Y4;
 			}
 		}
 	}
@@ -4228,7 +4228,7 @@ void Cvykresli::vykresli_teplomer(TCanvas *canv,long X,long Y,AnsiString name,An
   	Element->citelna_oblast.rect3=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth(name))/zAA),m.round((y+Th)/zAA));//souřadnice pro citelnou oblast, pro vykreslení oblasti by muselo být použito bez /zAA
   	//°C
   	canv->Font->Style = TFontStyles();
-  	x=x+Tw;
+		x=x+Tw;
   	TextFraming(canv,x,y,"°C");
 		Element->citelna_oblast.rect4=TRect(m.round(x/zAA),m.round(y/zAA),m.round((x+canv->TextWidth("°C"))/zAA),m.round((y+Th)/zAA));//citelná oblast popisku "°C"
 	}
@@ -4648,7 +4648,9 @@ void Cvykresli::vykresli_editovane_polozky(TCanvas *canv)
 			//editace názvu teploměrů, nebo editace názvu elementu
 			case -8:case 1:
 			{
-				vykresli_element(canv,0,m.L2Px(F->pom_element_temp->X),m.L2Py(F->pom_element_temp->Y),F->pom_element_temp->name,F->pom_element_temp->short_name,F->pom_element_temp->eID,3,F->pom_element_temp->orientace,1,F->pom_element_temp->data.LO1,F->pom_element_temp->OTOC_delka,F->pom_element_temp->data.LO2,F->pom_element_temp->data.LO_pozice,F->pom_element_temp);
+				double orientace=F->pom_element_temp->orientace;
+				if(F->index_kurzoru==-8)orientace=m.Rt90(F->pom_element_temp->geo.orientace-F->pom_element_temp->geo.rotacni_uhel-90);
+				vykresli_element(canv,0,m.L2Px(F->pom_element_temp->X),m.L2Py(F->pom_element_temp->Y),F->pom_element_temp->name,F->pom_element_temp->short_name,F->pom_element_temp->eID,3,orientace,1,F->pom_element_temp->data.LO1,F->pom_element_temp->OTOC_delka,F->pom_element_temp->data.LO2,F->pom_element_temp->data.LO_pozice,F->pom_element_temp);
 				break;
 			}
 			default:break;

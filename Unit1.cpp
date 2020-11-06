@@ -2583,11 +2583,11 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 			{
     		switch (index_kurzoru)
     		{
-    			case 1:pom_element_temp->name=nazev_puvodni;break;
+					case 1:pom_element_temp->name=nazev_puvodni;break;
     			case -2:
     			{
     				Cvektory::TBod *A=pom_bod_temp->predchozi;
-    				if(pom_bod_temp->n==1&&pom==NULL)A=d.v.HALA.body->predchozi;
+						if(pom_bod_temp->n==1&&pom==NULL)A=d.v.HALA.body->predchozi;
     				if(pom_bod_temp->n==1&&pom!=NULL&&pom->body!=NULL)A=d.v.HALA.body->predchozi;
     				editovany_text=outDK(m.round2double(m.delka(A->X,A->Y,pom_bod_temp->X,pom_bod_temp->Y),3));//převod na mm
     				A=NULL;delete A;
@@ -2599,11 +2599,11 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 					case -14:editovany_text="";if(pom_element_temp->predchozi!=NULL)Z=pom_element_temp->predchozi->Z;if(Z==0)editovany_text="±";if(Z>0)editovany_text="+";editovany_text+=m.round2double(Z*1000,0);//editace začátku S/K elementu
 					default:break;
 				}
-    		if(index_kurzoru==-9||index_kurzoru==-8)//editace kót kabiny
+				if(index_kurzoru==-9||index_kurzoru==-8)//editace kót kabiny
     		{
     			if(DKunit==2||DKunit==3)editovany_text=editovany_text/OBJEKT_akt->pohon->aRD;//pokud jsou kóty v časovém režimu převede vzdálenost na čas
     			editovany_text=outDK(ms.MyToDouble(editovany_text));//převede na aktuálně používané jednotky
-    		}
+				}
 				if((index_kurzoru==-11 || index_kurzoru==-101) && (OBJEKT_akt->id!=3 || (OBJEKT_akt->id==3 && (Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT))))//editace kót elementů
     		{
 					if(index_kurzoru!=-101)
@@ -2828,11 +2828,11 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		}
 		if(index_kurzoru==-101||index_kurzoru==-14||index_kurzoru==-13||index_kurzoru==-11||index_kurzoru==-2||index_kurzoru==-5)//editace vzdálenosti LO,začatek S/K elementu,konec S/K elementu,kót elementů,kót haly nebo objektu, kót kabiny
   	{
-  		if(Key==8)//pokud je stisknut backspace
+			if(Key==8)//pokud je stisknut backspace
 				editovany_text=editovany_text.SubString(1,editovany_text.Length()-1);
   		else
   		{
-  			editovany_text+=key;
+				editovany_text+=key;
 				if(key=="")MessageBeep(0);
   		}
 			duvod_validovat=1;
@@ -2846,7 +2846,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
   			if(Key==8)//pokud je stisknut backspace
 					pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
   			else
-  				pom_element_temp->name+=Key;//nutné Key s velkým K, toto Key neprochází numerickým filtrem
+					pom_element_temp->name+=Key;//nutné Key s velkým K, toto Key neprochází numerickým filtrem
 			}
 			else//stopka
 			{
@@ -2856,7 +2856,7 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 						pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
   				else MessageBeep(0);
 				}
-  			else
+				else
   				pom_element_temp->name+=key;//key s malým k, prochází numerickým filtrem, v tomto případě žádoucí
 			}
   		//propsání nového názvu do mGridu
@@ -2866,19 +2866,19 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			//znovusloučení buňěk
 			if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
 			REFRESH(false);
-  	}
+		}
 		if(index_kurzoru==-8 && pom_element_temp!=NULL)//editace popisku teploměrů
   	{
   		if(Key==8)//pokud je stisknut backspace
   		{
-  			pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
+				pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
   		}
 			else
-  		{
-  			pom_element_temp->name+=key;
+			{
+				pom_element_temp->name+=key;
 				if(key=="")MessageBeep(0);
-  		}
-  		REFRESH(false);
+			}
+			REFRESH(false);
 		}
 	}
 }
@@ -2888,21 +2888,21 @@ void __fastcall TForm1::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
 	log(__func__);//logování
 	if(funkcni_klavesa==0)
 	{
-  	switch(Akce)
-  	{            //mezerník
-  		case 1: if(Key==32){Akce=NIC; kurzor(standard);/*vrat_puvodni_akci();*/}break;//PAN
-  		case 2:
-  		{
-  			Akce=NIC; kurzor(standard);
-  			pan_move_map();
+		switch(Akce)
+		{            //mezerník
+			case 1: if(Key==32){Akce=NIC; kurzor(standard);/*vrat_puvodni_akci();*/}break;//PAN
+			case 2:
+			{
+				Akce=NIC; kurzor(standard);
+				pan_move_map();
   			//vrat_puvodni_akci();
-  		}
-  		break;//PAN_MOVE
+			}
+			break;//PAN_MOVE
   		default: break;
 		}
 	}
 	else
-  {
+	{
 		if(Akce==ZOOM_W){Akce=NIC;ZOOM_WINDOW();}//ukončí mod při puštění ctrl
 		funkcni_klavesa=0;
 		//vrat_puvodni_akci();
@@ -16872,14 +16872,16 @@ void TForm1::vykresli_kurzor(int index)
 			Canvas->Pen->Color=clBlack;
 			if(pom_element_temp->eID==0)Canvas->Pen->Color=clRed;//stopka má červený text
 			Canvas->Pen->Width=1;
+			double OR=pom_element_temp->orientace;
+			if(index==-8)OR=m.Rt90(pom_element_temp->geo.orientace-pom_element_temp->geo.rotacni_uhel-90);
 			if(pom_element_temp->eID!=0&&pom_element_temp->eID!=5&&pom_element_temp->eID!=6&&pom_element_temp->eID!=100)//roboti mají vykreslován kurzor vodorovně
 			{
-				if(pom_element_temp->orientace==0||pom_element_temp->orientace==180)//pro vodorovnou kabinu
+				if(OR==0 || OR==180)//pro vodorovnou kabinu
 				{
 					Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.top-2);
 					Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.bottom+2);
 				}
-				else if(pom_element_temp->orientace==90)//pro vertikálníkabinu, dělení na 2 rotace, text orientován 2 směry
+				else if(OR==90)//pro vertikálníkabinu, dělení na 2 rotace, text orientován 2 směry
 				{
 					Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+2,pom_element_temp->citelna_oblast.rect3.bottom-1);
 					Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.left-2,pom_element_temp->citelna_oblast.rect3.bottom-1);
@@ -16892,9 +16894,9 @@ void TForm1::vykresli_kurzor(int index)
 			}
 			else//otoče a stop mají kurzor otočený o 90°
 			{
-				if(pom_element_temp->orientace==0||pom_element_temp->orientace==180)//pro vodorovnou kabinu, 2 orientace textu
+				if(OR==0 || OR==180)//pro vodorovnou kabinu, 2 orientace textu
 				{
-					if(pom_element_temp->orientace==0)
+					if(OR==0)
 					{
 						Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+2,pom_element_temp->citelna_oblast.rect3.bottom-1);
 						Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.left-2,pom_element_temp->citelna_oblast.rect3.bottom-1);
@@ -19164,6 +19166,3 @@ void __fastcall TForm1::scGPCheckBox_antialiasingClick(TObject *Sender)
   REFRESH();
 }
 //---------------------------------------------------------------------------
-
-
-
