@@ -48,7 +48,7 @@ class Cvykresli
   void vykresli_vetev_dopravniku(TCanvas *canv);//vykreslení highlightu akt. editované vìtve
 	void vykresli_retez(TCanvas *canv,Cvektory::TRetez *Retez);
 	void vykresli_koleje(TCanvas *canv,Cvektory::TElement *E);//vykreslení jednoho geometrického segmentu dvou párù kolejí
-	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=(TColor)RGB(255,69,0),short TypZarazky=0,TColor colorZarazka=NULL);//vykreslení jednoho geometrického segmentu dvou párù kolejí, TypZarazky=0 bez,1=na zaèátku,2=na konci,3=na zaèátku i na konci, barva colorZarazka nastaví pro pøípadnì zobrazovanou zaráku speciální barvu, pokud není parametr pouit (je NULL), tak dostane pøípadná zaráka stejnou barvu jako barva parametru color
+	void vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej=(TColor)RGB(255,69,0),short TypZarazky=0,TColor colorZarazka=NULL,bool gdiplus=false);//vykreslení jednoho geometrického segmentu dvou párù kolejí, TypZarazky=0 bez,1=na zaèátku,2=na konci,3=na zaèátku i na konci, barva colorZarazka nastaví pro pøípadnì zobrazovanou zaráku speciální barvu, pokud není parametr pouit (je NULL), tak dostane pøípadná zaráka stejnou barvu jako barva parametru color
 	void vytvor_oblast_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka);//vytvoøení jednoho geometrického segmentu z dvou párù kolejí urèeného k testování, zda se nachazí v dané oblasti bod, podruná metoda, volaná z matematické knihovny
 	void vykresli_palce(TCanvas *canv,Cvektory::TPohon *pohon);//zajišuje vykreslení palcù
 	void vykresli_palec(TCanvas *canv,Cvektory::TPalec *P);//zajišuje samotné vykreslení palce
@@ -81,7 +81,7 @@ class Cvykresli
 	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
 	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
 	TPointD obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace,double Sx=DOUBLE_MIN,double Sy=DOUBLE_MIN);//orototuje obdelník, podle posledních parametrù, pokud jsou tyto parametry neuvedené, rotuje okolo støedu obrazce, pro pøípadné dalsí potøeby vrátí souøadnice støedu orotovaného obdélniku
-	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek);
+	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek,bool gdiplus=false);
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);
 	TPoint polygonDleOsy(TCanvas *canv,long X,long Y,float delka, float sirka1, float sirka2, double sklon, double rotace,TPenMode pmMode=pmCopy,TColor clFillOut=clBlack,TColor lFillIn=clWhite);
 	void polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva=clBlack, short sirka=1,int stav=-2,bool zobrazit_koty=true,bool automaticky_spojovat=true);//stav: -3 kurzor, -2 normal (implicitnì), -1-disabled, 0-editace zvırazní všechny body, 1-a poèet bodù zvıraznìní daného bodu,poèet bodù+1 zvıraznìní dané hrany vèetnì sousedícícíh úchopù (napø. pro polygono o 6 bodech) bude hodnota stavu 7 zvıraznìní první hrany (od bodu 1 do bodu 2)

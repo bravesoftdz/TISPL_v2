@@ -3120,7 +3120,7 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E)
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //vykreslení jednoho geometrického segmentu dvou párů kolejí,TypZarazky=0 bez (implicitně-default),1=na začátku,2=na konci,3=na začátku i na konci, barva colorZarazka nastaví pro případně zobrazovanou zarážku speciální barvu, pokud není parametr použit (je NULL), tak dostane případná zarážka stejnou barvu jako barva parametru color
-void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej,short TypZarazky,TColor colorZarazka)
+void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double orientace,double rotacni_uhel,double radius,double delka,TColor clKolej,short TypZarazky,TColor colorZarazka,bool gdiplus)
 {
 	//offset o poloviny nastavené šířky podvozku + tloušťka linie zakresu podvozku
 	double o=v.PP.sirka_podvozek/2.0+m.px2m(1/3.0*F->Zoom);
@@ -3138,8 +3138,8 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,double X,double Y,short typ,double
 	//samotné výkreslení obou parelelních kolejí
 	if(F->scGPCheckBox_zobrazit_koleje->Checked)//pokud je v menu povoleno
 	{
-		bezier(canv,PL1,3);
-		bezier(canv,PL2,3);
+		bezier(canv,PL1,3,gdiplus);//pouzor gdi+ umí pouze jen do 4 prvků, nepodařílo se dostat do parametru ukazatel na dynamické pole
+		bezier(canv,PL2,3,gdiplus);//pouzor gdi+ umí pouze jen do 4 prvků, nepodařílo se dostat do parametru ukazatel na dynamické pole
 	}
 	//zarážka se zobrazuje pouze při geometrii (pro znázornění jednotlivých gemoetrických elementů), jinak nemá význam
 	if(colorZarazka!=NULL && 1<=TypZarazky && TypZarazky<=3)set_pen(canv,colorZarazka,m.round(F->Zoom*width),PS_ENDCAP_SQUARE);
@@ -4853,9 +4853,18 @@ TPointD Cvykresli::obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
-void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek)
+void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek,bool gdiplus)
 {
-	canv->PolyBezier(m.L2P(POLE,posledni_prvek),posledni_prvek);
+	if(!gdiplus)canv->PolyBezier(m.L2P(POLE,posledni_prvek),posledni_prvek);
+	else//pouzor gdi+ umí pouze jen do 4 prvků, nepodařílo se dostat do parametru ukazatel na dynamické pole
+	{
+		//GDI+
+		Gdiplus::Graphics g(canv->Handle);
+		g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		Gdiplus::Pen myPen(m.aRGB(canv->Pen->Color));
+		myPen.SetWidth(canv->Pen->Width);
+		g.DrawBezier(&myPen,m.L2Pxf(POLE[0].x),m.L2Pyf(POLE[0].y),m.L2Pxf(POLE[1].x),m.L2Pyf(POLE[1].y),m.L2Pxf(POLE[2].x),m.L2Pyf(POLE[2].y),m.L2Pxf(POLE[3].x),m.L2Pyf(POLE[3].y));
+	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek)
@@ -5217,7 +5226,7 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 	if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->pohon!=NULL && F->scGPCheckBox_zobrazit_koleje->Checked && popisek)
 	{
 		short typ=1;if(rotacni_uhel==0)typ=0;
-		vykresli_koleje(canv,X,Y,typ,orientace,rotacni_uhel,radius,radius,color);
+		vykresli_koleje(canv,X,Y,typ,orientace,rotacni_uhel,radius,radius,color,0,(TColor)NULL,true);
 	}
 
 	////potenciální Gelement
