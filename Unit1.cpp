@@ -77,6 +77,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
   //start GDI+
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+	d.GDIplus=true;
 
 	Akce=BLOK;Akce_temp=NIC;MOD=NO;Screen->Cursor=crDefault;//změní kurzor na default + zapniti blokace akce, zabrání spouštění onclick událostí
 

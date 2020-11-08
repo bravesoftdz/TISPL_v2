@@ -33,6 +33,7 @@ class Cmy
 	TPoint L2P(double logickaX, double logickaY);//Převede logické souřadnice na fyzické (displej zařízení) , vraci fyzické souřadnice
 	TPoint L2P(TPointD logicke);
 	TPoint *L2P(TPointD *POLE,long posledni_prvek);
+	TPointF *L2Pf(TPointD *POLE,long posledni_prvek);
 	void L2P(TPointD *POLE,TPoint *POLEpx);
 	long L2Px(double logicka);
 	long L2Py(double logicka);

@@ -1196,6 +1196,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 	////deklarace
 	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,delka_pom=0,d=0,delka_Pud=0;
 	String popisek="";
+	bool gdiplus=true;//nenastavuje se pouze u lineárního měření z důvodů, aby bylo poznat odchylky od 0,90,180,270°
 
 	///vykreslení uložených segmentů v mag lasu, pokud je třeba
 	if(F->pom_element!=NULL && (F->pom_element==v.MAG_LASO->predchozi->Element || F->pom_element->predchozi==v.MAG_LASO->predchozi->Element || (F->pom_element->predchozi->n==0 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi2==v.MAG_LASO->predchozi->Element) || F->pom_element==v.MAG_LASO->predchozi->Element || (F->pom_element->eID==301 && F->pom_element->predchozi2==v.MAG_LASO->predchozi->Element) || (F->pom_element->predchozi->eID==301 && F->pom_element->predchozi->predchozi==v.MAG_LASO->predchozi->Element)))
@@ -1333,7 +1334,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				else t2=String(m.round2double(cas,2))+" [s]";
 				typ=2;if(C->n==1)typ=3;
 			}
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,t1,t2,typ);
+			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,t1,t2,typ,(TColor)NULL,gdiplus);
 			//posun na další segment
 			C=C->dalsi;
 		}
@@ -1375,7 +1376,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//vykreslovací část
 			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
-			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
+			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2,(TColor)NULL,gdiplus);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
 
 		//vykreslení části přímky
@@ -1425,7 +1426,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//vykreslovací část
 			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
-			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2);
+			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2,(TColor)NULL,gdiplus);
 		}
 	}
 
@@ -4836,7 +4837,7 @@ void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TC
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2,bool gdiplus)
 {
-	if(!gdiplus)
+	if(!gdiplus || !GDIplus)
 	{
 		canv->MoveTo(X1,Y1);
 		canv->LineTo(X2,Y2);
@@ -4866,7 +4867,7 @@ TPointD Cvykresli::obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y
 //https://stackoverflow.com/questions/785097/how-do-i-implement-a-b%C3%A9zier-curve-in-c nebo téměř totožné wiki   //http://www.yevol.com/bcb/Lesson12.htm
 void Cvykresli::bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek,bool gdiplus)
 {
-	if(!gdiplus)canv->PolyBezier(m.L2P(POLE,posledni_prvek),posledni_prvek);
+	if(!gdiplus || !GDIplus)canv->PolyBezier(m.L2P(POLE,posledni_prvek),posledni_prvek);
 	else//pouzor gdi+ umí pouze jen do 4 prvků, nepodařílo se dostat do parametru ukazatel na dynamické pole
 	{
 		//GDI+
@@ -5243,16 +5244,21 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 	////potenciální Gelement
 	TPointD *PL=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
 	POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
-	//nastavení geometrického pera
-//	if(F->scGPCheckBox_zobrazit_koleje->Checked && popisek)	set_pen(canv,color,m.round(F->Zoom*0.5),PS_ENDCAP_FLAT);//popisek v tomto případě vybraný gelement
-//	else set_pen(canv,color,m.round(F->Zoom*1),PS_ENDCAP_FLAT);//nastavení geometrického pera
-//	canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky - nahrazeno níže pomocí gdi+
-	//GDI+
-	Gdiplus::Graphics g(canv->Handle);
-	g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
-	Gdiplus::Pen myPen(m.aRGB(color));
-	if(F->scGPCheckBox_zobrazit_koleje->Checked && popisek) myPen.SetWidth(m.round(F->Zoom*0.5));else myPen.SetWidth(m.round(F->Zoom*1));
-	g.DrawBezier(&myPen,m.L2Pxf(PL[0].x),m.L2Pyf(PL[0].y),m.L2Pxf(PL[1].x),m.L2Pyf(PL[1].y),m.L2Pxf(PL[2].x),m.L2Pyf(PL[2].y),m.L2Pxf(PL[3].x),m.L2Pyf(PL[3].y));
+	//nastavení pera
+	if(!GDIplus)
+	{
+		if(F->scGPCheckBox_zobrazit_koleje->Checked && popisek)	set_pen(canv,color,m.round(F->Zoom*0.5),PS_ENDCAP_FLAT);//popisek v tomto případě vybraný gelement
+		else set_pen(canv,color,m.round(F->Zoom*1),PS_ENDCAP_FLAT);//nastavení geometrického pera
+		canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+	}
+	else//GDI+
+	{
+		Gdiplus::Graphics g(canv->Handle);
+		g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		Gdiplus::Pen myPen(m.aRGB(color));
+		if(F->scGPCheckBox_zobrazit_koleje->Checked && popisek) myPen.SetWidth(m.round(F->Zoom*0.5));else myPen.SetWidth(m.round(F->Zoom*1));
+		g.DrawBezier(&myPen,m.L2Pxf(PL[0].x),m.L2Pyf(PL[0].y),m.L2Pxf(PL[1].x),m.L2Pyf(PL[1].y),m.L2Pxf(PL[2].x),m.L2Pyf(PL[2].y),m.L2Pxf(PL[3].x),m.L2Pyf(PL[3].y));
+	}
 
 	////popisek, je-li požadován
 	if(popisek)
@@ -5286,7 +5292,7 @@ TPointD *Cvykresli::vykresli_potencial_Gelement(TCanvas *canv,double X,double Y,
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //zajistí jednorázové vykreslení libovolného obloukového či liniového (dle situace) g-elementu, X,Y jsou logické souřadnice výchozího vykreslování, parametry: orientace oblouku - dle světových stran (umí i jiné než 90° násobky), rotační úhel - pod kterým je oblouk rotován, může být záporný (znaménko určuje směr rotace, + proti směru hodinových ručiček, - po směru), max. hodnota +90 a min. hodnota -90 (je-li nastaven na 0° jedná se o linii), radius - je radius oblouku v metrech nebo pokud je rotační úhel nastaven na 0° tedy se jedná o linii, je radius délkou linie), typ=-1 jen středová čára, typ=0 jen koleje, typ 1=koleje+zarážka na začátku, typ 2=koleje+zarážka na konci, typ 3=na začátku i na konci,, barva colorZarazka nastaví pro případně zobrazovanou zarážku speciální barvu, pokud není parametr použit (je NULL), tak dostane případná zarážka stejnou barvu jako barva parametru color
-TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,float width,String Text,String Text2,short typ,TColor colorZarazka)
+TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double orientace,double rotacni_uhel,double radius,TColor color,float width,String Text,String Text2,short typ,TColor colorZarazka,bool gdiplus)
 {
 	////vykreslení Gelementu
 	TPointD *PL=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
@@ -5296,12 +5302,20 @@ TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double ori
 		//nastavení geometrického pera
 		set_pen(canv,color,m.round(F->Zoom*width),PS_ENDCAP_FLAT);//nastavení geometrického pera
 		canv->Pen->Mode=pmNotXor;
-		canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+		if(!GDIplus)canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+		else//GDI+
+		{
+			Gdiplus::Graphics g(canv->Handle);
+			g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+			Gdiplus::Pen myPen(m.aRGB(canv->Pen->Color));
+			myPen.SetWidth(canv->Pen->Width);
+			g.DrawBezier(&myPen,m.L2Pxf(PL[0].x),m.L2Pyf(PL[0].y),m.L2Pxf(PL[1].x),m.L2Pyf(PL[1].y),m.L2Pxf(PL[2].x),m.L2Pyf(PL[2].y),m.L2Pxf(PL[3].x),m.L2Pyf(PL[3].y));
+		}
 	}
 	if(typ>=0)//vykreslit pouze koleje, případně včetně zarážek
 	{
 		bool druh=0;if(rotacni_uhel!=0)druh=1;
-		vykresli_koleje(canv,X,Y,druh,orientace,rotacni_uhel,radius,radius,color,typ,colorZarazka);
+		vykresli_koleje(canv,X,Y,druh,orientace,rotacni_uhel,radius,radius,color,typ,colorZarazka,gdiplus);
 	}
 
 	////záloha - nemazat, pokud bycho potřeboval oblouk vykreslovat standardní metodou (např. kvůli přesnosni):

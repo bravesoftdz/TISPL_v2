@@ -155,6 +155,12 @@ TPoint *Cmy::L2P(TPointD *POLE,long posledni_prvek)
 	for(int i=0;i<posledni_prvek+1;i++){POLE_px[i].x=L2Px(POLE[i].x);POLE_px[i].y=L2Py(POLE[i].y);}
 	return POLE_px;
 }
+TPointF *Cmy::L2Pf(TPointD *POLE,long posledni_prvek)
+{
+	TPointF *POLE_px=new TPointF[posledni_prvek+1];
+	for(int i=0;i<posledni_prvek+1;i++){POLE_px[i].x=L2Pxf(POLE[i].x);POLE_px[i].y=L2Pyf(POLE[i].y);}
+	return POLE_px;
+}
 void Cmy::L2P(TPointD *POLE,TPoint *POLEpx)
 {
 	//POLEpx=L2P(POLE);
