@@ -78,8 +78,8 @@ class Cvykresli
 	Graphics::TBitmap *nacti_nahled_cesty(Cvektory::TZakazka *zakazka);//vytvoøí bmp pro zakázku
 	void vypis_zpravy(TCanvas *canv);//metoda vypíše zprávy ze seznamu zpráv a zároveò uloží jejich citelné oblasti
 	void nastavit_text_popisu_objektu_v_nahledu(TCanvas *canv);
-	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy);
-	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2);
+	void linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color=clBlack,TPenStyle PenStyle=psSolid,TPenMode PenMode=pmCopy,bool gdiplus=false);
+	void line(TCanvas *canv,long X1,long Y1,long X2,long Y2,bool gdiplus=false);
 	TPointD obdelnik(TCanvas *canv,double X1,double Y1,double X2,double Y2,double rotace,double Sx=DOUBLE_MIN,double Sy=DOUBLE_MIN);//orototuje obdelník, podle posledních parametrù, pokud jsou tyto parametry neuvedené, rotuje okolo støedu obrazce, pro pøípadné dalsí potøeby vrátí souøadnice støedu orotovaného obdélniku
 	void bezier(TCanvas *canv,TPointD *POLE,long posledni_prvek,bool gdiplus=false);
 	void bezier(TCanvas *canv,TPointD *POLE,long X,long Y,double oX,double oY,double rotace,long posledni_prvek);

@@ -2388,7 +2388,6 @@ void __fastcall TForm1::FormPaint(TObject *Sender)
 			if(antialiasing) Zoom_predchozi_AA=Zoom;Zoom*=3;//záloha původního zoomu,nový *3 vyplývá z logiky algoritmu antialiasingu
 			short s=2;if(d.SCENA==0)s=0;//řešení pro vykreslit VŠE
 			d.vykresli_vektory(bmp_in->Canvas,s);//DYNAMICKÁ scéna, pokud není vše do statické nebo je aktivní pom objekt (např. výběr hrany atp.), tak se řešeí dynamická scena, jinak ne, protože nemá smysl
-			//if(Akce==GEOMETRIE && Akce_temp==NIC)d.smart_kurzor(bmp_in->Canvas,posledni_editovany_element,typElementu);//0,1,2
 			if(MOD==TVORBA_CESTY)d.kurzor_cesta(bmp_in->Canvas);
 			if(antialiasing)
 			{
@@ -4155,10 +4154,10 @@ void TForm1::vykresli_spojinici_EmGrid(TCanvas *Canv,Cvektory::TElement *E)
 		//stanovení nejmenší vzdálenosti
 		double delka=Min(Min(levyhorni,pravyhorni),Min(levydolni,pravydolni));
 		//vykreslí spojinici v nejmenší délce
-		if(delka==levyhorni&&!vykresleno){d.linie(Canv,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),m.L2Px(E->Xt),m.L2Py(E->Yt),2,(TColor)RGB(200,200,200));vykresleno=true;}
-		if(delka==pravyhorni&&!vykresleno){d.linie(Canv,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),m.L2Px(E->Xt)+E->mGrid->Width,m.L2Py(E->Yt),2,(TColor)RGB(200,200,200));vykresleno=true;}
-		if(delka==levydolni&&!vykresleno){d.linie(Canv,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),m.L2Px(E->Xt),m.L2Py(E->Yt)+E->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
-		if(delka==pravydolni&&!vykresleno){d.linie(Canv,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),m.L2Px(E->Xt)+E->mGrid->Width,m.L2Py(E->Yt)+E->mGrid->Height,2,(TColor)RGB(200,200,200));vykresleno=true;}
+		if(delka==levyhorni&&!vykresleno){d.linie(Canv,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),m.L2Px(E->Xt),m.L2Py(E->Yt),2,(TColor)RGB(200,200,200),psSolid,pmCopy,true);vykresleno=true;}
+		if(delka==pravyhorni&&!vykresleno){d.linie(Canv,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),m.L2Px(E->Xt)+E->mGrid->Width,m.L2Py(E->Yt),2,(TColor)RGB(200,200,200),psSolid,pmCopy,true);vykresleno=true;}
+		if(delka==levydolni&&!vykresleno){d.linie(Canv,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),m.L2Px(E->Xt),m.L2Py(E->Yt)+E->mGrid->Height,2,(TColor)RGB(200,200,200),psSolid,pmCopy,true);vykresleno=true;}
+		if(delka==pravydolni&&!vykresleno){d.linie(Canv,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4),m.L2Px(E->Xt)+E->mGrid->Width,m.L2Py(E->Yt)+E->mGrid->Height,2,(TColor)RGB(200,200,200),psSolid,pmCopy,true);vykresleno=true;}
 	}
 }
 //---------------------------------------------------------------------------

@@ -4659,7 +4659,7 @@ void Cvykresli::vykresli_editovane_polozky(TCanvas *canv)
 	//editace textu při geometrii
 	if(F->OBJEKT_akt!=NULL && F->pom_element_temp!=NULL && F->Akce_temp==F->Takce::EDITACE_TEXTU)
 	{
-    vykresli_kotu(canv,F->pom_element_temp);
+		vykresli_kotu(canv,F->pom_element_temp);
 	}
 	//vykreslení přesouvaného teploměru
 	if(F->OBJEKT_akt!=NULL && F->pom_element!=NULL && F->Akce==F->Takce::POSUN_TEPLOMER)
@@ -4824,20 +4824,31 @@ void Cvykresli::vypis_zpravy(TCanvas *canv)
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode)
+void Cvykresli::linie(TCanvas *canv,long X1,long Y1,long X2,long Y2,int Width,TColor Color,TPenStyle PenStyle,TPenMode PenMode,bool gdiplus)
 {
 	canv->Pen->Width=Width;
 	canv->Pen->Color=Color;
 	canv->Pen->Mode=PenMode;
 	canv->Pen->Style=PenStyle;
 	//set_pen(canv,clBlack,1*10,PS_ENDCAP_FLAT);
-	line(canv,X1,Y1,X2,Y2);
+	line(canv,X1,Y1,X2,Y2,gdiplus);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2)
+void Cvykresli::line(TCanvas *canv,long X1,long Y1,long X2,long Y2,bool gdiplus)
 {
-	canv->MoveTo(X1,Y1);
-	canv->LineTo(X2,Y2);
+	if(!gdiplus)
+	{
+		canv->MoveTo(X1,Y1);
+		canv->LineTo(X2,Y2);
+	}
+	else //GDI+
+	{
+		Gdiplus::Graphics g(canv->Handle);
+		g.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+		Gdiplus::Pen myPen(m.aRGB(canv->Pen->Color));
+		myPen.SetWidth(canv->Pen->Width);
+		g.DrawLine(&myPen,(float)X1,(float)Y1,(float)X2,(float)Y2);
+  }
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //orototuje obdelník, podle posledních parametrů, pokud jsou tyto parametry neuvdené, rotuje okolo středu obrazce, pro případné dalsí potřeby vrátí souřadnice středu orotovaného obdélniku
