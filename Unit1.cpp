@@ -6145,7 +6145,6 @@ void TForm1::ESC()
 	proces_pom=NULL;
 	kurzor(standard);
 	if(Akce!=EDITACE_TEXTU && Akce_temp!=EDITACE_TEXTU)Akce=NIC;//musí být nad refresh
-	Akce_temp=NIC;
 	if(OBJEKT_akt!=NULL){scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;}//pro případ ukončení akce měření
 	//vrácení původního textu při ukončení editace
 	if(Akce==EDITACE_TEXTU || Akce_temp==EDITACE_TEXTU)smaz_kurzor();
@@ -7710,11 +7709,12 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 {
 	log(__func__);//logování
 
-  ////aktualizace popisků
+	////aktualizace popisků
 	if(kontrola)d.v.uprav_popisky_elementu(NULL);
 
 	//////vypnutí akce
-	if(Akce_temp!=EDITACE_TEXTU)Akce=NIC;Akce_temp=NIC;//musí být ještě před refresh
+	Akce=NIC;
+	if(Akce_temp!=EDITACE_TEXTU)Akce_temp=NIC;//musí být ještě před refresh
 
   ////připnutí objektů
 	if(kontrola)
@@ -7753,7 +7753,7 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	//kurzor
 	if(Screen->Cursor!=standard)kurzor(standard);
 	//překreslení
-  d.SCENA=0;
+	d.SCENA=0;
 	REFRESH();
 }
 //---------------------------------------------------------------------------
@@ -16240,7 +16240,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		log("Zavření editace, MOD=LAYOUT");
 		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 		if(Akce==GEOMETRIE)ukonceni_geometrie(mazani);//musí být invertováno, mazani==true při uložit
-		if(Akce!=NIC || Akce_temp==EDITACE_TEXTU)ESC();
+		if(Akce!=NIC || Akce_temp!=NIC)ESC();
 		//////
 		if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)
 		nastav_focus();
@@ -16867,13 +16867,20 @@ void TForm1::vykresli_kurzor(int index)
 	Canvas->Pen->Width=2;
 	switch ((index))//index=JID, kde a jaký kurzor vykreslit
 	{
-		case -8:case 1://editace názvu elementu, popisku teploměru
+		case -8://editace popisku teploměr
+		{
+			Canvas->Pen->Color=clBlack;
+			Canvas->Pen->Width=1;
+			Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.top-2);
+			Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.bottom+2);
+			break;
+    }
+		case 1://editace názvu elementuu
 		{
 			Canvas->Pen->Color=clBlack;
 			if(pom_element_temp->eID==0)Canvas->Pen->Color=clRed;//stopka má červený text
 			Canvas->Pen->Width=1;
 			double OR=pom_element_temp->orientace;
-			if(index==-8)OR=m.Rt90(pom_element_temp->geo.orientace-pom_element_temp->geo.rotacni_uhel-90);
 			if(pom_element_temp->eID!=0&&pom_element_temp->eID!=5&&pom_element_temp->eID!=6&&pom_element_temp->eID!=100)//roboti mají vykreslován kurzor vodorovně
 			{
 				if(OR==0 || OR==180)//pro vodorovnou kabinu
