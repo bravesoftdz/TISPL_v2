@@ -210,7 +210,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(T==0 || T=="")scGPCheckBox_meridlo_casy->Checked=false;else scGPCheckBox_meridlo_casy->Checked=true;
 	//nastavení app
 	T=readINI("Nastaveni_app","antialiasing"); //zobrazit rotaci jigu
-	if(T==0 || T=="")antialiasing=false;else antialiasing=true;
+	if(T==0)antialiasing=false;else antialiasing=true;
 
 
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;

@@ -264,7 +264,7 @@ void TFormX::OnChange(long Tag,long ID,unsigned long Col,unsigned long Row)
 			}
 		}
 		//F->posledni_editovany_element=E;//odstaveno, narušuje tvorbu geometrie
-		if(F->OBJEKT_akt->pohon!=E->pohon)F->OBJEKT_akt->pohon=E->pohon;
+		if(F->OBJEKT_akt->pohon!=E->pohon && E->pohon!=NULL)F->OBJEKT_akt->pohon=E->pohon;
 		validovat_pohon=false;
 		popisky_pouzivany_pohon=false;
 		posledni_row=Row;
@@ -1305,7 +1305,7 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 {
 	Cvektory::TElement *E=vrat_element_z_tabulky(ID);
 	bool byl_refreshovan=false;     
-	if(F->OBJEKT_akt->pohon!=E->pohon)F->OBJEKT_akt->pohon=E->pohon;
+	if(F->OBJEKT_akt->pohon!=E->pohon && E->pohon!=NULL)F->OBJEKT_akt->pohon=E->pohon;
 	switch(E->eID)
 	{
 		case 0://stopka
@@ -1360,7 +1360,7 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 			unsigned int pohon=0;
 			TscGPComboBox *Combo=E->mGrid->getCombo(Col,2);
 			if(Combo!=NULL)pohon=Combo->ItemIndex;
-			if((F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->pohon->n!=pohon) || F->OBJEKT_akt->pohon==NULL)F->OBJEKT_akt->pohon=F->d.v.vrat_pohon(pohon);
+			if(pohon!=0 && ((F->OBJEKT_akt->pohon!=NULL && F->OBJEKT_akt->pohon->n!=pohon) || F->OBJEKT_akt->pohon==NULL))F->OBJEKT_akt->pohon=F->d.v.vrat_pohon(pohon);
 			Combo=NULL;delete Combo;
 			//nastavování highlightu
 			if(Row==3)
@@ -1380,7 +1380,7 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 				E->mGrid->Cells[Col][9].Highlight=true;
 				E->mGrid->Cells[Col][10].Highlight=true;
 				korelace_tab_pohonu_elementy(E);//oznaèení v ostatních tabulkách
-			}                                                                                         
+			}
 			//vypisování upozornìní u používaných pohonù
 			if(Row!=0 && Row<11 && E->pohon!=NULL && E->VID==0 && F->je_pohon_pouzivan(E->pohon->n)){zadat_validaci(7,0,E);byl_refreshovan=true;}//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
 			break;
@@ -1661,9 +1661,9 @@ void TFormX::povolit_zakazat_editaci()
 	//kontrola validace
 	if(input_state!=Tinput_state::NO)
 	{
-  	bool validace=existuje_validace();
-  	//vypnutí / zapnutí buttonu uložit
-  	if(validace)F->scGPButton_ulozit->Enabled=false;
+		bool validace=existuje_validace();
+		//vypnutí / zapnutí buttonu uložit
+		if(validace)F->scGPButton_ulozit->Enabled=false;
 		else F->scGPButton_ulozit->Enabled=true;
 	}
 }
@@ -1683,7 +1683,7 @@ bool TFormX::existuje_validace()
 		//kontrola zda nìjaký element neobsahuje validaci
   	while(E!=NULL)
 		{
-  		if(E->VID!=0){validace=true;break;}
+			if(E->VID!=0 && E->VID!=7 && E->VID!=8){validace=true;break;}//"editace pøiøazeného pohunu" - vynechat, "RT není relevantní, nìkterý z objektù nemá pohon!" - vynechat
 			if(F->predchozi_PM!=NULL && E==F->predchozi_PM)E=F->OBJEKT_akt->element;
 			else E=F->d.v.dalsi_krok(VYH,E,F->OBJEKT_akt);
 		}
@@ -2004,7 +2004,7 @@ void TFormX::validace_RD(Cvektory::TElement *E)
 	//validace pouze pohonu v elementu jiném než PM
 	if(E!=NULL && F->OBJEKT_akt!=NULL && E->eID!=200 && E->eID!=300)
 	{
-		if(F->OBJEKT_akt->pohon!=E->pohon)F->OBJEKT_akt->pohon=E->pohon;
+		if(F->OBJEKT_akt->pohon!=E->pohon && E->pohon!=NULL)F->OBJEKT_akt->pohon=E->pohon;
 		E=F->OBJEKT_akt->element;
 		Cvektory::T2Element *VYHYBKY=F->d.v.hlavicka_seznam_VYHYBKY();
 		//hledání PM se stejným pohonem
