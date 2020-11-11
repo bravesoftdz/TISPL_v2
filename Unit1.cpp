@@ -2693,6 +2693,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 77: if(ssCtrl)Akce=MEASURE;kurzor(add_o);break;
 		//CTRL+u
 		//case 85: if(ssCtrl)ShowMessage("ctrl + u");break;
+		//CTRL+s
+		case 83:if(ssCtrl && Toolbar_Ulozit->Enabled)UlozitClick(this);break;
 		//+
 		case 107:if(Akce!=EDITACE_TEXTU && Akce_temp!=EDITACE_TEXTU)ZOOM_IN();break;
 		//-
@@ -2840,12 +2842,12 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		}
 		if(index_kurzoru==1)//editace názvu elementu skrze popisek elementu
 		{
-  		//2 rozdílné přistupy, u robotu a u totočí jiné
+			//2 rozdílné přistupy, u robotu a u totočí jiné
 			if(pom_element_temp->eID!=0)//roboti+otoče
-  		{
-  			if(Key==8)//pokud je stisknut backspace
+			{
+				if(Key==8)//pokud je stisknut backspace
 					pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
-  			else
+				else
 					pom_element_temp->name+=Key;//nutné Key s velkým K, toto Key neprochází numerickým filtrem
 			}
 			else//stopka
@@ -2854,13 +2856,13 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 				{
 					if(pom_element_temp->name.Length()>5)//v tomto případě povolit pouze editaci čísla, názvem "Stop " needitovatelný
 						pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
-  				else MessageBeep(0);
+					else MessageBeep(0);
 				}
 				else
-  				pom_element_temp->name+=key;//key s malým k, prochází numerickým filtrem, v tomto případě žádoucí
+					pom_element_temp->name+=key;//key s malým k, prochází numerickým filtrem, v tomto případě žádoucí
 			}
   		//propsání nového názvu do mGridu
-  		int prvni_sloupec=0;
+			int prvni_sloupec=0;
 			if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
 			pom_element_temp->mGrid->Cells[prvni_sloupec][prvni_sloupec].Text="<a>"+pom_element_temp->name+"</a>";//nasazení linku
 			//znovusloučení buňěk
@@ -2868,11 +2870,11 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			REFRESH(false);
 		}
 		if(index_kurzoru==-8 && pom_element_temp!=NULL)//editace popisku teploměrů
-  	{
-  		if(Key==8)//pokud je stisknut backspace
-  		{
+		{
+			if(Key==8)//pokud je stisknut backspace
+			{
 				pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
-  		}
+			}
 			else
 			{
 				pom_element_temp->name+=key;
@@ -4226,7 +4228,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				//souřadnice byly změněny = posun
 				if(m.round2double(pom_element_temp->X,4)!=m.round2double(puv_souradnice.x,4) || m.round2double(pom_element_temp->Y,4)!=m.round2double(puv_souradnice.y,4))
 				{
-		   		short chybne=prekryti_LO(pom_element);//kontrola zda se element nepřekrývá lak. oknem s jiným elementem
+					short chybne=prekryti_LO(pom_element);//kontrola zda se element nepřekrývá lak. oknem s jiným elementem
 					FormX->odstranit_korelaci();//přidáno z důvodu odmazávání korelace při posuvu elementu
 		   		TIP="";
 		   		Akce=NIC;kurzor(standard);
@@ -4234,9 +4236,9 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 		   		switch(chybne)
 		   		{
 		   			case 0: default:break;
-		   			case 1:text=ls->Strings[324];break;//"Přesunem dojde k překrytí lakovacích oken, chcete element přesunout?"
-		   			case 2:text=ls->Strings[325];break;//"Přesunem dojde k zásahu do zóny otáčení, chcete element přesunout?"
-		   			case 3:text=ls->Strings[13];break;//"Přesunem dojde k překrytí pracovních oblastí, chcete element přesunout?"
+						case 1:text=ls->Strings[324];break;//"Přesunem dojde k překrytí lakovacícho okna, chcete element přesunout?"
+						case 2:text=ls->Strings[325];break;//"Přesunem dojde k překrytí zóny otáčení, chcete element přesunout?"
+						case 3:text=ls->Strings[13];break;//"Přesunem dojde k překrytí pracovní oblasti, chcete element přesunout?"
 		   		}
 		   		if(chybne>0 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text,"",MB_YESNO))
 					{
@@ -6840,8 +6842,8 @@ void TForm1::add_element (int X, int Y)
 		{
 			case 0: default:break;
 			case 1:text=ls->Strings[332];break;//"Vložením dojde k překrytí lakovacích oken, chcete element vložit?"
-			case 2:text=ls->Strings[333];break;//"Vložením dojde k narušení zóny otáčení, chcete element vložit?"
-			case 3:text=ls->Strings[466];break;//"Vložením dojde k překrytí pracovních oblastí, chcete element vložit?"
+			case 2:text=ls->Strings[333];break;//"Vložením dojde k překrytí zóny otáčení, chcete element vložit?"
+			case 3:text=ls->Strings[466];break;//"Vložením dojde k překrytí pracovní oblasti, chcete element vložit?"
 		}
 		if(prekryti>0 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text,"",MB_YESNO))
 			{d.v.smaz_element(E);E=NULL;}
@@ -7150,8 +7152,8 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					//změna elemetnu na předávací místo
 					E->eID=200;
 		   		//názvy
-		   		E->name=name+" X";
-		   		d.v.uprav_popisky_elementu(E);
+					E->name=name+" "+String(d.v.vrat_pocet_elementu_eID(E)+1);
+					//d.v.uprav_popisky_elementu(E);
 					pom_vyhybka=NULL;
 					//znovuvytvoření mGridu elementu
 					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
@@ -7235,8 +7237,8 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				//změna elemetnu na předávací místo
 		  	E->eID=200;
 		  	//názvy výhybek prozatím neřešeny
-		  	E->name=name+" X";
-				d.v.uprav_popisky_elementu(E);
+				E->name=name+" "+String(d.v.vrat_pocet_elementu_eID(E)+1);
+				//d.v.uprav_popisky_elementu(E);
 				//smazání a znovuvytvoření mGridu elementu
 				if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
 				{
@@ -7430,8 +7432,8 @@ void TForm1::vlozeni_editace_geometrie()
 		//název
 		if(DEBUG)
 		{
-			E->name="Zarážka";
-			d.v.uprav_popisky_elementu(E);
+			E->name="Zarážka "+String(d.v.vrat_pocet_elementu_eID(E)+1);
+			//d.v.uprav_popisky_elementu(E);
 		}
 		else E->name="";
 		E->mGrid=new TmGrid(F);
@@ -7710,7 +7712,7 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	log(__func__);//logování
 
 	////aktualizace popisků
-	if(kontrola)d.v.uprav_popisky_elementu(NULL);
+	//if(kontrola)d.v.uprav_popisky_elementu(NULL);
 
 	//////vypnutí akce
 	Akce=NIC;
@@ -8724,7 +8726,7 @@ TPointD TForm1::uprav_bod_vlozeni_elementu(TPointD bod_vlozeni,short rotace_symb
 }
 //---------------------------------------------------------------------------
 //kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element prověří zda se tento element nachází na geometrii
-bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
+bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element,bool posun_elementu)
 {
 	log(__func__);//logování
 	bool ret=false;
@@ -8737,9 +8739,9 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 		Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
 		while(E!=NULL)
 		{
-			if(E->geo.typ==0 && m.PtInLine(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,X,Y)){ret=true;break;}
+			if((!posun_elementu || (posun_elementu && E->objekt_n==Element->objekt_n)) && E->geo.typ==0 && m.PtInLine(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,X,Y)){ret=true;break;}
 			E=d.v.dalsi_krok(VYHYBKY,E);
-  	}
+		}
 		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 		E=NULL;delete E;
 	}
@@ -12809,7 +12811,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		  		DrawGrid_knihovna->Refresh();
 					DrawGrid_otoce->Refresh();
 					pom_element_temp=NULL; delete pom_element_temp;
-					if(OBJEKT_akt->element!=NULL)d.v.uprav_popisky_elementu(OBJEKT_akt->element);//pokud jsou v kabině jěště nějaké elementy dojde k přejmenování
+					//if(OBJEKT_akt->element!=NULL)d.v.uprav_popisky_elementu(OBJEKT_akt->element);//pokud jsou v kabině jěště nějaké elementy dojde k přejmenování
 					pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
@@ -12963,7 +12965,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	}
 	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 	delete E;E=NULL;
-	d.v.uprav_popisky_elementu(NULL);
+	//d.v.uprav_popisky_elementu(NULL);
 	if(d.SCENA!=0)vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA
 	REFRESH();
 	//vytvoření obrazu
@@ -13452,7 +13454,7 @@ void TForm1::zmena_editovaneho_objektu()
 			T=NULL;delete T;
 		}
 		E=NULL;delete E;
-  	if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
+  	//if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
   	pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
   	OBJEKT_akt=NULL;delete OBJEKT_akt;
 		if(PmG!=NULL)
@@ -14060,8 +14062,11 @@ void TForm1::Ulozit_soubor()
 	d.v.uloz_do_souboru(FileName);
 
 	//nastavení komponent + výpis
-	SB(ls->Strings[390]);//"Soubor uložen..."
+//	String def_setings=FormatSettings.LongTimeFormat;
+//	FormatSettings.LongTimeFormat="h:mm";
+	SB(String(ls->Strings[390]+" "+TimeToStr(TIME.CurrentTime())));//"Soubor uložen..."
 	DuvodUlozit(false);
+//	FormatSettings.LongTimeFormat=def_setings;
 
 
 
@@ -15146,7 +15151,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+	//Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16289,7 +16294,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 			T=NULL;delete T;
 		}
 		////
-		if(storno && scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
+		//if(storno && scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
 //		d.v.vymaz_elementy(OBJEKT_akt,true);
 		//if(OBJEKT_akt!=NULL){OBJEKT_akt->pohon=NULL;delete OBJEKT_akt->pohon;}

@@ -11,7 +11,7 @@ Chain switch;X;Výhybka
 Chain merge;X;Spojka
 CS;X;V
 CM;X;S
-Moving overlaps work areas, do you want to move the element?;X;Pøesunem dojde k pøekrytí pracovních oblastí, chcete element pøesunout?
+Moving will overlaps the work area, do you want to move the element?;X;Pøesunem dojde k pøekrytí pracovní oblasti, chcete element pøesunout?
   Space out tables;X;  Rozmístit tabulky
 Show all objects;X;Zobrazit všechny objekty
 Previous view;X;Pøedchozí pohled
@@ -322,16 +322,16 @@ Failed to connect to server, application will not start!;X;Nezdaøilo se pøipojen
 Failed to connect to license server, application will not start!;X;Nezdaøilo se pøipojení k licenènímu serveru, aplikace nebude spuštìna!
 The application did not close properly. The last file you saved was restored.;X;Aplikace nebyla øádnì ukonèena. Byl obnoven poslední Vámi uložený soubor.
 The application did not close properly. Do you want to restore the last unsaved file from backup?;X;Aplikace nebyla øádnì ukonèena. Chcete ze zálohy obnovit poslední neuložený soubor?
-The painting will overlap the painting windows, do you want to move the element?;X;Pøesunem dojde k pøekrytí lakovacích oken, chcete element pøesunout?
-Moving will affect the rotation zone, do you want to move the element?;X;Pøesunem dojde k zásahu do zóny otáèení, chcete element pøesunout?
+Moving will overlap the paint window, do you want to move the element?;X;Pøesunem dojde k pøekrytí lakovacího okna, chcete element pøesunout?
+Moving will overlap the rotation zone, do you want to move the element?;X;Pøesunem dojde k pøekrytí zóny otáèení, chcete element pøesunout?
 Length;X;Vzdálenost
 time;X;èas
 Objects do not follow, automatically move the following object to maintain continuity?;X;Objekty nenavazují, automaticky posunout následující objekt pro zachování návaznosti?
 You want object;X;Chcete objekt
 place them in order between objects;X;umístit v poøadí mezi objekty
 and;X;a
-Inserting overlaps the painting windows, do you want to insert the element?;X;Vložením dojde k pøekrytí lakovacích oken, chcete element vložit?
-Inserting will violate the rotation zone, do you want to insert the element?;X;Vložením dojde k narušení zóny otáèení, chcete element vložit?
+Paste will overlaps the paint window, do you want to insert the element?;X;Vložením dojde k pøekrytí lakovacího okna, chcete element vložit?
+Paste will overlaps the rotation zone, do you want to insert the element?;X;Vložením dojde k pøekrytí zóny otáèení, chcete element vložit?
 The switch can be adjusted if at least 3 technological objects are available!;X;Výhybku lze nastavit, pokud jsou k dispozici minimálnì 3 technologické objekty!
 Do you really want to delete;X;Chcete opravdu smazat
 Are you sure you want to delete point no.;X;Chcete opravdu smazat bod è.
@@ -464,7 +464,7 @@ The use of S&G and continuous operating mode cannot be combined.;X;Nelze kombino
 Zone;X;Zóna
 Posit.;X;Pozice
 In section behind the transfer point will be set drive:;X;V úseku za pøedávacím místem bude nastaven pohon:
-Paste creates an overlay of work areas, do you want to insert the element?;X;Vložením dojde k pøekrytí pracovních oblastí, chcete element vložit?
+Paste will overlaps the work area, do you want to paste the element?;X;Vložením dojde k pøekrytí pracovní oblasti, chcete element vložit?
 The beginning and end of the line were automatically connected.;X;Poèátek a konec linky byl automaticky spojen.
 Attention, JIGs overlap on the next section of the crossing!;X;Pozor, na následujícím úseku pøejezdu dochází k pøekrytí JIGù!
 Irrelevant value of time reserve, no drive is assigned to any object!;X;Nerelevantní hodnota èasové rezervy, na nìkterém objektu není pøiøazen pohon!

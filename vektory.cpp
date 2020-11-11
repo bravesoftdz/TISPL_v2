@@ -1938,7 +1938,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	if(101<=eID && eID<=108)T=F->ls->Strings[272];//"Operátor";
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
-		unsigned int nTyp=vrat_poradi_elementu_do(novy)+1;//pokud se jedná o roboty
+		unsigned int nTyp=vrat_pocet_elementu_eID(novy)+1;//pokud se jedná o roboty
 		if(novy->eID==300 || novy->eID==301)nTyp=novy->identifikator_vyhybka_spojka;
 		novy->name=T+" "+AnsiString(nTyp);//číslování a pojmenovávání zarážek pouze v debug
 		if(novy->eID==300 || novy->eID==301)novy->short_name=T_short+AnsiString(nTyp);
@@ -2020,7 +2020,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 							vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 	  	  			E=NULL;delete E;
 							//změna názvů
-	  	  			uprav_popisky_elementu(NULL);//musí být NULL, pokud je poslán Element načte se jeho objekt a z něj první element, Objekt ale v tuto chvíli nemá ukazatel na první element ... pam. chyba
+	  	  			//uprav_popisky_elementu(NULL);//musí být NULL, pokud je poslán Element načte se jeho objekt a z něj první element, Objekt ale v tuto chvíli nemá ukazatel na první element ... pam. chyba
 	  	  		}
 	  			}
 	  	  }
@@ -2069,8 +2069,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 				E=NULL;delete E;
 				//změna názvů
-				if(pocet_vyhybek==0)uprav_popisky_elementu(Element);
-				else uprav_popisky_elementu(NULL);//pokud je v elementech výhybka musí dojít k upravení celého spojáku
+//				if(pocet_vyhybek==0)uprav_popisky_elementu(Element);
+//				else uprav_popisky_elementu(NULL);//pokud je v elementech výhybka musí dojít k upravení celého spojáku
 			}
 		}
 		//vkládání výhybek a spojek
@@ -2122,7 +2122,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 			E=NULL;delete E;
 			//změna názvů
-			uprav_popisky_elementu(Element);
+			//uprav_popisky_elementu(Element);
     }
 		p=NULL; delete p;
 	}
@@ -2180,7 +2180,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 			E=NULL;delete E;
 			//změna názvů
-			uprav_popisky_elementu(Element);
+			//uprav_popisky_elementu(Element);
 		}
 		//vkládání geometrie
 		else
@@ -2557,6 +2557,65 @@ unsigned int Cvektory::vrat_poradi_elementu_do(TElement *Element)
 		E=dalsi_krok(VYHYBKY,E);
 	}
 	vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	//podle eID vrátí příslušný počet elementů
+	switch(Element->eID)
+	{
+		case 0: ret=s_pocet;break;
+		case 5: case 6: ret=o_pocet;break;
+		case 100: ret=t_pocet;break;
+		case 200: ret=pm_pocet;break;
+		case MaxInt: ret=z_pocet;break;
+		default: ret=r_pocet;break;
+	}
+	return ret;
+}
+////---------------------------------------------------------------------------
+//vrátí počet elementu podle eID Elementu
+unsigned int Cvektory::vrat_pocet_elementu_eID(TElement *Element)
+{
+  unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0,pm_pocet=0,z_pocet=0,ret=0;//nastavení všech počtů na nulu
+	TElement *E=ELEMENTY->dalsi;
+	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
+
+  //počítání pro roboty a ion. tyče
+	if(Element->eID!=0 && Element->eID!=5 && Element->eID!=6 && Element->eID!=200 && Element->eID!=MaxInt)
+	{
+		TObjekt *O=vrat_objekt(Element->objekt_n);
+		E=O->element;
+		while(E!=NULL)
+		{
+			if(Element!=E && E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && vrat_druh_elementu(E)!=-1)r_pocet++;
+			if(Element!=E && E->eID==100)t_pocet++;
+			E=dalsi_krok(VYHYBKY,E,O);
+		}
+    vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		E=NULL;delete E;
+    O=NULL;delete O;
+	}
+	//počítání pro globálně číslované elementy
+	else
+	{
+  	while(E!=NULL)
+  	{
+  		//přeskočit Element
+  		if(Element!=E)
+  		{
+  	  	//zapisování nalezených elementů
+  			switch(E->eID)
+  			{
+  	  		case 0:s_pocet++;break;
+  	  		case 5:
+  	  		case 6:o_pocet++;break;
+  				case 200:pm_pocet++;break;
+  	  		case MaxInt:z_pocet++;break;
+  	  		default:break;
+  			}
+  		}
+  		E=dalsi_krok(VYHYBKY,E);
+		}
+		vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	}
+
 	//podle eID vrátí příslušný počet elementů
 	switch(Element->eID)
 	{
@@ -2987,7 +3046,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				case 270:Element->X=Element->X+vzdalenost;break;
 			}
 			//kontrola zda je element stále na linii
-			if(F->bod_na_geometrii(0,0,Element) || !kontrola_zmeny_poradi)
+			if(F->bod_na_geometrii(0,0,Element,true) || !kontrola_zmeny_poradi)
 			{
 				//kontrola + změna pořadí
 				if(kontrola_zmeny_poradi)
@@ -3116,7 +3175,7 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	}
 	vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 	delete E_pom;E_pom=NULL;
-	uprav_popisky_elementu(E);//změna názvů
+	//uprav_popisky_elementu(E);//změna názvů
 	if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt || Ed->eID%2==0 && Ed->eID!=100 && Ed->eID!=200 && Ed->eID!=MaxInt)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
 }
 ////---------------------------------------------------------------------------
