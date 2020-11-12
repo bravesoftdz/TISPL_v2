@@ -3574,6 +3574,36 @@ void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
   }
 }
 ////---------------------------------------------------------------------------
+//prověří zda existuje nějaký další element s duplicitním názvem
+bool Cvektory::validace_duplicity_nazvu(TElement *Element)
+{
+	//deklarace
+	bool ret=false;
+	if(Element!=NULL && Element->eID!=MaxInt)//u zarážek nemá smysl řešit
+	{
+    //deklarace pro kontrolu
+		TElement *E=ELEMENTY->dalsi;
+  	T2Element *VYH=hlavicka_seznam_VYHYBKY();
+  	TObjekt *O=NULL;
+
+		//kontrola všech elementů, zda některé nemají duplicitní název
+		if(Element->eID!=0 && Element->eID!=5 && Element->eID!=6 && Element->eID!=200){O=vrat_objekt(Element->objekt_n);E=O->element;}//pokud se nejedná o globálně číslované objekty, kontrola pouze v rámcí jednoho objektu
+		while(E!=NULL)
+		{
+			if(E!=Element && E->eID==Element->eID && E->name==Element->name){ret=true;break;}
+			E=dalsi_krok(VYH,E,O);
+		}
+
+  	//ukazatelové záležitosti
+  	E=NULL;delete E;
+		O=NULL;delete O;
+		vymaz_seznam_VYHYBKY(VYH);
+	}
+
+	//vracení výsledku
+	return ret;
+}
+////---------------------------------------------------------------------------
 //vrátí poslední element v objektu
 Cvektory::TElement *Cvektory::vrat_posledni_element_objektu(TObjekt *Objekt)
 {
@@ -7351,6 +7381,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 
 		//průchod přes všechny elementy
 		TElement *E=ELEMENTY;//nepřeskakovat raději hlavičku
+		T2Element *V=hlavicka_seznam_VYHYBKY();
 		while(E!=NULL)
 		{
 			if(E->n!=0)//přeskočení hlavičky až zde
@@ -7415,11 +7446,14 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				if(PP.delka_podvozek<m.UDJ(rotaceJ) && pocet_voziku>1/*pocet_voziku>=1*/){vloz_zpravu(X+x*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),Y+y*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),-1,402,E);pocet_erroru++;}//pro buffer (výpis ve středu bufferu)
 //				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X+x*PP.delka_podvozek/2.0,Y+y*PP.delka_podvozek/2.0,-1,403,E);pocet_erroru++;}//pro libovolný přejezd (výpis ve středu přejezdu)
 				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X,Y,-1,403,E);pocet_erroru++;}//pro libovolný přejezd (výpis ve středu přejezdu)
+        //validace duplicity názvu elementu
+				if(validace_duplicity_nazvu(E)){vloz_zpravu(X,Y,1,452,E);pocet_warningu++;}
 			}
 			////posun na další elementy
-			E=E->dalsi;
+			E=dalsi_krok(V,E);
 		}
 		delete E;E=NULL;
+    vymaz_seznam_VYHYBKY(V);
 
 		//testování vozíků
 		if(VOZIKY!=NULL)
@@ -7469,7 +7503,8 @@ UnicodeString Cvektory::getVID(long VID)
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
 		case 450: Text=F->ls->Strings[469];break;//Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!
-		case 451: Text="Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno.";break;//přeložit
+		case 451: Text=F->ls->Strings[516];break;//"Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno."
+		case 452: Text=F->ls->Strings[517];break;//"Duplicitní název."
 		default:  Text="Error or warning!";break;//obecná chyba či varování
 	}
 	return Text;

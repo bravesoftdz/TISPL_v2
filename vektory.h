@@ -663,7 +663,8 @@ class Cvektory
 	void prirad_sparovany_element(TElement *Element);//přiřadí Elementu ukazatel na jeho spárovaný element, zároveň aktualizuje tomuto spárovanému elementu spárovaný element + aktualizace první - poslední S&G element
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
-  void aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n);//přepočíta data elementů na danném pohonu
+	void aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n);//přepočíta data elementů na danném pohonu
+	bool validace_duplicity_nazvu(TElement *Element);//prověří zda existuje nějaký další element s duplicitním názvem
 	TElement *vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
 	T2Element *hlavicka_seznam_VYHYBKY();
 	void uloz_vyhybku_do_seznamu(TElement *vyhybka,T2Element *VYHYBKY);

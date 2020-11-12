@@ -866,7 +866,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=515;i++)
+	for(unsigned short i=0;i<=517;i++)
 	{
 		switch(i)
 		{
@@ -1386,6 +1386,8 @@ void TForm1::DesignSettings()
 			case 513:text="Dop. hodnota PT1 je maximálně";break;
 			case 514:text="Dop. hodnota PTo je maximálně";break;
 			case 515:text="Dop. hodnota PT2 je maximálně";break;
+			case 516:text="Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno.";break;
+			case 517:text="Duplicitní název.";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -13350,8 +13352,11 @@ void TForm1::otevri_editaci()
 		scGPCheckBox_rozmisteni_voziku->Checked=false;
 		scGPCheckBox_popisek_pohonu->Checked=false;
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
-    typElementu=0;
+		typElementu=0;
+    d.SCENA=1111111;
+		vytvor_statickou_scenu();
 	}
+	else d.SCENA=0;
 //	else//normální funkčnost
 //	{
 //		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL)//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
@@ -13366,7 +13371,7 @@ void TForm1::otevri_editaci()
 //    }
 //	}
 	//d.SCENA=0, prozatím statická scéna funkční pouze v layoutu, pro editaci se nepoužívá
-	REFRESH(0,true);//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
+	REFRESH(true);//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
 	edit_vyhybka=NULL;delete edit_vyhybka;
 }
 //---------------------------------------------------------------------------
@@ -15151,7 +15156,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	//Memo("");
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17026,7 +17031,7 @@ void TForm1::smaz_kurzor()
 		if(editovany_text==""&&index_kurzoru==-14){editovany_text="";double Z=0;if(pom_element_temp->predchozi!=NULL)Z=pom_element_temp->predchozi->Z;if(Z==0)editovany_text="±";if(Z>0)editovany_text="+";editovany_text+=m.round2double(Z*1000,0);}//začátek S/K
 		switch(index_kurzoru)
 		{
-			case -8:
+			case -8://hodnota teploměru
 			{
 				if(pom_element_temp->name=="" || ms.MyToDouble(pom_element_temp->name)==0)
 				{
@@ -17034,9 +17039,9 @@ void TForm1::smaz_kurzor()
 				}
 				break;
 			}
-			case -7:if(OBJEKT_akt->short_name=="")OBJEKT_akt->short_name=nazev_puvodni;break;
-			case -6:if(OBJEKT_akt->name=="")OBJEKT_akt->name=nazev_puvodni;break;
-			case 1:
+			case -7:if(OBJEKT_akt->short_name=="")OBJEKT_akt->short_name=nazev_puvodni;break;//objekt short name
+			case -6:if(OBJEKT_akt->name=="")OBJEKT_akt->name=nazev_puvodni;break;//objekt name
+			case 1://název elementu
 			{
 				if(pom_element_temp->name=="")pom_element_temp->name=nazev_puvodni;
 				//propsání nového názvu do mGridu
@@ -17047,6 +17052,7 @@ void TForm1::smaz_kurzor()
 				if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
 				//aktualizace spárovaných elementů, pokud byl změněn název S&G elementu
 				if(d.v.vrat_druh_elementu(pom_element_temp)==0)d.v.aktualizuj_sparovane_ukazatele();//aktualizijue spárovnaný ukazatel všem elementům v projektu
+				duvod_validovat=2;
 			}break;
 			case -5://hodnota kót objektu (hrana objektu)
 			{
@@ -17185,6 +17191,7 @@ void TForm1::smaz_kurzor()
 				}
 			}
 			d.v.aktualizuj_cestu_teplomeru();
+			duvod_validovat=2;
 		}
 		if(index_kurzoru==-11&&OBJEKT_akt->id==3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT)//editace rozmeru komor v POW
 		{
@@ -17269,7 +17276,6 @@ void TForm1::smaz_kurzor()
 	pom_bod_temp=NULL; delete pom_bod_temp;
 	//pro jistotu na konec
 	if(Akce==EDITACE_TEXTU)Akce=NIC;Akce_temp=NIC;editovany_text="";index_kurzoru=0;
-	if(duvod_validovat==1)duvod_validovat=2;
 	if(Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT){d.SCENA=1111111;vytvor_statickou_scenu();}
 	else d.SCENA=0;
 	REFRESH(true);//uvolnění rastru, překreslení i tabulek (editace názvu elementu

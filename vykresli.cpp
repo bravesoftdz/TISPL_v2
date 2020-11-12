@@ -5608,7 +5608,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	//vykreslení postraních spojnic
 	float azimut=fmod(m.azimut(X1,Y1,X2,Y2)+90,360);//určení azimutu kótované přímky
 	double x1=X1,y1=Y1,x2=X2,y2=Y2;//body sloužící k přepočtu souřadnic + hodnota celkového odsazení
-  //String == String, z důvodu, že číslo 15 se né vždy rovná číslu 15
+	//String == String, z důvodu, že číslo 15 se né vždy rovná číslu 15
+	//nastavení souřadnic pro svislice
 	if(aktElement!=NULL && String(Y1)==String(Y2)){y1=Y1+(Offset+Presah+Presah*V);y2=Y2+(Offset+Presah+Presah*V);if(aktElement!=NULL)azimut=aktElement->geo.orientace;}
 	else if(aktElement!=NULL && String(X1)==String(X2)){x1=X1+(Offset+Presah+Presah*V);x2=X2+(Offset+Presah+Presah*V);if(aktElement!=NULL)azimut=aktElement->geo.orientace;}
 	else
@@ -5616,12 +5617,18 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		x1-=sin(DegToRad(azimut))*(Offset+Presah+Presah*V);y1-=cos(DegToRad(azimut))*(Offset+Presah+Presah*V);
 		x2-=sin(DegToRad(azimut))*(Offset+Presah+Presah*V);y2-=cos(DegToRad(azimut))*(Offset+Presah+Presah*V);
 	}
-
+	//vykreslení svislic
 	line(canv,X1,Y1,x1,y1);
 	line(canv,X2,Y2,x2,y2);
+	//nastavení souřadnic pro hlavni linii
+	if(aktElement!=NULL && String(Y1)==String(Y2)){y1-=Presah;y2-=Presah;}
+	else if(aktElement!=NULL && String(X1)==String(X2)){x1-=Presah;x2-=Presah;}
+	else
+	{
+		x1+=sin(DegToRad(azimut))*(Presah);y1+=cos(DegToRad(azimut))*(Presah);
+		x2+=sin(DegToRad(azimut))*(Presah);y2+=cos(DegToRad(azimut))*(Presah);
+	}
 	//vykreslení hlavní linie
-	x1+=sin(DegToRad(azimut))*(Presah);y1+=cos(DegToRad(azimut))*(Presah);
-	x2+=sin(DegToRad(azimut))*(Presah);y2+=cos(DegToRad(azimut))*(Presah);
 	line(canv,x1,y1,x2,y2);
 	//vykreslení šipek
 	sipka(canv,x1,y1,m.azimut(X1,Y1,X2,Y2)*(-1),false,0.5*(1+0.3*H)*meritko,color,color,pmCopy,psSolid,false);
