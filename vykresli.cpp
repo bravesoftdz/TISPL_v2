@@ -3369,7 +3369,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				/////////provizorní řešení !!!!!!!!!!!!
 				unsigned int velikost=m.round(2*F->Zoom);
 				TColor barva=clRed;if(eID==301)barva=clBlue;
-				if((E->eID==300 && E->dalsi2==E->predchozi2) || (E->eID==301 && (E->geo.X4!=E->predchozi2->geo.X4 || E->geo.Y4!=E->predchozi2->geo.Y4)))
+				if((E->eID==300 && E->dalsi2==E->predchozi2 && ((F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT) || ((F->Akce==F->Takce::GEOMETRIE || F->Akce==F->Takce::GEOMETRIE_LIGHT) && E->objekt_n==F->OBJEKT_akt->n))) || (E->eID==301 && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && (E->geo.X4!=E->predchozi2->geo.X4 || E->geo.Y4!=E->predchozi2->geo.Y4)))
 				{
 					canv->Pen->Color=barva;
 			  	canv->Pen->Width=m.round(1);

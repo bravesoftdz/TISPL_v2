@@ -1941,6 +1941,7 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 		unsigned int nTyp=vrat_pocet_elementu_eID(novy)+1;//pokud se jedná o roboty
 		if(novy->eID==300 || novy->eID==301)nTyp=novy->identifikator_vyhybka_spojka;
 		novy->name=T+" "+AnsiString(nTyp);//číslování a pojmenovávání zarážek pouze v debug
+    if(novy->eID==200)novy->name=T;//pro PM bez číslování
 		if(novy->eID==300 || novy->eID==301)novy->short_name=T_short+AnsiString(nTyp);
 		else novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 	}
@@ -3579,7 +3580,7 @@ bool Cvektory::validace_duplicity_nazvu(TElement *Element)
 {
 	//deklarace
 	bool ret=false;
-	if(Element!=NULL && Element->eID!=MaxInt)//u zarážek nemá smysl řešit
+	if(Element!=NULL && Element->eID!=MaxInt && Element->eID!=200)//u zarážek a PM nemá smysl řešit
 	{
     //deklarace pro kontrolu
 		TElement *E=ELEMENTY->dalsi;

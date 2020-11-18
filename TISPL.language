@@ -13,7 +13,7 @@ CS;X;V
 CM;X;S
 Moving will overlaps the work area, do you want to move the element?;X;Pøesunem dojde k pøekrytí pracovní oblasti, chcete element pøesunout?
   Space out tables;X;  Rozmístit tabulky
-Show all objects;X;Zobrazit všechny objekty
+Automatically connect geometry to the nearest drive?;X;Automaticky dopojit geometrii na nejbližší pohon?
 Previous view;X;Pøedchozí pohled
 Pause simulation;X;Pauza simulace
 PLAY;X;PLAY

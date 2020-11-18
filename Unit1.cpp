@@ -885,7 +885,7 @@ void TForm1::DesignSettings()
 			case 12:text="S";break;
 			case 13:text="Přesunem dojde k překrytí pracovních oblastí, chcete element přesunout?";break;
 			case 14:text="  Rozmístit tabulky";break;
-			case 15:text="Zobrazit všechny objekty";break;
+			case 15:text="Automaticky dopojit geometrii na nejbližší pohon?";break;
       case 16:text="Předchozí pohled";break;
 			case 17:text="Pauza simulace";break;
 			case 18:text="PLAY";break;
@@ -6536,7 +6536,7 @@ void TForm1::napoj_vetev_na_geo()
 		}
 
 		//přesun a napojení geometrue
-		if(nalezeno && E_break!=NULL && mrYes==MB("Přesunout spojku?",MB_YESNO))
+		if(nalezeno && E_break!=NULL && mrYes==MB(ls->Strings[15],MB_YESNO))//"Automaticky dopojit geometrii na nejbližší pohon?"
 		{
 			TPointD B=d.v.bod_na_geometrii(E_break,X,Y);
 			Cvektory::TElement *S=posledni_editovany_element->dalsi;//uložení spojky
@@ -6586,6 +6586,7 @@ void TForm1::napoj_vetev_na_geo()
 			S=NULL;delete S;
       //napojení vedlejší větve + překreslení
 			napojeni_vedlejsi_vetve(posledni_editovany_element,false);
+			Akce=GEOMETRIE;JID=-1;//před vytvořením statické scény
 			vytvor_statickou_scenu();
 			REFRESH();
 		}
@@ -7257,7 +7258,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					//změna elemetnu na předávací místo
 					E->eID=200;
 		   		//názvy
-					E->name=name+" "+String(d.v.vrat_pocet_elementu_eID(E)+1);
+					E->name=name;
 					//d.v.uprav_popisky_elementu(E);
 					pom_vyhybka=NULL;
 					//znovuvytvoření mGridu elementu
@@ -7342,7 +7343,7 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				//změna elemetnu na předávací místo
 		  	E->eID=200;
 		  	//názvy výhybek prozatím neřešeny
-				E->name=name+" "+String(d.v.vrat_pocet_elementu_eID(E)+1);
+				E->name=name;
 				//d.v.uprav_popisky_elementu(E);
 				//smazání a znovuvytvoření mGridu elementu
 				if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
