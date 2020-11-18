@@ -589,7 +589,7 @@ private:
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	bool pripnuti_dalsich_objektu(double citlivost=0.5);//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
-	void napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni);//provede kontrolu, zdá je možnost geometrii spojit, dotáže se a spojí geometrii pokud uživatel souhlasí
+	void napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrola_vzdalenosti=true);//provede kontrolu, zdá je možnost geometrii spojit, dotáže se a spojí geometrii pokud uživatel souhlasí
   void vypni_geometrii();//vypne akci geometrie
 	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøených souborù
 	void vytvor_obraz(bool stornoUNDO=false);//slouží k vytvoøení obrazu pro storno + undo nebo jen undo
@@ -607,6 +607,7 @@ private:
 	void smaz_seznam_pouzivanych_pohonu();//smaže seznam používaných pohonù
 	void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
 	void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
+  void napoj_vetev_na_geo();
 
 	////promìnné
 	ULONG_PTR gdiplusToken;

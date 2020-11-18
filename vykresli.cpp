@@ -199,11 +199,14 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 				if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n)stav=-2;//průjezdní stopka v needitovaném objektu
 			}
 			//vykreslení elementu a pozic
-			if(F->MOD!=F->SIMULACE && scena<=2 && stav!=-2 && stav!=0)vykresli_pozice_a_zony(canv,E);
-			short typ=1;if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==1 && F->pom_element_temp!=NULL && F->pom_element_temp==E)typ=2;
-			if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,typ,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
-			//vykreslení kót
-			if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty && !(scena!=0 && F->pom_element_temp!=NULL && F->pom_element_temp==E && ((F->Akce==F->EDITACE_TEXTU && (F->index_kurzoru==-11 || F->index_kurzoru==-101)) || F->Akce_temp==F->EDITACE_TEXTU)))vykresli_kotu(canv,E);//mezi elementy
+			if(!(F->Akce==F->Takce::MOVE_ELEMENT && F->OBJEKT_akt!=NULL && E->objekt_n==F->OBJEKT_akt->n))//přeskočit vykreslení v případě, že se posouvá element
+			{
+		  	if(F->MOD!=F->SIMULACE && scena<=2 && stav!=-2 && stav!=0)vykresli_pozice_a_zony(canv,E);
+		  	short typ=1;if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->Akce==F->EDITACE_TEXTU && F->index_kurzoru==1 && F->pom_element_temp!=NULL && F->pom_element_temp==E)typ=2;
+		  	if(!(F->OBJEKT_akt!=NULL && E->objekt_n!=F->OBJEKT_akt->n && F->scGPTrackBar_intenzita->Value<5))vykresli_element(canv,scena,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,typ,E->orientace,stav,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
+		  	//vykreslení kót
+				if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n==E->objekt_n && F->OBJEKT_akt->zobrazit_koty && !(scena!=0 && F->pom_element_temp!=NULL && F->pom_element_temp==E && ((F->Akce==F->EDITACE_TEXTU && (F->index_kurzoru==-11 || F->index_kurzoru==-101)) || F->Akce_temp==F->EDITACE_TEXTU)))vykresli_kotu(canv,E);//mezi elementy
+      }
 			pom=E->dalsi;
 
 			////vykreslení spojnic pokud geometrie nenavazuje
@@ -216,7 +219,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 				canv->Brush->Style=bsClear;
 				if(pom!=NULL/* && pom->geo.delka!=0 && E->geo.delka!=0*/)
 				{
-					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->geo.X4;bod.y=pom->geo.Y4;}
+					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->geo.X4;bod.y=pom->geo.Y4;if(F->Akce==F->Takce::GEOMETRIE || F->Akce==F->Takce::GEOMETRIE_LIGHT){bod.x=E->geo.X4;bod.y=E->geo.Y4;}}
 					else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
 					if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
 					{
@@ -236,7 +239,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 				}
 				pom=E->dalsi2;
 				if(E->eID==301)pom=NULL;//spojka si v tomto ukazateli uchovává svoji párovou výhybku
-				if(pom!=NULL)
+				if(pom!=NULL && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT)
 				{
 					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
 					else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
@@ -3366,13 +3369,16 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				/////////provizorní řešení !!!!!!!!!!!!
 				unsigned int velikost=m.round(2*F->Zoom);
 				TColor barva=clRed;if(eID==301)barva=clBlue;
-				canv->Pen->Color=barva;
-				canv->Pen->Width=m.round(1);
-				canv->Pen->Mode=pmCopy;
-				canv->Pen->Style=psSolid;
-				canv->Brush->Color=barva;
-				canv->Brush->Style=bsSolid;
-				canv->Rectangle(X-velikost,Y-velikost,X+velikost,Y+velikost);
+				if((E->eID==300 && E->dalsi2==E->predchozi2) || (E->eID==301 && (E->geo.X4!=E->predchozi2->geo.X4 || E->geo.Y4!=E->predchozi2->geo.Y4)))
+				{
+					canv->Pen->Color=barva;
+			  	canv->Pen->Width=m.round(1);
+			  	canv->Pen->Mode=pmCopy;
+			  	canv->Pen->Style=psSolid;
+			  	canv->Brush->Color=barva;
+			  	canv->Brush->Style=bsSolid;
+			  	canv->Rectangle(X-velikost,Y-velikost,X+velikost,Y+velikost);
+				}
 				////vykreslení popisku
 				canv->Font->Color=barva;
 				canv->Font->Size=F->m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*F->Zoom);
@@ -4666,6 +4672,22 @@ void Cvykresli::vykresli_editovane_polozky(TCanvas *canv)
 	if(F->OBJEKT_akt!=NULL && F->pom_element!=NULL && F->Akce==F->Takce::POSUN_TEPLOMER)
 	{
 		vykresli_element(canv,0,m.L2Px(F->pom_element->X),m.L2Py(F->pom_element->Y),F->pom_element->name,"",F->pom_element->eID,1,m.Rt90(F->pom_element->geo.orientace-F->pom_element->geo.rotacni_uhel-90),1,1.5,0,0,0,F->pom_element);
+	}
+	//vykreslení elemntů v kabině, při MOVE_ELEMENT
+	if(F->OBJEKT_akt!=NULL && F->Akce==F->Takce::MOVE_ELEMENT)
+	{
+		Cvektory::TElement *E=F->OBJEKT_akt->element;
+		Cvektory::T2Element *VYH=v.hlavicka_seznam_VYHYBKY();
+		while(E!=NULL)
+		{
+			vykresli_pozice_a_zony(canv,E);
+			vykresli_element(canv,0,m.L2Px(E->X),m.L2Py(E->Y),E->name,E->short_name,E->eID,1,E->orientace,1,E->data.LO1,E->OTOC_delka,E->data.LO2,E->data.LO_pozice,E);
+			//vykreslení kót
+			if(F->OBJEKT_akt->zobrazit_koty)vykresli_kotu(canv,E);//mezi elementy
+      E=v.dalsi_krok(VYH,E,F->OBJEKT_akt);
+		}
+		E=NULL;delete E;
+		v.vymaz_seznam_VYHYBKY(VYH);
 	}
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------

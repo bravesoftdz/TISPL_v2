@@ -866,7 +866,7 @@ public:
 	void kontrola_vlozeni_do_mag_lasa(TElement *E);//provede kontrolu zda může být element vložen do seznamu mag. laso, pokud ano vloží ho
 	void vloz_segment_MAG_LASA(TElement *E);//vloží nový segment do magnetického lasa
 	void smaz_segment_MAG_LASA(TElement *E);//smaže segment z magnetického lasa
-	TPointD bod_na_geometrii(TElement *E);//"přilepování" souřadnic na gaometrii linky, linie i oblouky
+	TPointD bod_na_geometrii(TElement *E,double x=MaxInt, double y=MaxInt);//"přilepování" souřadnic na gaometrii linky, linie i oblouky
 	short obsahuje_MAG_LASO_element(TElement *E);//kontrola zda spoják magnetického lasa obsahuje segment s danným elementem
 	TPointD InVrata(TElement *E,bool kontrola_kurzoru=true);//zkontroloje, zda existují vrátka objektu a jestli jsem kurzorem v jejich oblasti, pokud ano vrátí bod, pokud ne vrátí [-MaxInt,-MaxInt]
 
