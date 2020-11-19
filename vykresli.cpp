@@ -3371,30 +3371,34 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				TColor barva=clRed;if(eID==301)barva=clBlue;
 				if((E->eID==300 && E->dalsi2==E->predchozi2 && ((F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT) || ((F->Akce==F->Takce::GEOMETRIE || F->Akce==F->Takce::GEOMETRIE_LIGHT) && E->objekt_n==F->OBJEKT_akt->n))) || (E->eID==301 && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && (E->geo.X4!=E->predchozi2->geo.X4 || E->geo.Y4!=E->predchozi2->geo.Y4)))
 				{
+					////vykreslní čtverce
 					canv->Pen->Color=barva;
 			  	canv->Pen->Width=m.round(1);
 			  	canv->Pen->Mode=pmCopy;
 			  	canv->Pen->Style=psSolid;
-			  	canv->Brush->Color=barva;
-			  	canv->Brush->Style=bsSolid;
-			  	canv->Rectangle(X-velikost,Y-velikost,X+velikost,Y+velikost);
+					canv->Brush->Color=barva;
+					canv->Brush->Style=bsSolid;
+					canv->Rectangle(X-velikost,Y-velikost,X+velikost,Y+velikost);
 				}
-				////vykreslení popisku
-				canv->Font->Color=barva;
-				canv->Font->Size=F->m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*F->Zoom);
-				canv->Font->Name=F->aFont->Name;
-	    	canv->Font->Style = TFontStyles();
-				canv->Brush->Color=clWhite;
-				canv->Brush->Style=bsClear;
-				AnsiString t="V";
-				if(E->eID==301)t="S";
-				t+=String(E->identifikator_vyhybka_spojka);
-				switch((int)E->geo.orientace)
+				if((E->eID==300 && ((F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT) || ((F->Akce==F->Takce::GEOMETRIE || F->Akce==F->Takce::GEOMETRIE_LIGHT) && E->objekt_n==F->OBJEKT_akt->n))) || (E->eID==301 && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT))
 				{
-					case 90:case 270:X=m.round(X-canv->TextWidth(t)/2.0);Y=m.round(Y-velikost*1.2-canv->TextHeight(t));break;
-					default:X=m.round(X-velikost*1.2-canv->TextWidth(t));Y=m.round(Y-canv->TextHeight(t)/2.0);break;
+					////vykreslení popisku
+			  	canv->Font->Color=barva;
+			  	canv->Font->Size=F->m.round(2.8*F->Zoom);if(F->aFont->Size==12)canv->Font->Size=F->m.round(2*F->Zoom);
+			  	canv->Font->Name=F->aFont->Name;
+			  	canv->Font->Style = TFontStyles();
+			  	canv->Brush->Color=clWhite;
+			  	canv->Brush->Style=bsClear;
+			  	AnsiString t="V";
+			  	if(E->eID==301)t="S";
+			  	t+=String(E->identifikator_vyhybka_spojka);
+			  	switch((int)E->geo.orientace)
+			  	{
+			  		case 90:case 270:X=m.round(X-canv->TextWidth(t)/2.0);Y=m.round(Y-velikost*1.2-canv->TextHeight(t));break;
+			  		default:X=m.round(X-velikost*1.2-canv->TextWidth(t));Y=m.round(Y-canv->TextHeight(t)/2.0);break;
+			  	}
+					TextFraming(canv,X,Y,t);
 				}
-				TextFraming(canv,X,Y,t);
 			}
 		}
 		break;

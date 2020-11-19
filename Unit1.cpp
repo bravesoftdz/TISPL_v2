@@ -6586,16 +6586,19 @@ void TForm1::napoj_vetev_na_geo()
 			S=NULL;delete S;
       //napojení vedlejší větve + překreslení
 			napojeni_vedlejsi_vetve(posledni_editovany_element,false);
-			Akce=GEOMETRIE;JID=-1;//před vytvořením statické scény
-			vytvor_statickou_scenu();
-			REFRESH();
+//			Akce=GEOMETRIE;JID=-1;//před vytvořením statické scény
+//			vytvor_statickou_scenu();
+//			REFRESH(); //řešno v napojeni_vedlejsi_vetve()
 		}
 
 		//ukazatelové záležitosti
 	  E=NULL;delete E;
 		E_break=NULL;delete E_break;
-		JID=-1;stisknute_leve_tlacitko_mysi=false;
-		Akce=GEOMETRIE;//WA pro zobrazení MB
+		if(Akce==BLOK)
+		{
+			JID=-1;stisknute_leve_tlacitko_mysi=false;
+			Akce=GEOMETRIE;//WA pro zobrazení MB
+		}
 	}
 }
 //---------------------------------------------------------------------------
@@ -6608,14 +6611,14 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 //	Akce=BLOK;
 //	JID=-1;stisknute_leve_tlacitko_mysi=false;
 	bool vypnout=false,dotazano=false;                                                                                    
-	//kontrola, zda se orientace vetve == orientaci spojky, pokud ne vloží oblouk                                                  
+	//kontrola, zda se orientace vetve == orientaci spojky, pokud ne vloží oblouk
 	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)!=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) || e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel!=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=citlivost)
 	{
-		double orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);if(orientace==0)orientace=360;
+		double orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);//if(orientace==0)orientace=360;
 		double rotacni_uhel=orientace-e_posledni->dalsi->geo.orientace;
 		if(d.v.hodnota_v_katalogu(d.v.PP.katalog,m.abs_d(rotacni_uhel)) /*&& mrYes==MB(ls->Strings[455],MB_YESNO)*/)
 		{
-      //parametry geometrie
+			//parametry geometrie
 			d.geoTemp.typ=1;
 	  	d.geoTemp.radius=d.v.PP.radius;
 	  	d.geoTemp.orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);
@@ -6781,25 +6784,26 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 	//ukončení editace geometrie
 //	if(vypnout)
 //	{
-//		vypni_geometrii();
-//    //aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
-//  	Cvektory::TElement *E=OBJEKT_akt->element;
-//  	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-//  	while(E!=NULL)
-//  	{
-//  		if(E->eID==300)napln_comba_mGridu(E);
-//  		E->mGrid->Refresh();
-//  		E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
-//  	}
-//  	E=NULL;delete E;
-//  	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-//  	//refresh ostatních tabulek
-//  	if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
-//  	Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
-//  	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
-//  	Tep=NULL;delete Tep;
-//  	if(e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4)TIP="Nelze automaticky dopojit";
-//		REFRESH(d.SCENA,true);
+		vypni_geometrii();
+		Akce=NIC;Akce_temp=NIC;
+    //aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
+  	Cvektory::TElement *E=OBJEKT_akt->element;
+  	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+		while(E!=NULL)
+  	{
+  		if(E->eID==300)napln_comba_mGridu(E);
+  		E->mGrid->Refresh();
+  		E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
+  	}
+  	E=NULL;delete E;
+  	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+  	//refresh ostatních tabulek
+  	if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
+  	Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+  	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
+  	Tep=NULL;delete Tep;
+  	if(e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4)TIP="Nelze automaticky dopojit";
+		REFRESH(0,true);
 //	}
 //	else Akce=puv_akce;
 }
@@ -15261,19 +15265,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-//	Memo("");
-	Memo_testy->Clear();
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		if(E->objekt_n==3)
-		{
-			d.line(Canvas,0,2000,m.L2Px(E->geo.X1),m.L2Py(E->geo.Y1));
-			d.line(Canvas,0,0,m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
-    }
-		E=E->dalsi;
-	}
-	E=NULL;delete E;
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
