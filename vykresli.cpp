@@ -3109,8 +3109,10 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E)
 	{
 		////nastavení barev
 		TColor clKolej=(TColor) RGB(255,69,0);
-		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
-		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt))clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlení neaktivních větví
+		bool editace_vetve=false;
+		//if(F->Akce==F->Takce::GEOMETRIE && F->posledni_editovany_element!=NULL && F->posledni_editovany_element->dalsi!=NULL && F->posledni_editovany_element->dalsi->eID==301 && F->posledni_editovany_element->dalsi->dalsi2!=F->posledni_editovany_element->dalsi->predchozi2)editace_vetve=true;
+		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER && !editace_vetve)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
+		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt) && !editace_vetve)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlení neaktivních větví
 		////řešení pokud je stoupání či klesání
 		double delka=E->geo.delka;
 		if(E->geo.HeightDepp!=0)//výšku či hloubku

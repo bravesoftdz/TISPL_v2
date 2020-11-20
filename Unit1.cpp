@@ -6515,25 +6515,11 @@ void TForm1::napoj_vetev_na_geo()
 		//hledání do výhybky
 		while(E!=NULL)
 		{
-			if(E==E_break)break;//narazil jsem na výhybku aktuálně upravované větve
-			if(E->geo.typ==0 && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)<=citlivost){nalezeno=true;E_break=E;break;}
+			if(E->geo.typ==0 && !d.v.je_element_ve_vetvi(E,E_break) && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)<=citlivost){nalezeno=true;E_break=E;break;}
 			E=d.v.dalsi_krok(VYH,E);
 	  }
 	  E=NULL;delete E;
 		d.v.vymaz_seznam_VYHYBKY(VYH);
-		//hledání od výhybky
-	  if(!nalezeno)
-		{
-			E=E_break->dalsi;
-			VYH=d.v.hlavicka_seznam_VYHYBKY();
-			while(E!=NULL)
-	  	{
-        if(E->geo.typ==0 && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)<=citlivost){nalezeno=true;E_break=E;break;}
-	  		E=d.v.dalsi_krok(VYH,E);
-	  	}
-			E=NULL;delete E;
-	  	d.v.vymaz_seznam_VYHYBKY(VYH);
-		}
 
 		//přesun a napojení geometrue
 		if(nalezeno && E_break!=NULL && mrYes==MB(ls->Strings[15],MB_YESNO))//"Automaticky dopojit geometrii na nejbližší pohon?"
@@ -6803,7 +6789,8 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
   	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
   	Tep=NULL;delete Tep;
   	if(e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4)TIP="Nelze automaticky dopojit";
-		REFRESH(0,true);
+    d.SCENA=0;
+		REFRESH(true);
 //	}
 //	else Akce=puv_akce;
 }
@@ -15265,7 +15252,15 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+//	Memo("");
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+	while(E!=NULL)
+	{
+		if(d.v.je_element_ve_vetvi(E,OBJEKT_akt->element))Memo("na větvi: "+E->name);else Memo("mimo větev: "+E->name);
+		E=d.v.dalsi_krok(VYH,E);
+	}
+	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

@@ -2985,6 +2985,23 @@ Cvektory::TElement *Cvektory::vrat_element(unsigned int n)
 	return E;
 }
 ////---------------------------------------------------------------------------
+//otestuje, zde se Element nachází ve vedlější větvi Výhybky
+bool Cvektory::je_element_ve_vetvi(TElement *Element,TElement *Vyhybka)
+{
+	bool ret=false;
+	if(Element!=NULL && Vyhybka!=NULL && Vyhybka->eID==300 && Element!=Vyhybka)
+	{
+		TElement *E=Vyhybka->dalsi2;
+		while(E!=NULL && E->identifikator_vyhybka_spojka!=Vyhybka->identifikator_vyhybka_spojka)
+		{
+			if(E==Element){ret=true;break;}
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+  }
+  return ret;
+}
+////---------------------------------------------------------------------------
 //ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
 short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 {
