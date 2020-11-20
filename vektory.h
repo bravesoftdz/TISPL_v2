@@ -921,6 +921,7 @@ public:
 	void kopiruj_seznam_teplomery(TObjekt *zdroj,TObjekt *cil);//kopíruje záznamy teploměrů do jiného objektu, pro účely obrazu objektu
 	Cvektory::TTeplomery *kopiruj_teplomer(TTeplomery *original);//vytvoří kopii z originálního záznamu teploměrů
 	void aktualizuj_cestu_teplomeru();//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje
+  void aktualizuj_cestu_teplomeru(TObjekt *Objekt);//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje, konkrétnímu objektu
 
 //SQL
 	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit

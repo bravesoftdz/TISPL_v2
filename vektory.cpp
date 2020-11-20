@@ -11058,74 +11058,7 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 	TObjekt *Objekt=OBJEKTY->dalsi;
 	while(Objekt!=NULL)
 	{
-  	if(Objekt->teplomery!=NULL)
-  	{
-  		TTeplomery *T=vrat_teplomery_podle_zakazky(Objekt,ZAKAZKA_akt);
-  		if(T!=NULL)
-  		{
-  			update_akt_zakazky();//důležité mít aktuální data
-  			//deklarace
-  			bool nalezen_prvni=false,nalezen_posledni=false;
-  			double X1,Y1,X2,Y2;
-  			X1=T->prvni->geo.X1;Y1=T->prvni->geo.Y1;
-  			X2=T->posledni->geo.X4;Y2=T->posledni->geo.Y4;
-  			TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
-  			//nulování spárovaných elementů teplomerů
-  			TElement *E1=T->prvni->sparovany,*E2=T->posledni->sparovany;
-  			T->prvni->sparovany=NULL;
-  			T->posledni->sparovany=NULL;
-
-  			//hledání nových spárovaných elementů
-				while(CE!=NULL)
-				{
-					//kontrola, zda je první element stále na geometrii
-					if(!nalezen_prvni && (PtInSegment(CE->Element,X1,Y1) || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)))
-					{
-						nalezen_prvni=true;
-						T->prvni->sparovany=CE->Element;
-					}
-					//kontrola, zda je posledni element stále na geometrii
-					if(!nalezen_posledni && (PtInSegment(CE->Element,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
-					{
-						nalezen_posledni=true;
-						T->posledni->sparovany=CE->Element;
-  				}
-     			//posun na další segnemt cesty, případně konec průchodu
-  				if(nalezen_prvni && nalezen_posledni)break;
-  				CE=CE->dalsi;
-  			}
-
-  			//aktualizace cesty
-  			if(T->prvni->sparovany!=NULL && T->posledni->sparovany!=NULL)
-				{
-					//mazání stare cesty
-					hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
-  				//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
-					if(T->prvni->sparovany!=T->posledni->sparovany)
-					{
-  					CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
-						while(CE!=NULL)
-  					{
-							if(CE->Element==T->posledni->sparovany)break;
-							vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
-							CE=CE->dalsi;
-						}
-					}
-          //aktualizace tabulky
-					if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
-				}
-
-				//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
-				else F->reset_teplomeru(Objekt);
-
-				//ukazatelové záležitosti
-				CE=NULL;delete CE;
-				E1=NULL;delete E1;
-				E2=NULL;delete E2;
-			}
-			//uakazatelové záležitosti
-			T=NULL;delete T;
-		}
+		aktualizuj_cestu_teplomeru(Objekt);
 		//posun na další objekt
 		Objekt=Objekt->dalsi;
 	}
@@ -11133,5 +11066,76 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 	delete Objekt;Objekt=NULL;
 }
 ////---------------------------------------------------------------------------
+//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje konkrétnímu objektu
+void Cvektory::aktualizuj_cestu_teplomeru(TObjekt *Objekt)
+{
+	if(Objekt!=NULL && Objekt->teplomery!=NULL)
+	{
+  	TTeplomery *T=vrat_teplomery_podle_zakazky(Objekt,ZAKAZKA_akt);
+  	if(T!=NULL)
+  	{
+  		update_akt_zakazky();//důležité mít aktuální data
+  		//deklarace
+    	bool nalezen_prvni=false,nalezen_posledni=false;
+  		double X1,Y1,X2,Y2;
+    	X1=T->prvni->geo.X1;Y1=T->prvni->geo.Y1;
+    	X2=T->posledni->geo.X4;Y2=T->posledni->geo.Y4;
+  		TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
+  		//nulování spárovaných elementů teplomerů
+    	TElement *E1=T->prvni->sparovany,*E2=T->posledni->sparovany;
+    	T->prvni->sparovany=NULL;
+  		T->posledni->sparovany=NULL;
 
+  		//hledání nových spárovaných elementů
+  		while(CE!=NULL)
+  		{
+  			//kontrola, zda je první element stále na geometrii
+  			if(!nalezen_prvni && (PtInSegment(CE->Element,X1,Y1) || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)))
+  			{
+  				nalezen_prvni=true;
+  				T->prvni->sparovany=CE->Element;
+  			}
+  			//kontrola, zda je posledni element stále na geometrii
+  			if(!nalezen_posledni && (PtInSegment(CE->Element,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
+  			{
+  				nalezen_posledni=true;
+  				T->posledni->sparovany=CE->Element;
+  			}
+  			//posun na další segnemt cesty, případně konec průchodu
+  			if(nalezen_prvni && nalezen_posledni)break;
+    		CE=CE->dalsi;
+    	}
 
+    	//aktualizace cesty
+  		if(T->prvni->sparovany!=NULL && T->posledni->sparovany!=NULL)
+  		{
+  			//mazání stare cesty
+  			hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
+  			//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
+  			if(T->prvni->sparovany!=T->posledni->sparovany)
+  			{
+  				CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
+  				while(CE!=NULL)
+  				{
+  					if(CE->Element==T->posledni->sparovany)break;
+  					vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
+  					CE=CE->dalsi;
+  				}
+  			}
+        //aktualizace tabulky
+  			if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
+  		}
+
+  		//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
+  		else F->reset_teplomeru(Objekt);
+
+  		//ukazatelové záležitosti
+  		CE=NULL;delete CE;
+  		E1=NULL;delete E1;
+  		E2=NULL;delete E2;
+  	}
+  	//uakazatelové záležitosti
+		T=NULL;delete T;
+	}
+}
+ ////---------------------------------------------------------------------------

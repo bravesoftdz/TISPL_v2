@@ -1824,13 +1824,13 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 			if(F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && F->Akce!=F->Takce::MOVE_ELEMENT)
 			{
 		  	if(teplomery->prvni->sparovany!=teplomery->posledni->sparovany)
-		  	{
-		  		vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,clTeplomery,1);//vykreslení cesty od prvního teploměru
+				{
+					vykresli_segment_cesty_teplomeru(canv,teplomery->prvni,clTeplomery,1);//vykreslení cesty od prvního teploměru
 					vykresli_segment_cesty_teplomeru(canv,teplomery->posledni,clTeplomery,2);//vykreslení cesty k poslednímu teploměru
 				}
 		  	//vykrelsení spojnice mezi teploměry na jednom segmentu pohonu
 		  	else
-		  	{
+				{
 		  		double X1,Y1,OR,RA,R;
 					//vykreslení linie mezi teploměry
 		  		if(teplomery->prvni->sparovany->geo.typ==0)
@@ -1845,14 +1845,14 @@ void Cvykresli::vykresli_oblast_teplomery(TCanvas *canv,short scena,Cvektory::TO
 					{
 		  			;//nelze aplikovat stejnou metodu vykreslení jako u mag_lasa, kreslí se na prázdný prostor, zde nopomůže barva kolejí
 		  		}
-		  	}
+				}
 				Cvektory::TCesta *ct=teplomery->cesta->dalsi;
 				while(ct!=NULL)
 		  	{
 					vykresli_segment_cesty_teplomeru(canv,ct->Element,clTeplomery);
 		  		//posun na další segment cesty
 		  		ct=ct->dalsi;
-		  	}
+				}
 				delete ct;ct=NULL;
 			}
 		}
@@ -2914,9 +2914,11 @@ void Cvykresli::vykresli_dopravnik(TCanvas *canv, Cvektory::TZakazka *zakazka)
 	{
 		////vstupní proměnné
 		//musí být uvnitř cyklu pro nové nastavení
-		TColor clKolej=(TColor) RGB(255,69,0); if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
-		TColor clRetez=clBlack; if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
-		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt)){clRetez=m.clIntensive(clRetez,m.get_intensity());clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);}//zesvětlení neaktivních věcí
+		bool editace_vetve=false;
+		if(F->Akce==F->Takce::GEOMETRIE && F->posledni_editovany_element!=NULL && F->posledni_editovany_element->dalsi!=NULL && F->posledni_editovany_element->dalsi->eID==301 && F->posledni_editovany_element->dalsi->dalsi2!=F->posledni_editovany_element->dalsi->predchozi2)editace_vetve=true;
+		TColor clKolej=(TColor) RGB(255,69,0); if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER && !editace_vetve)clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);//zesvětlování neaktivních pohonů
+		TColor clRetez=clBlack; if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER && !editace_vetve)clRetez=m.clIntensive(clRetez,m.get_intensity());//zesvětlování neaktivních pohonů
+		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt)){clRetez=m.clIntensive(clRetez,m.get_intensity() && !editace_vetve);clKolej=m.clIntensive(clKolej,m.get_intensity()/1.8);}//zesvětlení neaktivních věcí
 		float RetezWidth=1;if(E->pohon!=NULL)RetezWidth=F->Zoom*0.5;//pokud není pohon přiřazen, tak jen elementární osa, jinak skutečná tloušťka
 
 		////vykreslení paralelních kolejí
@@ -3110,7 +3112,7 @@ void Cvykresli::vykresli_koleje(TCanvas *canv,Cvektory::TElement *E)
 		////nastavení barev
 		TColor clKolej=(TColor) RGB(255,69,0);
 		bool editace_vetve=false;
-		//if(F->Akce==F->Takce::GEOMETRIE && F->posledni_editovany_element!=NULL && F->posledni_editovany_element->dalsi!=NULL && F->posledni_editovany_element->dalsi->eID==301 && F->posledni_editovany_element->dalsi->dalsi2!=F->posledni_editovany_element->dalsi->predchozi2)editace_vetve=true;
+		if(F->Akce==F->Takce::GEOMETRIE && F->posledni_editovany_element!=NULL && F->posledni_editovany_element->dalsi!=NULL && F->posledni_editovany_element->dalsi->eID==301 && F->posledni_editovany_element->dalsi->dalsi2!=F->posledni_editovany_element->dalsi->predchozi2)editace_vetve=true;
 		if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->n!=E->objekt_n && F->Akce!=F->Takce::POSUN_TEPLOMER && !editace_vetve)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlování neaktivních pohonů
 		if(F->Akce==F->Takce::POSUN_TEPLOMER && !v.obsahuje_segment_cesty_element(E,v.ZAKAZKA_akt) && !editace_vetve)clKolej=m.clIntensive(clKolej,m.round(m.get_intensity()/1.8));//zesvětlení neaktivních větví
 		////řešení pokud je stoupání či klesání
