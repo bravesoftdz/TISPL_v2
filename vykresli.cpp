@@ -706,6 +706,18 @@ void Cvykresli::TextFraming(TCanvas *canv,int X,int Y,UnicodeString Text,TFont *
 	//samotný text
 	canv->Font->Color=clText;
 	canv->TextOutW(X,Y,Text);
+
+//příprava
+//  		Gdiplus::Graphics g(Canvas->Handle);
+//			Gdiplus::FontFamily fontFamily(L"Roboto Cn");
+//			Gdiplus::Font font(&fontFamily, 100, Gdiplus::FontStyleRegular, Gdiplus::UnitPixel);
+//			Gdiplus::PointF pointF(200.5f, 0.5f);
+//			Gdiplus::SolidBrush solidBrush(Gdiplus::Color(255, 0, 0, 0));
+//        g.RotateTransform(30.0f);
+//			g.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
+//			pointF.Y+=K*1.5;
+//			g.DrawString(L"čěščřR", -1, &font, pointF, &solidBrush);
+
 }
 ////---------------------------------------------------------------------------
 ////---------------------------------------------------------------------------
@@ -4643,7 +4655,7 @@ void Cvykresli::vykresli_editovane_polozky(TCanvas *canv)
 			//editace textu kóty elementu, nebo kóty mezi LO
 			case -101:case -11:
 			{
-				vykresli_kotu(canv,F->pom_element_temp);
+				vykresli_kotu(canv,F->pom_element_temp,false);
 				break;
 			}
 			//editace názvu teploměrů, nebo editace názvu elementu
@@ -5298,11 +5310,14 @@ TPointD *Cvykresli::vykresli_Gelement(TCanvas *canv,double X,double Y,double ori
 	TPointD *PL=m.getArcLine(X,Y,orientace,rotacni_uhel,radius);
 	if(typ==-1)//vykreslit pouze pohon
 	{
-		POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
-		//nastavení geometrického pera
 		set_pen(canv,color,m.round(F->Zoom*width),PS_ENDCAP_FLAT);//nastavení geometrického pera
-		canv->Pen->Mode=pmNotXor;
-		if(!GDIplus)canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+		if(!GDIplus || !gdiplus)
+		{
+			POINT POLE[]={{m.L2Px(PL[0].x),m.L2Py(PL[0].y)},m.L2Px(PL[1].x),m.L2Py(PL[1].y),m.L2Px(PL[2].x),m.L2Py(PL[2].y),m.L2Px(PL[3].x),m.L2Py(PL[3].y)};//převod do fyzických souřadnic
+			//nastavení geometrického pera
+			canv->Pen->Mode=pmNotXor;
+			canv->PolyBezier((TPoint*)POLE,3);//samotné vykreslení bézierovy křivky
+		}
 		else//GDI+
 		{
 			Gdiplus::Graphics g(canv->Handle);
@@ -5501,7 +5516,7 @@ void Cvykresli::nabuffrovat_mGridy(TmGrid *mGrid)
 	else mGrid->Buffer(true);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
-void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
+void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do,bool AAsize)
 {
 	double O=F->OBJEKT_akt->koty_elementu_offset.x;
 
@@ -5528,7 +5543,8 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 		x2=Element_do->geo.X4;y2=Element_do->geo.Y4;
 		if(x2<F->OBJEKT_akt->element->geo.X1)O=(O-0.66)*(-1);//ošetření chybného zobrazení kóty elementu, který je před kabinou
 		//vykreslení kóty
-		if(Element_do->geo.typ==0)vykresli_kotu(canv,x1,y1,x2,y2,Element_do,F->OBJEKT_akt->koty_elementu_offset.x,highlight);
+		if(Element_do->geo.typ==0)vykresli_kotu(canv,x1,y1,x2,y2,Element_do,F->OBJEKT_akt->koty_elementu_offset.x,highlight,0.2,clGray,false,NULL,AAsize);
+
 		////kota mezi LO
 		bool vykreslit=false;
 		bool el_od=false,el_do=false;
@@ -5564,7 +5580,7 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,Cvektory::TElement *Element_do)
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v metrických jednotkách kromě width, zde v px + automaticky dopočítává délku a dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
-void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool LO_kota,Cvektory::TKomora *komora)
+void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double Y2,Cvektory::TElement *aktElement,double Offset,short highlight,float width,TColor color,bool LO_kota,Cvektory::TKomora *komora,bool AAsize)
 {
 	double delka=m.delka(X1,Y1,X2,Y2);
 	AnsiString T="";
@@ -5583,11 +5599,11 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,double X1,double Y1,double X2,double
 		delka=delka*(1+999*F->DKunit);//výpočet délky a šířky kabiny + případný převod m->mm
 	}
 	if(T=="")T=m.round2double(delka,0/*nefuguje zde správně,".."*/);//standardní zobrazení na 3 reálná místa
-	if(T!="0")vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,LO_kota,komora);
+	if(T!="0")vykresli_kotu(canv,m.L2Px(X1),m.L2Py(Y1),m.L2Px(X2),m.L2Py(Y2),T,aktElement,m.m2px(Offset),highlight,width,color,LO_kota,komora,NULL,AAsize);
 }
 ////------------------------------------------------------------------------------------------------------------------------------------------------------
 //v px + dosazuje aktuálně nastavené jednotky,highlight: 0-ne,1-ano,2-ano+vystoupení kóty i pozičně, aktElement pokud bude NULL, předpokládá se, že je to kóta kabiny
-void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool LO_kota,Cvektory::TKomora *komora,Cvektory::TBod *bod)
+void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,AnsiString Text,Cvektory::TElement *aktElement,int Offset,short highlight,float width, TColor color,bool LO_kota,Cvektory::TKomora *komora,Cvektory::TBod *bod,bool AAsize)
 {
 	////vstupní proměnné
   highlight=0;//riční vypnutí highlightu kót
@@ -5668,6 +5684,15 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 		canv->Font->Size=m.round(canv->Font->Size/2.0);//při highlighnutí se text se šířkou nezvětštuje (proto /2 návrat na původní hodnotu, pouze ztučňuje a to jen za předpokladu, změny hodnot kót nikoliv linie kóty (její pozice/offsetu)
 	}
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
+
+//test opravy
+	if(!AAsize)
+	{
+		canv->Font->Size=m.round(canv->Font->Size/1.2);
+		F->Memo(Text);
+	}
+///
+
 	SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí kóty
 	canv->Brush->Color=clWhite;//nastvení netransparentního pozadí popisku kóty
 //	AnsiString Jednotky=" [m]";if(F->DKunit==1)Jednotky=" [mm]";if(F->DKunit==2)Jednotky=" [s]";if(F->DKunit==3)Jednotky=" [min]";
