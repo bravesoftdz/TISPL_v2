@@ -44,7 +44,7 @@ void TFormX::OnClick(long Tag,long ID,long Col,long Row) //unsigned
 	//funkcionalita exBUTTONu v tabulce pohonu
 	if(ID==9999&&Row==-2)//pokud je stisknut exButton v tabulce pohonu
 	{
-		AnsiString Hint=F->PmG->exBUTTON->Hint;F->PmG->exBUTTON->Hint="";//zabráni probliku Hintu, toto sloužilo pro tlaèítko, ale nebylo plnì uèinné: int T=F->PmG->exBUTTON->Top;
+		AnsiString Hint=F->PmG->exBUTTON->Hint;F->PmG->exBUTTON->Hint="";// zabráni probliku Hintu, toto sloužilo pro tlaèítko, ale nebylo plnì uèinné: int T=F->PmG->exBUTTON->Top;
 		if(F->OBJEKT_akt->stavPM==2)
 		{
 			F->PmG->exBUTTON->GlyphOptions->Kind=scgpbgkDownArrow;

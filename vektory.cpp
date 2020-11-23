@@ -7482,7 +7482,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				if(V->stav==-2)
 				{
 					if(PP.delka_podvozek<m.UDJ(V->rotace_jig)){vloz_zpravu(V->X,V->Y,-1,402,V->element);pocet_erroru++;}//případně ještě, //Pozor, překrytí JIGů!
-					vloz_zpravu(V->X,V->Y,1,451,V->element);pocet_warningu++;//"Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno."; -- MUSÍ BÝT AŽ DRUHÉ V POŘADÍ
+					vloz_zpravu(V->X,V->Y,1,451,V->element);pocet_warningu++;// "Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno."; -- MUSÍ BÝT AŽ DRUHÉ V POŘADÍ
 				}
 				V=V->dalsi;
 			}

@@ -5408,7 +5408,7 @@ void Cvykresli::vykresli_mGridy(TCanvas *canv)
 						if(F->OBJEKT_akt->zobrazit_mGrid && F->Akce!=F->Takce::PAN_MOVE)//pokud je mGrid zobrazen a nejedná se o posun obrazu
 						{
 							E->mGrid->Redraw=true;
-							E->mGrid->buffer=true;//změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
+							E->mGrid->buffer=true;// změna filozofie zajistí průběžné buffrování při vykreslování jinak E->mGrid->Buffer(false);
 							if(E->mGrid->VisibleComponents>-1)E->mGrid->VisibleComponents=true;//stačí volat toto, protože se pomocí Show (resp. Draw-SetCompontens-Set...) cyklem všechny komponenty na základě tohoto zobrazí pokud je nastaveno na -1 tak se při překreslování zohlední individuální nastavení komponent (z tohoto stavu je však pro další použítí třeba vrátit do stavu 0 nebo 1)
 							E->mGrid->Left=m.L2Px(E->Xt);
 							E->mGrid->Top=m.L2Py(E->Yt);

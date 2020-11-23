@@ -15254,14 +15254,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	//Memo("");
-	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
-	while(O!=NULL)
-	{
-    Memo(O->name+"->element: "+O->element->name+"->objekt_n="+String(O->element->objekt_n));
-		O=O->dalsi;
-	}
-	delete O;O=NULL;
+//	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

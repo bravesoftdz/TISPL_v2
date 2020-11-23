@@ -537,7 +537,7 @@ private:
 	unsigned short int Nacist_podklad(UnicodeString soubor,bool akt_filename=false);//realizuje nacteni podkladu
 	void ulozit_posledni_otevreny();//uloží do ini nazev posledního pracovního souboru
 	void ulozit_historie_otevrenych();//ukládání 3 naposledy otevøených projektù do historie
-	void vse_odstranit();
+	void vse_odstranit();//odstraní ukazatele
 public:
 	UnicodeString get_computer_name();
 	UnicodeString get_user_name();
