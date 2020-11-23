@@ -6599,7 +6599,7 @@ void TForm1::napoj_vetev_na_geo()
 void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrola_vzdalenosti)
 {
 	log(__func__);
-	Takce puv_akce=Akce;
+//	Takce puv_akce=Akce;
 	double citlivost=1.5;if(!kontrola_vzdalenosti)citlivost=9999999.0;
 //	Akce=BLOK;
 //	JID=-1;stisknute_leve_tlacitko_mysi=false;
@@ -6651,7 +6651,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 			if(orientace==0 || orientace==180)
 			{
 				//posun spojky na místo, pokud je spojka na linii
-				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 && posun_y<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_y<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
+				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 && m.abs_d(posun_y)<e_posledni->dalsi->geo.delka && ((e_posledni->dalsi->dalsi!=NULL && m.abs_d(posun_y)<e_posledni->dalsi->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 				{
 					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
 					e_posledni->dalsi->Y+=posun_y;
@@ -6713,7 +6713,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 			else//horizontální geometriie spojky
 			{
 				//posun spojky na místo, pokud je spojka na linii
-				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 &&  posun_x<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_x<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
+				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 &&  m.abs_d(posun_x)<e_posledni->dalsi->geo.delka && ((e_posledni->dalsi->dalsi!=NULL && m.abs_d(posun_x)<e_posledni->dalsi->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 				{
 					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4,e_posledni->dalsi->geo.orientace);
 					e_posledni->dalsi->X+=posun_x;
@@ -6796,8 +6796,9 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
   	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
   	Tep=NULL;delete Tep;
   	if(e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4)TIP="Nelze automaticky dopojit";
-    d.SCENA=0;
+		d.SCENA=0;
 		REFRESH(true);
+		d.nabuffrovat_mGridy();//nutné pro zprávné zobrazení, pokud mGridy nebyly vykresleny před zahájením geometrie
 //	}
 //	else Akce=puv_akce;
 }
@@ -7862,6 +7863,7 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	//překreslení
 	d.SCENA=0;
 	REFRESH();
+  d.nabuffrovat_mGridy();//nutné pro zprávné zobrazení, pokud mGridy nebyly vykresleny před zahájením geometrie
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -15252,7 +15254,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+	//Memo("");
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+    Memo(O->name+"->element: "+O->element->name+"->objekt_n="+String(O->element->objekt_n));
+		O=O->dalsi;
+	}
+	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -18802,17 +18811,15 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 }
 //---------------------------------------------------------------------------
 //vloží záznam na samostatný řádek v tabulce teploměru, 3 možnosti: přejezd, buffer, celkem
-String TForm1::pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem)
+void TForm1::pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem)
 {
 	log(__func__);//logování
 	//načtení výchozích parametrů
 	AnsiString text=ls->Strings[486];//přejezd
-	int text_id=486;
-	if(!prejezd){text="buffer";text_id=0;}
+	if(!prejezd)text="buffer";
 	if(celkem)
 	{
 		text=ls->Strings[487];//celkem
-		text_id=487;
 		cas=0;WT=0;
 	}
 
