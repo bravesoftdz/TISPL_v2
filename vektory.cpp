@@ -1938,9 +1938,10 @@ Cvektory::TElement *Cvektory::vloz_element(TObjekt *Objekt,unsigned int eID, dou
 	if(101<=eID && eID<=108)T=F->ls->Strings[272];//"Operátor";
 	if(novy->name=="")//přiřazení názvu pouze v případě, že element žádné nemá, při posuvu je novému elementu přiřazeno jméno
 	{
-		unsigned int nTyp=vrat_poradi_elementu_do(novy)+1;//pokud se jedná o roboty
+		unsigned int nTyp=vrat_pocet_elementu_eID(novy)+1;//pokud se jedná o roboty
 		if(novy->eID==300 || novy->eID==301)nTyp=novy->identifikator_vyhybka_spojka;
 		novy->name=T+" "+AnsiString(nTyp);//číslování a pojmenovávání zarážek pouze v debug
+    if(novy->eID==200)novy->name=T;//pro PM bez číslování
 		if(novy->eID==300 || novy->eID==301)novy->short_name=T_short+AnsiString(nTyp);
 		else novy->short_name=T.SubString(1,3)+AnsiString(nTyp);
 	}
@@ -2020,7 +2021,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 							vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 	  	  			E=NULL;delete E;
 							//změna názvů
-	  	  			uprav_popisky_elementu(NULL);//musí být NULL, pokud je poslán Element načte se jeho objekt a z něj první element, Objekt ale v tuto chvíli nemá ukazatel na první element ... pam. chyba
+	  	  			//uprav_popisky_elementu(NULL);//musí být NULL, pokud je poslán Element načte se jeho objekt a z něj první element, Objekt ale v tuto chvíli nemá ukazatel na první element ... pam. chyba
 	  	  		}
 	  			}
 	  	  }
@@ -2069,8 +2070,8 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 				vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 				E=NULL;delete E;
 				//změna názvů
-				if(pocet_vyhybek==0)uprav_popisky_elementu(Element);
-				else uprav_popisky_elementu(NULL);//pokud je v elementech výhybka musí dojít k upravení celého spojáku
+//				if(pocet_vyhybek==0)uprav_popisky_elementu(Element);
+//				else uprav_popisky_elementu(NULL);//pokud je v elementech výhybka musí dojít k upravení celého spojáku
 			}
 		}
 		//vkládání výhybek a spojek
@@ -2122,7 +2123,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 			E=NULL;delete E;
 			//změna názvů
-			uprav_popisky_elementu(Element);
+			//uprav_popisky_elementu(Element);
     }
 		p=NULL; delete p;
 	}
@@ -2180,7 +2181,7 @@ void  Cvektory::vloz_element(TObjekt *Objekt,TElement *Element,TElement *force_r
 			vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 			E=NULL;delete E;
 			//změna názvů
-			uprav_popisky_elementu(Element);
+			//uprav_popisky_elementu(Element);
 		}
 		//vkládání geometrie
 		else
@@ -2570,6 +2571,65 @@ unsigned int Cvektory::vrat_poradi_elementu_do(TElement *Element)
 	return ret;
 }
 ////---------------------------------------------------------------------------
+//vrátí počet elementu podle eID Elementu
+unsigned int Cvektory::vrat_pocet_elementu_eID(TElement *Element)
+{
+  unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0,pm_pocet=0,z_pocet=0,ret=0;//nastavení všech počtů na nulu
+	TElement *E=ELEMENTY->dalsi;
+	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
+
+  //počítání pro roboty a ion. tyče
+	if(Element->eID!=0 && Element->eID!=5 && Element->eID!=6 && Element->eID!=200 && Element->eID!=MaxInt)
+	{
+		TObjekt *O=vrat_objekt(Element->objekt_n);
+		E=O->element;
+		while(E!=NULL)
+		{
+			if(Element!=E && E->eID!=0 && E->eID!=5 && E->eID!=6 && E->eID!=100 && E->eID!=200 && vrat_druh_elementu(E)!=-1)r_pocet++;
+			if(Element!=E && E->eID==100)t_pocet++;
+			E=dalsi_krok(VYHYBKY,E,O);
+		}
+    vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+		E=NULL;delete E;
+    O=NULL;delete O;
+	}
+	//počítání pro globálně číslované elementy
+	else
+	{
+  	while(E!=NULL)
+  	{
+  		//přeskočit Element
+  		if(Element!=E)
+  		{
+  	  	//zapisování nalezených elementů
+  			switch(E->eID)
+  			{
+  	  		case 0:s_pocet++;break;
+  	  		case 5:
+  	  		case 6:o_pocet++;break;
+  				case 200:pm_pocet++;break;
+  	  		case MaxInt:z_pocet++;break;
+  	  		default:break;
+  			}
+  		}
+  		E=dalsi_krok(VYHYBKY,E);
+		}
+		vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
+	}
+
+	//podle eID vrátí příslušný počet elementů
+	switch(Element->eID)
+	{
+		case 0: ret=s_pocet;break;
+		case 5: case 6: ret=o_pocet;break;
+		case 100: ret=t_pocet;break;
+		case 200: ret=pm_pocet;break;
+		case MaxInt: ret=z_pocet;break;
+		default: ret=r_pocet;break;
+	}
+	return ret;
+}
+////---------------------------------------------------------------------------
 //vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
 unsigned int Cvektory::vrat_nejvetsi_ID_tabulek (TObjekt *Objekt)
 {
@@ -2925,6 +2985,23 @@ Cvektory::TElement *Cvektory::vrat_element(unsigned int n)
 	return E;
 }
 ////---------------------------------------------------------------------------
+//otestuje, zde se Element nachází ve vedlější větvi Výhybky
+bool Cvektory::je_element_ve_vetvi(TElement *Element,TElement *Vyhybka)
+{
+	bool ret=false;
+	if(Element!=NULL && Vyhybka!=NULL && Vyhybka->eID==300 && Element!=Vyhybka)
+	{
+		TElement *E=Vyhybka->dalsi2;
+		while(E!=NULL && E->identifikator_vyhybka_spojka!=Vyhybka->identifikator_vyhybka_spojka)
+		{
+			if(E==Element){ret=true;break;}
+			E=E->dalsi;
+		}
+		E=NULL;delete E;
+  }
+  return ret;
+}
+////---------------------------------------------------------------------------
 //ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty, pozn. oblast kóty se testuje až jako poslední
 short Cvektory::PtInKota_elementu(TObjekt *Objekt,long X,long Y)
 {
@@ -2987,7 +3064,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				case 270:Element->X=Element->X+vzdalenost;break;
 			}
 			//kontrola zda je element stále na linii
-			if(F->bod_na_geometrii(0,0,Element) || !kontrola_zmeny_poradi)
+			if(F->bod_na_geometrii(0,0,Element,true) || !kontrola_zmeny_poradi)
 			{
 				//kontrola + změna pořadí
 				if(kontrola_zmeny_poradi)
@@ -3116,7 +3193,7 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	}
 	vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 	delete E_pom;E_pom=NULL;
-	uprav_popisky_elementu(E);//změna názvů
+	//uprav_popisky_elementu(E);//změna názvů
 	if(E->eID%2==0 && E->eID!=100 && E->eID!=200 && E->eID!=MaxInt || Ed->eID%2==0 && Ed->eID!=100 && Ed->eID!=200 && Ed->eID!=MaxInt)aktualizuj_sparovane_ukazatele();//změna pořadí přičemž alespoň jeden element byl stop-element
 }
 ////---------------------------------------------------------------------------
@@ -3513,6 +3590,36 @@ void Cvektory::aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n)
     vymaz_seznam_VYHYBKY(VYHYBKY);
 		delete E;E=NULL;
   }
+}
+////---------------------------------------------------------------------------
+//prověří zda existuje nějaký další element s duplicitním názvem
+bool Cvektory::validace_duplicity_nazvu(TElement *Element)
+{
+	//deklarace
+	bool ret=false;
+	if(Element!=NULL && Element->eID!=MaxInt && Element->eID!=200)//u zarážek a PM nemá smysl řešit
+	{
+    //deklarace pro kontrolu
+		TElement *E=ELEMENTY->dalsi;
+  	T2Element *VYH=hlavicka_seznam_VYHYBKY();
+  	TObjekt *O=NULL;
+
+		//kontrola všech elementů, zda některé nemají duplicitní název
+		if(Element->eID!=0 && Element->eID!=5 && Element->eID!=6 && Element->eID!=200){O=vrat_objekt(Element->objekt_n);E=O->element;}//pokud se nejedná o globálně číslované objekty, kontrola pouze v rámcí jednoho objektu
+		while(E!=NULL)
+		{
+			if(E!=Element && E->eID==Element->eID && E->name==Element->name){ret=true;break;}
+			E=dalsi_krok(VYH,E,O);
+		}
+
+  	//ukazatelové záležitosti
+  	E=NULL;delete E;
+		O=NULL;delete O;
+		vymaz_seznam_VYHYBKY(VYH);
+	}
+
+	//vracení výsledku
+	return ret;
 }
 ////---------------------------------------------------------------------------
 //vrátí poslední element v objektu
@@ -7292,6 +7399,7 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 
 		//průchod přes všechny elementy
 		TElement *E=ELEMENTY;//nepřeskakovat raději hlavičku
+		T2Element *V=hlavicka_seznam_VYHYBKY();
 		while(E!=NULL)
 		{
 			if(E->n!=0)//přeskočení hlavičky až zde
@@ -7356,11 +7464,14 @@ void Cvektory::VALIDACE(TElement *Element)//zatím neoživáná varianta s param
 				if(PP.delka_podvozek<m.UDJ(rotaceJ) && pocet_voziku>1/*pocet_voziku>=1*/){vloz_zpravu(X+x*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),Y+y*(PP.delka_podvozek*pocet_voziku/2.0-PP.uchyt_pozice),-1,402,E);pocet_erroru++;}//pro buffer (výpis ve středu bufferu)
 //				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X+x*PP.delka_podvozek/2.0,Y+y*PP.delka_podvozek/2.0,-1,403,E);pocet_erroru++;}//pro libovolný přejezd (výpis ve středu přejezdu)
 				if(E->pohon!=NULL && m.UDV(rotaceJ)>m.Rz(E->pohon->aRD)){vloz_zpravu(X,Y,-1,403,E);pocet_erroru++;}//pro libovolný přejezd (výpis ve středu přejezdu)
+        //validace duplicity názvu elementu
+				if(validace_duplicity_nazvu(E)){vloz_zpravu(X,Y,1,452,E);pocet_warningu++;}
 			}
 			////posun na další elementy
-			E=E->dalsi;
+			E=dalsi_krok(V,E);
 		}
 		delete E;E=NULL;
+    vymaz_seznam_VYHYBKY(V);
 
 		//testování vozíků
 		if(VOZIKY!=NULL)
@@ -7410,7 +7521,8 @@ UnicodeString Cvektory::getVID(long VID)
 		case 406: Text=F->ls->Strings[406];break;//Nestíhá se přejezd, záporná časová rezerva!
 		case 407: Text=F->ls->Strings[407];break;//Nulová časová rezerva.
 		case 450: Text=F->ls->Strings[469];break;//Nerelevantní hodnota časové rezervy, na některém objektu není přiřazen pohon!
-		case 451: Text="Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno.";break;//přeložit
+		case 451: Text=F->ls->Strings[516];break;//"Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno."
+		case 452: Text=F->ls->Strings[517];break;//"Duplicitní název."
 		default:  Text="Error or warning!";break;//obecná chyba či varování
 	}
 	return Text;
@@ -10101,11 +10213,12 @@ void Cvektory::smaz_segment_MAG_LASA(TElement *E)
 }
 ////---------------------------------------------------------------------------
 //"přilepování" souřadnic na gaometrii linky, linie i oblouky
-TPointD Cvektory::bod_na_geometrii(TElement *E)
+TPointD Cvektory::bod_na_geometrii(TElement *E,double x,double y)
 {
 	//deklarace
 	TPointD ret;
-	ret.x=F->akt_souradnice_kurzoru.x;ret.y=F->akt_souradnice_kurzoru.y;
+	if(x==y && x==MaxInt){x=F->akt_souradnice_kurzoru.x;y=F->akt_souradnice_kurzoru.y;}
+	ret.x=x;ret.y=y;
 
   //ošetření proti prázdnému ukazateli
 	if(E!=NULL)
@@ -10114,14 +10227,14 @@ TPointD Cvektory::bod_na_geometrii(TElement *E)
   	if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
 		{
   		//přiřazení souřadnic pro vložení
-  		if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=F->akt_souradnice_kurzoru.x;ret.y=E->geo.Y1;}
-  		else {ret.x=E->geo.X1;ret.y=F->akt_souradnice_kurzoru.y;}
+			if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=x;ret.y=E->geo.Y1;}
+			else {ret.x=E->geo.X1;ret.y=y;}
 		}
 
   	//přichytávání bodu na oblouk
   	if(E->geo.typ!=0)
 		{
-  		double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+  		double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,x,y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
   		TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,uhel,E->geo.radius);
   		ret=souradnice[3];
 		}
@@ -10945,74 +11058,7 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 	TObjekt *Objekt=OBJEKTY->dalsi;
 	while(Objekt!=NULL)
 	{
-  	if(Objekt->teplomery!=NULL)
-  	{
-  		TTeplomery *T=vrat_teplomery_podle_zakazky(Objekt,ZAKAZKA_akt);
-  		if(T!=NULL)
-  		{
-  			update_akt_zakazky();//důležité mít aktuální data
-  			//deklarace
-  			bool nalezen_prvni=false,nalezen_posledni=false;
-  			double X1,Y1,X2,Y2;
-  			X1=T->prvni->geo.X1;Y1=T->prvni->geo.Y1;
-  			X2=T->posledni->geo.X4;Y2=T->posledni->geo.Y4;
-  			TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
-  			//nulování spárovaných elementů teplomerů
-  			TElement *E1=T->prvni->sparovany,*E2=T->posledni->sparovany;
-  			T->prvni->sparovany=NULL;
-  			T->posledni->sparovany=NULL;
-
-  			//hledání nových spárovaných elementů
-				while(CE!=NULL)
-				{
-					//kontrola, zda je první element stále na geometrii
-					if(!nalezen_prvni && (PtInSegment(CE->Element,X1,Y1) || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)))
-					{
-						nalezen_prvni=true;
-						T->prvni->sparovany=CE->Element;
-					}
-					//kontrola, zda je posledni element stále na geometrii
-					if(!nalezen_posledni && (PtInSegment(CE->Element,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
-					{
-						nalezen_posledni=true;
-						T->posledni->sparovany=CE->Element;
-  				}
-     			//posun na další segnemt cesty, případně konec průchodu
-  				if(nalezen_prvni && nalezen_posledni)break;
-  				CE=CE->dalsi;
-  			}
-
-  			//aktualizace cesty
-  			if(T->prvni->sparovany!=NULL && T->posledni->sparovany!=NULL)
-				{
-					//mazání stare cesty
-					hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
-  				//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
-					if(T->prvni->sparovany!=T->posledni->sparovany)
-					{
-  					CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
-						while(CE!=NULL)
-  					{
-							if(CE->Element==T->posledni->sparovany)break;
-							vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
-							CE=CE->dalsi;
-						}
-					}
-          //aktualizace tabulky
-					if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
-				}
-
-				//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
-				else F->reset_teplomeru(Objekt);
-
-				//ukazatelové záležitosti
-				CE=NULL;delete CE;
-				E1=NULL;delete E1;
-				E2=NULL;delete E2;
-			}
-			//uakazatelové záležitosti
-			T=NULL;delete T;
-		}
+		aktualizuj_cestu_teplomeru(Objekt);
 		//posun na další objekt
 		Objekt=Objekt->dalsi;
 	}
@@ -11020,5 +11066,76 @@ void Cvektory::aktualizuj_cestu_teplomeru()
 	delete Objekt;Objekt=NULL;
 }
 ////---------------------------------------------------------------------------
+//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje konkrétnímu objektu
+void Cvektory::aktualizuj_cestu_teplomeru(TObjekt *Objekt)
+{
+	if(Objekt!=NULL && Objekt->teplomery!=NULL)
+	{
+  	TTeplomery *T=vrat_teplomery_podle_zakazky(Objekt,ZAKAZKA_akt);
+  	if(T!=NULL)
+  	{
+  		update_akt_zakazky();//důležité mít aktuální data
+  		//deklarace
+    	bool nalezen_prvni=false,nalezen_posledni=false;
+  		double X1,Y1,X2,Y2;
+    	X1=T->prvni->geo.X1;Y1=T->prvni->geo.Y1;
+    	X2=T->posledni->geo.X4;Y2=T->posledni->geo.Y4;
+  		TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
+  		//nulování spárovaných elementů teplomerů
+    	TElement *E1=T->prvni->sparovany,*E2=T->posledni->sparovany;
+    	T->prvni->sparovany=NULL;
+  		T->posledni->sparovany=NULL;
 
+  		//hledání nových spárovaných elementů
+  		while(CE!=NULL)
+  		{
+  			//kontrola, zda je první element stále na geometrii
+  			if(!nalezen_prvni && (PtInSegment(CE->Element,X1,Y1) || (CE->Element->geo.X4==X1 && CE->Element->geo.Y4==Y1)))
+  			{
+  				nalezen_prvni=true;
+  				T->prvni->sparovany=CE->Element;
+  			}
+  			//kontrola, zda je posledni element stále na geometrii
+  			if(!nalezen_posledni && (PtInSegment(CE->Element,X2,Y2) || (CE->Element->geo.X4==X2 && CE->Element->geo.Y4==Y2)))
+  			{
+  				nalezen_posledni=true;
+  				T->posledni->sparovany=CE->Element;
+  			}
+  			//posun na další segnemt cesty, případně konec průchodu
+  			if(nalezen_prvni && nalezen_posledni)break;
+    		CE=CE->dalsi;
+    	}
 
+    	//aktualizace cesty
+  		if(T->prvni->sparovany!=NULL && T->posledni->sparovany!=NULL)
+  		{
+  			//mazání stare cesty
+  			hlavicka_cesty_teplomery(T);//smaže a vytvoří hlavičku
+  			//pokud je cesta mezi teploměry aktualizuje, pokud ne nedelá nic
+  			if(T->prvni->sparovany!=T->posledni->sparovany)
+  			{
+  				CE=vrat_segment_cesty(ZAKAZKA_akt,T->prvni->sparovany)->dalsi;
+  				while(CE!=NULL)
+  				{
+  					if(CE->Element==T->posledni->sparovany)break;
+  					vloz_segment_cesty_do_seznamu_cesty(T,CE->Element);
+  					CE=CE->dalsi;
+  				}
+  			}
+        //aktualizace tabulky
+  			if(Objekt==F->OBJEKT_akt)F->vytvor_aktualizuj_tab_teplomeru();
+  		}
+
+  		//došlo k chybe vytvoření default cesty, obsahuje aktualizaci tabulky
+  		else F->reset_teplomeru(Objekt);
+
+  		//ukazatelové záležitosti
+  		CE=NULL;delete CE;
+  		E1=NULL;delete E1;
+  		E2=NULL;delete E2;
+  	}
+  	//uakazatelové záležitosti
+		T=NULL;delete T;
+	}
+}
+ ////---------------------------------------------------------------------------

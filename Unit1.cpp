@@ -210,7 +210,7 @@ __fastcall TForm1::TForm1(TComponent* Owner)
 	if(T==0 || T=="")scGPCheckBox_meridlo_casy->Checked=false;else scGPCheckBox_meridlo_casy->Checked=true;
 	//nastavení app
 	T=readINI("Nastaveni_app","antialiasing"); //zobrazit rotaci jigu
-	if(T==0 || T=="")antialiasing=false;else antialiasing=true;
+	if(T==0)antialiasing=false;else antialiasing=true;
 
 
 	if(rotace_jigu==1) scGPCheckBox_zobrazit_rotace_jigu_na_otocich->Checked=true;
@@ -866,7 +866,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=515;i++)
+	for(unsigned short i=0;i<=517;i++)
 	{
 		switch(i)
 		{
@@ -885,7 +885,7 @@ void TForm1::DesignSettings()
 			case 12:text="S";break;
 			case 13:text="Přesunem dojde k překrytí pracovních oblastí, chcete element přesunout?";break;
 			case 14:text="  Rozmístit tabulky";break;
-			case 15:text="Zobrazit všechny objekty";break;
+			case 15:text="Automaticky dopojit geometrii na nejbližší pohon?";break;
       case 16:text="Předchozí pohled";break;
 			case 17:text="Pauza simulace";break;
 			case 18:text="PLAY";break;
@@ -1386,6 +1386,8 @@ void TForm1::DesignSettings()
 			case 513:text="Dop. hodnota PT1 je maximálně";break;
 			case 514:text="Dop. hodnota PTo je maximálně";break;
 			case 515:text="Dop. hodnota PT2 je maximálně";break;
+			case 516:text="Upozornění,v bufferu je vyšší počet vozíku, než je nastaveno.";break;
+			case 517:text="Duplicitní název.";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -2693,6 +2695,8 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		case 77: if(ssCtrl)Akce=MEASURE;kurzor(add_o);break;
 		//CTRL+u
 		//case 85: if(ssCtrl)ShowMessage("ctrl + u");break;
+		//CTRL+s
+		case 83:if(ssCtrl && Toolbar_Ulozit->Enabled)UlozitClick(this);break;
 		//+
 		case 107:if(Akce!=EDITACE_TEXTU && Akce_temp!=EDITACE_TEXTU)ZOOM_IN();break;
 		//-
@@ -2840,12 +2844,12 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		}
 		if(index_kurzoru==1)//editace názvu elementu skrze popisek elementu
 		{
-  		//2 rozdílné přistupy, u robotu a u totočí jiné
+			//2 rozdílné přistupy, u robotu a u totočí jiné
 			if(pom_element_temp->eID!=0)//roboti+otoče
-  		{
-  			if(Key==8)//pokud je stisknut backspace
+			{
+				if(Key==8)//pokud je stisknut backspace
 					pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
-  			else
+				else
 					pom_element_temp->name+=Key;//nutné Key s velkým K, toto Key neprochází numerickým filtrem
 			}
 			else//stopka
@@ -2854,13 +2858,13 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 				{
 					if(pom_element_temp->name.Length()>5)//v tomto případě povolit pouze editaci čísla, názvem "Stop " needitovatelný
 						pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
-  				else MessageBeep(0);
+					else MessageBeep(0);
 				}
 				else
-  				pom_element_temp->name+=key;//key s malým k, prochází numerickým filtrem, v tomto případě žádoucí
+					pom_element_temp->name+=key;//key s malým k, prochází numerickým filtrem, v tomto případě žádoucí
 			}
   		//propsání nového názvu do mGridu
-  		int prvni_sloupec=0;
+			int prvni_sloupec=0;
 			if(pom_element_temp->eID==200 || pom_element_temp->eID==300)prvni_sloupec=3;
 			pom_element_temp->mGrid->Cells[prvni_sloupec][prvni_sloupec].Text="<a>"+pom_element_temp->name+"</a>";//nasazení linku
 			//znovusloučení buňěk
@@ -2868,11 +2872,11 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 			REFRESH(false);
 		}
 		if(index_kurzoru==-8 && pom_element_temp!=NULL)//editace popisku teploměrů
-  	{
-  		if(Key==8)//pokud je stisknut backspace
-  		{
+		{
+			if(Key==8)//pokud je stisknut backspace
+			{
 				pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
-  		}
+			}
 			else
 			{
 				pom_element_temp->name+=key;
@@ -3055,7 +3059,7 @@ void __fastcall TForm1::FormMouseDown(TObject *Sender, TMouseButton Button, TShi
 					{
             double Z=0;//pro potřeby JID -13 a -14
 						if(JID==-1){Akce=PAN;pan_non_locked=true;}//pouze posun obrazu, protože v aktuálním místě pozici myši se nenachází vektor ani interaktivní text
-						if(JID==0&&pom_komora==NULL&&pom_element!=NULL || JID==1){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_temp=pom_element;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;}//ELEMENT posun
+						if(JID==0&&pom_komora==NULL&&pom_element!=NULL || JID==1){Akce=MOVE_ELEMENT;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;mazani=true;pom_element_temp=pom_element;puv_souradnice.x=pom_element->X;puv_souradnice.y=pom_element->Y;d.SCENA=1111111;vytvor_statickou_scenu();REFRESH();}//ELEMENT posun
 						if(1000<=JID && JID<2000 || JID>2000 || JID==100){Akce=MOVE_TABLE;kurzor(posun_l);minule_souradnice_kurzoru=vychozi_souradnice_kurzoru;pom_element->mGrid->Highlight;refresh_mGrid=false;d.nabuffrovat_mGridy();puv_souradnice.x=pom_element->Xt;puv_souradnice.y=pom_element->Yt;d.SCENA=1111111;vytvor_statickou_scenu();REFRESH();}//TABULKA posun
 						if(100<JID && JID<900){redesign_element();}//nultý sloupec tabulky, libovolný řádek, přepnutí jednotek
 						if(JID==100 || JID==1000)redesign_element();//popisky jednotek v tabulce teplomerů
@@ -3843,36 +3847,37 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				log(__func__);
 				if(Akce_temp==NIC)
 				{
+					bool puv_sek_vetev=false,sek_vetev=false;if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)puv_sek_vetev=true;
 					Cvektory::TElement *e_poslendi=posledni_editovany_element;
 					//pan_move při stisknutém levém tlačítku
 					if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
 					//vykreslení spojnice mezi posledním editovaným elementem a dalším elementem v objektu (pokud existuje)
-					if(e_poslendi!=NULL && e_poslendi->dalsi!=NULL && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1 && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1)
-					{
-						//nastavení pera
-						Canvas->Pen->Color=clBlack;
-						Canvas->Pen->Width=1;
-						Canvas->Pen->Style=psDot;//nastevení čarkované čáry
-						Canvas->Pen->Mode=pmNotXor;
-						Canvas->Brush->Style=bsClear;
-						//nastavení souřadnic
-						double X=0,Y=0,X2=0,Y2=0;
-						if(d.geoTemp.typ!=-1000)
-						{
-							X=d.geoTemp.X4;
-							Y=d.geoTemp.Y4;
-						}
-						else
-						{
-							X=e_poslendi->X;
-							Y=e_poslendi->Y;
-						}
-						X=m.L2Px(X);Y=m.L2Py(Y);
-						X2=m.L2Px(e_poslendi->dalsi->geo.X1);Y2=m.L2Py(e_poslendi->dalsi->geo.Y1);
-						if(e_poslendi->dalsi->eID==301 && e_poslendi->dalsi->predchozi2==e_poslendi){X2=m.L2Px(e_poslendi->dalsi->geo.X4);Y2=m.L2Py(e_poslendi->dalsi->geo.Y4);}
-						Canvas->MoveTo(X,Y);
-						Canvas->LineTo(X2,Y2);
-					}
+//					if(e_poslendi!=NULL && e_poslendi->dalsi!=NULL && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1 && e_poslendi->geo.X4!=e_poslendi->dalsi->geo.X1)
+//					{
+//						//nastavení pera
+//						Canvas->Pen->Color=clBlack;
+//						Canvas->Pen->Width=1;
+//						Canvas->Pen->Style=psDot;//nastevení čarkované čáry
+//						Canvas->Pen->Mode=pmNotXor;
+//						Canvas->Brush->Style=bsClear;
+//						//nastavení souřadnic
+//						double X=0,Y=0,X2=0,Y2=0;
+//						if(d.geoTemp.typ!=-1000)
+//						{
+//							X=d.geoTemp.X4;
+//							Y=d.geoTemp.Y4;
+//						}
+//						else
+//						{
+//							X=e_poslendi->X;
+//							Y=e_poslendi->Y;
+//						}
+//						X=m.L2Px(X);Y=m.L2Py(Y);
+//						X2=m.L2Px(e_poslendi->dalsi->geo.X1);Y2=m.L2Py(e_poslendi->dalsi->geo.Y1);
+//						if(e_poslendi->dalsi->eID==301 && e_poslendi->dalsi->predchozi2==e_poslendi){X2=m.L2Px(e_poslendi->dalsi->geo.X4);Y2=m.L2Py(e_poslendi->dalsi->geo.Y4);}
+//						Canvas->MoveTo(X,Y);
+//						Canvas->LineTo(X2,Y2);
+//					}
 					//hledání elementu na kterém je kurzor
 					pom_element=NULL;
 					Cvektory::TElement *E=OBJEKT_akt->element;
@@ -3946,6 +3951,8 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					//při pan_move nesmí dojít k refreshi, v ostatních případech musí
 					if(Screen->Cursor!=pan_move)REFRESH();
 					e_poslendi=NULL;delete e_poslendi;
+					if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)sek_vetev=true;
+					if(sek_vetev!=puv_sek_vetev){vytvor_statickou_scenu();REFRESH();}//změna větve, proběhne změna aktivních pohonu -> nutné překreslit
 				}
 			}break;
 			case GEOMETRIE_LIGHT://pouze editace z kót, nezobrazuje se smart kurzor
@@ -4226,7 +4233,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				//souřadnice byly změněny = posun
 				if(m.round2double(pom_element_temp->X,4)!=m.round2double(puv_souradnice.x,4) || m.round2double(pom_element_temp->Y,4)!=m.round2double(puv_souradnice.y,4))
 				{
-		   		short chybne=prekryti_LO(pom_element);//kontrola zda se element nepřekrývá lak. oknem s jiným elementem
+					short chybne=prekryti_LO(pom_element);//kontrola zda se element nepřekrývá lak. oknem s jiným elementem
 					FormX->odstranit_korelaci();//přidáno z důvodu odmazávání korelace při posuvu elementu
 		   		TIP="";
 		   		Akce=NIC;kurzor(standard);
@@ -4234,9 +4241,9 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 		   		switch(chybne)
 		   		{
 		   			case 0: default:break;
-		   			case 1:text=ls->Strings[324];break;//"Přesunem dojde k překrytí lakovacích oken, chcete element přesunout?"
-		   			case 2:text=ls->Strings[325];break;//"Přesunem dojde k zásahu do zóny otáčení, chcete element přesunout?"
-		   			case 3:text=ls->Strings[13];break;//"Přesunem dojde k překrytí pracovních oblastí, chcete element přesunout?"
+						case 1:text=ls->Strings[324];break;//"Přesunem dojde k překrytí lakovacícho okna, chcete element přesunout?"
+						case 2:text=ls->Strings[325];break;//"Přesunem dojde k překrytí zóny otáčení, chcete element přesunout?"
+						case 3:text=ls->Strings[13];break;//"Přesunem dojde k překrytí pracovní oblasti, chcete element přesunout?"
 		   		}
 		   		if(chybne>0 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text,"",MB_YESNO))
 					{
@@ -4289,10 +4296,11 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 		   		pom_element_temp=NULL; delete pom_element_temp;
 					vlozit_predavaci_misto_aktualizuj_WT();//kontrola zda nebyly přesunuty 2 PM na sebe
 					vytvor_obraz();
+          d.SCENA=0;
 					REFRESH();
 				}
 				//nejednalo se o posun ale o editaci textu
-				else {kurzor(standard);nastav_focus();nahled_ulozit(true);stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;Akce=EDITACE_TEXTU;TimerKurzor->Enabled=true;d.SCENA=1111111;vytvor_statickou_scenu();REFRESH();}
+				else {kurzor(standard);nastav_focus();nahled_ulozit(true);stav_kurzoru=false;index_kurzoru=JID;pom_element_temp=pom_element;nazev_puvodni=pom_element_temp->name;Akce=EDITACE_TEXTU;TimerKurzor->Enabled=true;vytvor_statickou_scenu();REFRESH();}
 				break;//posun elementu
 			}
 			case MOVE_KOMORA:
@@ -6145,7 +6153,6 @@ void TForm1::ESC()
 	proces_pom=NULL;
 	kurzor(standard);
 	if(Akce!=EDITACE_TEXTU && Akce_temp!=EDITACE_TEXTU)Akce=NIC;//musí být nad refresh
-	Akce_temp=NIC;
 	if(OBJEKT_akt!=NULL){scGPImage_mereni_vzdalenost->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;}//pro případ ukončení akce měření
 	//vrácení původního textu při ukončení editace
 	if(Akce==EDITACE_TEXTU || Akce_temp==EDITACE_TEXTU)smaz_kurzor();
@@ -6494,22 +6501,117 @@ void TForm1::spojeni_prvni_posledni(double citlivost)
 	}
 }
 //---------------------------------------------------------------------------
+//kontroluje, zde se pokouší uživatel dopojit větev na geometrii a spojí
+void TForm1::napoj_vetev_na_geo()
+{
+	//počáteční kontrola, zda jsem v geometrii a edituju vedlejší větev před spojkou
+	if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && m.delka(posledni_editovany_element->dalsi->dalsi2->geo.X4,posledni_editovany_element->dalsi->dalsi2->geo.Y4,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4)>2.0)
+	{
+		//blokování akce, nutné nastavit před zobrazením MB
+		Akce=BLOK;
+		//deklarace
+		bool nalezeno=false;
+		double X=posledni_editovany_element->geo.X4,Y=posledni_editovany_element->geo.Y4,citlivost=1.0;
+		Cvektory::TElement *E_break=posledni_editovany_element->dalsi->dalsi2;//výhybka z aktuálně kreslené větve
+		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+		Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+		//hledání do výhybky
+		while(E!=NULL)
+		{
+			if(E->geo.typ==0 && !d.v.je_element_ve_vetvi(E,E_break) && m.LeziVblizkostiUsecky(X,Y,E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4)<=citlivost){nalezeno=true;E_break=E;break;}
+			E=d.v.dalsi_krok(VYH,E);
+	  }
+	  E=NULL;delete E;
+		d.v.vymaz_seznam_VYHYBKY(VYH);
+
+		//přesun a napojení geometrue
+		if(nalezeno && E_break!=NULL && mrYes==MB(ls->Strings[15],MB_YESNO))//"Automaticky dopojit geometrii na nejbližší pohon?"
+		{
+			TPointD B=d.v.bod_na_geometrii(E_break,X,Y);
+      Cvektory::TObjekt *O=NULL;
+			Cvektory::TElement *S=posledni_editovany_element->dalsi;//uložení spojky
+			if(E_break!=posledni_editovany_element->dalsi && E_break!=posledni_editovany_element->dalsi->dalsi)//pokud se nalezený element nerovná samotné spojce nebo elemntu za ní, výjmout spojku ze seznamu a vložit ji na nové místo
+			{
+				//vyjmutí spojky
+				O=d.v.vrat_objekt(S->objekt_n);
+				d.v.vloz_G_element(S->dalsi,0,S->geo.X1,S->geo.Y1,0,0,0,0,S->dalsi->geo.X4,S->dalsi->geo.Y4,S->dalsi->geo.orientace,S->dalsi->geo.rotacni_uhel,S->dalsi->geo.radius);
+				if(O->element==S)O->element=S->dalsi;
+	    	S->predchozi->dalsi=S->dalsi;
+				S->dalsi->predchozi=S->predchozi;
+				S->predchozi=NULL;S->dalsi=NULL;
+				d.v.aktualizuj_cestu_teplomeru(O);//došlo k přesunu elementů
+	    	//vložení spojky
+				O=d.v.vrat_objekt(E_break->objekt_n);
+	    	d.v.vloz_G_element(S,0,E_break->geo.X1,E_break->geo.Y1,0,0,0,0,B.x,B.y,E_break->geo.orientace,E_break->geo.rotacni_uhel,E_break->geo.radius);
+		  	d.v.vloz_G_element(E_break,0,S->geo.X4,S->geo.Y4,0,0,0,0,E_break->geo.X4,E_break->geo.Y4,E_break->geo.orientace,E_break->geo.rotacni_uhel,E_break->geo.radius);
+	    	S->X=B.x;S->Y=B.y;
+	    	S->Xt=B.x;S->Yt=B.y;
+				S->objekt_n=E_break->objekt_n;
+        if(O->element==E_break)O->element=S;
+	    	E_break->predchozi->dalsi=S;
+	    	S->predchozi=E_break->predchozi;
+	    	E_break->predchozi=S;
+				S->dalsi=E_break;
+				d.v.aktualizuj_cestu_teplomeru(O);//došlo k přesunu elementů
+		  	//přeindexování elementů
+		  	S=d.v.ELEMENTY->dalsi;
+				unsigned long n=1;
+		  	Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+		  	while(S!=NULL)
+		  	{
+		  		S->n=n;
+		  		n++;
+		  		S=d.v.dalsi_krok(VYH,S);
+		  	}
+				d.v.vymaz_seznam_VYHYBKY(VYH);
+				//ukazatelové záležitosti
+				O=NULL;delete O;
+			}
+			//přesun spojky na nové souřadnice
+			else
+			{
+				O=d.v.vrat_objekt(S->objekt_n);
+				S->X=B.x;S->Y=B.y;
+				d.v.vloz_G_element(S,0,S->geo.X1,S->geo.Y1,0,0,0,0,B.x,B.y,S->geo.orientace,S->geo.rotacni_uhel,S->geo.radius);
+        d.v.vloz_G_element(S->dalsi,0,S->geo.X4,S->geo.Y4,0,0,0,0,S->dalsi->geo.X4,S->dalsi->geo.Y4,S->dalsi->geo.orientace,S->dalsi->geo.rotacni_uhel,S->dalsi->geo.radius);
+				d.v.aktualizuj_cestu_teplomeru(O);//došlo k přesunu elementů
+				O=NULL;delete O;
+			}
+      //ukazatelové záležitosti
+			S=NULL;delete S;
+      O=NULL;delete O;
+      //napojení vedlejší větve + překreslení
+			napojeni_vedlejsi_vetve(posledni_editovany_element,false);
+		}
+
+		//ukazatelové záležitosti
+	  E=NULL;delete E;
+		E_break=NULL;delete E_break;
+		if(Akce==BLOK)
+		{
+			JID=-1;stisknute_leve_tlacitko_mysi=false;
+			Akce=GEOMETRIE;//WA pro zobrazení MB
+		}
+	}
+}
+//---------------------------------------------------------------------------
 //provede kontrolu, zdá je možnost geometrii spojit, dotáže se a spojí geometrii pokud uživatel souhlasí
-void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
+void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrola_vzdalenosti)
 {
 	log(__func__);
-	Takce puv_akce=Akce;  
-	Akce=BLOK;
-	JID=-1;stisknute_leve_tlacitko_mysi=false;
+//	Takce puv_akce=Akce;
+	double citlivost=1.5;if(!kontrola_vzdalenosti)citlivost=9999999.0;
+//	Akce=BLOK;
+//	JID=-1;stisknute_leve_tlacitko_mysi=false;
 	bool vypnout=false,dotazano=false;                                                                                    
-	//kontrola, zda se orientace vetve == orientaci spojky, pokud ne vloží oblouk                                                  
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)!=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) || e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel!=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1.5)
+	//kontrola, zda se orientace vetve == orientaci spojky, pokud ne vloží oblouk
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)!=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) || e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel!=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=citlivost)
 	{
-		double orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);if(orientace==0)orientace=360;
+		double orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);//if(orientace==0)orientace=360;
 		double rotacni_uhel=orientace-e_posledni->dalsi->geo.orientace;
-		if(d.v.hodnota_v_katalogu(d.v.PP.katalog,m.abs_d(rotacni_uhel)) && mrYes==MB(ls->Strings[455],MB_YESNO))
+		if(d.v.hodnota_v_katalogu(d.v.PP.katalog,m.abs_d(rotacni_uhel)) /*&& mrYes==MB(ls->Strings[455],MB_YESNO)*/)
 		{
-      //parametry geometrie
+			//parametry geometrie
 			d.geoTemp.typ=1;
 	  	d.geoTemp.radius=d.v.PP.radius;
 	  	d.geoTemp.orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);
@@ -6524,17 +6626,18 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 	  	e_posledni=d.v.vloz_element(d.v.vrat_objekt(e_posledni->objekt_n),MaxInt,d.geoTemp.X4,d.geoTemp.Y4,e_posledni->orientace,e_posledni->dalsi);
 	  	if(vypnout)Akce=NIC;
 	  	e_posledni->geo=d.geoTemp;
-	  	if(e_posledni->objekt_n==OBJEKT_akt->n)design_element(e_posledni,true);//nutné!!!!!!!!
+			if(e_posledni->objekt_n==OBJEKT_akt->n)design_element(e_posledni,true);//nutné!!!!!!!!
+			posledni_editovany_element=e_posledni;
 	  	d.v.vyhybka_pom=NULL;
 			dotazano=true;
 			vypnout=true;
 		}
 	}                                                                                                                                                                                                                                                                                                                                                                                           
 	//e_posledni == poslední element ve vedlejší větvi                                                                    
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && (m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=1 || dotazano))// && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && (m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=citlivost || dotazano))// && e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel==m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel))
 	{
 		/*if(Akce==GEOMETRIE)*/vypnout=true;
-		if((!dotazano && mrYes==MB(ls->Strings[455],MB_YESNO)) || dotazano)//"Chcete automaticky spojit geometrii?"
+		if((!dotazano /*&& mrYes==MB(ls->Strings[455],MB_YESNO)*/) || dotazano)//"Chcete automaticky spojit geometrii?"
 		{
 			double posun_x,posun_y;
 			short orientace=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel);
@@ -6548,7 +6651,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			if(orientace==0 || orientace==180)
 			{
 				//posun spojky na místo, pokud je spojka na linii
-				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 && posun_y<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_y<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
+				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 && m.abs_d(posun_y)<e_posledni->dalsi->geo.delka && ((e_posledni->dalsi->dalsi!=NULL && m.abs_d(posun_y)<e_posledni->dalsi->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 				{
 					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4+posun_y,e_posledni->dalsi->geo.orientace);
 					e_posledni->dalsi->Y+=posun_y;
@@ -6610,7 +6713,7 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			else//horizontální geometriie spojky
 			{
 				//posun spojky na místo, pokud je spojka na linii
-				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 &&  posun_x<e_posledni->geo.delka && ((e_posledni->dalsi!=NULL && posun_x<e_posledni->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
+				if(e_posledni->dalsi->geo.typ==0 && e_posledni->dalsi->geo.delka!=0 &&  m.abs_d(posun_x)<e_posledni->dalsi->geo.delka && ((e_posledni->dalsi->dalsi!=NULL && m.abs_d(posun_x)<e_posledni->dalsi->dalsi->geo.delka) || e_posledni->dalsi==NULL))//kontrola zde je kam posouvat
 				{
 					d.v.vloz_G_element(e_posledni->dalsi,0,e_posledni->dalsi->geo.X1,e_posledni->dalsi->geo.Y1,0,0,0,0,e_posledni->dalsi->geo.X4+posun_x,e_posledni->dalsi->geo.Y4,e_posledni->dalsi->geo.orientace);
 					e_posledni->dalsi->X+=posun_x;
@@ -6671,14 +6774,15 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
 			dotazano=true;
 		}
 	}
-  //ukončení editace geometrie
-	if(vypnout)
-	{
+	//ukončení editace geometrie
+//	if(vypnout)
+//	{
 		vypni_geometrii();
+		Akce=NIC;Akce_temp=NIC;
     //aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
   	Cvektory::TElement *E=OBJEKT_akt->element;
   	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-  	while(E!=NULL)
+		while(E!=NULL)
   	{
   		if(E->eID==300)napln_comba_mGridu(E);
   		E->mGrid->Refresh();
@@ -6692,9 +6796,11 @@ void TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni)
   	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
   	Tep=NULL;delete Tep;
   	if(e_posledni->geo.X4!=e_posledni->dalsi->geo.X4 || e_posledni->geo.Y4!=e_posledni->dalsi->geo.Y4)TIP="Nelze automaticky dopojit";
-		REFRESH(d.SCENA,true);
-	}
-	else Akce=puv_akce;
+		d.SCENA=0;
+		REFRESH(true);
+		d.nabuffrovat_mGridy();//nutné pro zprávné zobrazení, pokud mGridy nebyly vykresleny před zahájením geometrie
+//	}
+//	else Akce=puv_akce;
 }
 //---------------------------------------------------------------------------
 //vypnu akci geometrie
@@ -6841,8 +6947,8 @@ void TForm1::add_element (int X, int Y)
 		{
 			case 0: default:break;
 			case 1:text=ls->Strings[332];break;//"Vložením dojde k překrytí lakovacích oken, chcete element vložit?"
-			case 2:text=ls->Strings[333];break;//"Vložením dojde k narušení zóny otáčení, chcete element vložit?"
-			case 3:text=ls->Strings[466];break;//"Vložením dojde k překrytí pracovních oblastí, chcete element vložit?"
+			case 2:text=ls->Strings[333];break;//"Vložením dojde k překrytí zóny otáčení, chcete element vložit?"
+			case 3:text=ls->Strings[466];break;//"Vložením dojde k překrytí pracovní oblasti, chcete element vložit?"
 		}
 		if(prekryti>0 && mrYes!=MB(akt_souradnice_kurzoru_PX.x+10,akt_souradnice_kurzoru_PX.y+10,text,"",MB_YESNO))
 			{d.v.smaz_element(E);E=NULL;}
@@ -7151,8 +7257,8 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 					//změna elemetnu na předávací místo
 					E->eID=200;
 		   		//názvy
-		   		E->name=name+" X";
-		   		d.v.uprav_popisky_elementu(E);
+					E->name=name;
+					//d.v.uprav_popisky_elementu(E);
 					pom_vyhybka=NULL;
 					//znovuvytvoření mGridu elementu
 					if(OBJEKT_akt!=NULL && E->objekt_n==OBJEKT_akt->n)
@@ -7236,8 +7342,8 @@ void TForm1::vlozit_predavaci_misto_aktualizuj_WT()
 				//změna elemetnu na předávací místo
 		  	E->eID=200;
 		  	//názvy výhybek prozatím neřešeny
-		  	E->name=name+" X";
-				d.v.uprav_popisky_elementu(E);
+				E->name=name;
+				//d.v.uprav_popisky_elementu(E);
 				//smazání a znovuvytvoření mGridu elementu
 				if(OBJEKT_akt!=NULL && e_posledni->objekt_n==OBJEKT_akt->n)
 				{
@@ -7431,8 +7537,8 @@ void TForm1::vlozeni_editace_geometrie()
 		//název
 		if(DEBUG)
 		{
-			E->name="Zarážka";
-			d.v.uprav_popisky_elementu(E);
+			E->name="Zarážka "+String(d.v.vrat_pocet_elementu_eID(E)+1);
+			//d.v.uprav_popisky_elementu(E);
 		}
 		else E->name="";
 		E->mGrid=new TmGrid(F);
@@ -7646,7 +7752,7 @@ void TForm1::vlozeni_editace_geometrie()
 	delete E;E=NULL;
 
 	////připnutí vedlejší větve na hlavní
-	napojeni_vedlejsi_vetve(posledni_editovany_element);
+	//napojeni_vedlejsi_vetve(posledni_editovany_element);//temp zakomentování
 	////připnutí objektů
 	pripnuti_dalsich_objektu();//dalšího objektu
 	if(OBJEKT_akt->n==1 || OBJEKT_akt->n==d.v.OBJEKTY->predchozi->n)spojeni_prvni_posledni();//provázání prvni poslední objekt
@@ -7654,7 +7760,8 @@ void TForm1::vlozeni_editace_geometrie()
 	nahled_ulozit(true);
 	//vytvoření obrazu pro UNDO a REDO, nelze načíst obrazi při editaci geometrie ... pam. chyba
 	vytvor_obraz();
-  vytvor_statickou_scenu();
+	vytvor_statickou_scenu();
+  napoj_vetev_na_geo();//test pozice
 }
 //---------------------------------------------------------------------------
 //vymaže aktuální usek geometrie
@@ -7710,11 +7817,12 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 {
 	log(__func__);//logování
 
-  ////aktualizace popisků
-	if(kontrola)d.v.uprav_popisky_elementu(NULL);
+	////aktualizace popisků
+	//if(kontrola)d.v.uprav_popisky_elementu(NULL);
 
 	//////vypnutí akce
-	if(Akce_temp!=EDITACE_TEXTU)Akce=NIC;Akce_temp=NIC;//musí být ještě před refresh
+	Akce=NIC;
+	if(Akce_temp!=EDITACE_TEXTU)Akce_temp=NIC;//musí být ještě před refresh
 
   ////připnutí objektů
 	if(kontrola)
@@ -7753,8 +7861,9 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	//kurzor
 	if(Screen->Cursor!=standard)kurzor(standard);
 	//překreslení
-  d.SCENA=0;
+	d.SCENA=0;
 	REFRESH();
+  d.nabuffrovat_mGridy();//nutné pro zprávné zobrazení, pokud mGridy nebyly vykresleny před zahájením geometrie
 }
 //---------------------------------------------------------------------------
 //vrátí maximální možný počet vozíků na stopce, podle geometrie před ní
@@ -7791,10 +7900,10 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
 	int pocet_radku;//nemůže být unsigned
 	if(E!=NULL && E->eID!=100 && E->eID!=MaxInt)///////////////tabulky elementů
 	{
-  	//////kontrola, zda jsou řádky pod spodní lištou
+		//////kontrola, zda jsou řádky pod spodní lištou
 		presah=m.L2Py(E->Yt)+E->mGrid->Height-scGPPanel_bottomtoolbar->Top;
   	if(presah>0)
-  	{
+		{
 			pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
 			E->mGrid->exBUTTONVisible=false;
 			long radek=E->mGrid->RowCount-1;
@@ -7810,7 +7919,7 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
 				}
 				radek--;
 			}
-  	}
+		}
 		//////kontrola, zda je sloupec s komponenty za levou knihovnou
 		long sirka=m.L2Px(E->Xt);//default hodnota, ke které se bude připočítávat šířka
 		for(unsigned int j=1;j<E->mGrid->ColCount;j++)
@@ -7824,13 +7933,6 @@ void TForm1::mGrid_mimo_obraz(Cvektory::TElement *E)
 				}
 			}
 		}
-//		if(E->mGrid->ColCount>2 && m.L2Px(E->Xt)+E->mGrid->Columns[0].Width+E->mGrid->Columns[1].Width<scSplitView_LEFTTOOLBAR->Width)
-//  	{
-//			for(unsigned int i=1;i<=E->mGrid->RowCount-1;i++)
-//  		{
-//  			if(E->mGrid->Cells[2][i].Type!=E->mGrid->DRAW)mGrid_komponenta_na_draw(E->mGrid,2,i);
-//  		}
-//		}
   	//////kontrola horní lišta
   	presah=scGPPanel_mainmenu->Height-m.L2Py(E->Yt);
   	pocet_radku=Ceil(presah/(double)E->mGrid->DefaultRowHeight);
@@ -7965,7 +8067,7 @@ void TForm1::mGrid_on_mGrid()
 			mGrid_puvodni_stav(T->posledni);
 			mGrid_mimo_obraz(T->posledni);//kontrola + ošetření mGridů, ktěré se nacházejí mimo obraz
 		}
-
+			;
 		////kontrola překrytí
 		if(predchozi_PM!=NULL)E=predchozi_PM;//zahrnutí předchozího PM do průchodu
 		else E=OBJEKT_akt->element;
@@ -8724,7 +8826,7 @@ TPointD TForm1::uprav_bod_vlozeni_elementu(TPointD bod_vlozeni,short rotace_symb
 }
 //---------------------------------------------------------------------------
 //kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element prověří zda se tento element nachází na geometrii
-bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
+bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element,bool posun_elementu)
 {
 	log(__func__);//logování
 	bool ret=false;
@@ -8737,9 +8839,9 @@ bool TForm1::bod_na_geometrii(double X, double Y,Cvektory::TElement *Element)
 		Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
 		while(E!=NULL)
 		{
-			if(E->geo.typ==0 && m.PtInLine(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,X,Y)){ret=true;break;}
+			if((!posun_elementu || (posun_elementu && E->objekt_n==Element->objekt_n)) && E->geo.typ==0 && m.PtInLine(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4,X,Y)){ret=true;break;}
 			E=d.v.dalsi_krok(VYHYBKY,E);
-  	}
+		}
 		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 		E=NULL;delete E;
 	}
@@ -12809,7 +12911,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 		  		DrawGrid_knihovna->Refresh();
 					DrawGrid_otoce->Refresh();
 					pom_element_temp=NULL; delete pom_element_temp;
-					if(OBJEKT_akt->element!=NULL)d.v.uprav_popisky_elementu(OBJEKT_akt->element);//pokud jsou v kabině jěště nějaké elementy dojde k přejmenování
+					//if(OBJEKT_akt->element!=NULL)d.v.uprav_popisky_elementu(OBJEKT_akt->element);//pokud jsou v kabině jěště nějaké elementy dojde k přejmenování
 					pom_element=NULL;//přidáno nově 13.5.2019 - v režimu testování kvůli setJobID a předání do pom_element_puv
 					if(eID%2==0 && eID!=100 && eID!=200 && eID!=MaxInt)d.v.aktualizuj_sparovane_ukazatele();//odstraněn stop-element, nutná aktualizace
 					dalsi_element=NULL;delete dalsi_element;
@@ -12963,7 +13065,7 @@ void __fastcall TForm1::Smazat1Click(TObject *Sender)
 	}
 	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
 	delete E;E=NULL;
-	d.v.uprav_popisky_elementu(NULL);
+	//d.v.uprav_popisky_elementu(NULL);
 	if(d.SCENA!=0)vytvor_statickou_scenu();//aktualizuje BMP statické scény o nový objekt, musí být před REFRESH, není důvod měnit nastavení d.SCENA
 	REFRESH();
 	//vytvoření obrazu
@@ -13348,8 +13450,11 @@ void TForm1::otevri_editaci()
 		scGPCheckBox_rozmisteni_voziku->Checked=false;
 		scGPCheckBox_popisek_pohonu->Checked=false;
 		stisknute_leve_tlacitko_mysi=false;//nutné!!! zustává aktivníc z dblclicku
-    typElementu=0;
+		typElementu=0;
+    d.SCENA=1111111;
+		vytvor_statickou_scenu();
 	}
+	else d.SCENA=0;
 //	else//normální funkčnost
 //	{
 //		if(OBJEKT_akt->pohon==NULL && d.v.POHONY->dalsi!=NULL && PmG!=NULL)//otevření COMBA pokud objekt nemá žádný pohon a pokud existují nějaké pohony
@@ -13364,7 +13469,7 @@ void TForm1::otevri_editaci()
 //    }
 //	}
 	//d.SCENA=0, prozatím statická scéna funkční pouze v layoutu, pro editaci se nepoužívá
-	REFRESH(0,true);//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
+	REFRESH(true);//přidáno kvůli zobrazení tab. pohonů a kót (při shodném zoomu layout->editace)
 	edit_vyhybka=NULL;delete edit_vyhybka;
 }
 //---------------------------------------------------------------------------
@@ -13452,7 +13557,7 @@ void TForm1::zmena_editovaneho_objektu()
 			T=NULL;delete T;
 		}
 		E=NULL;delete E;
-  	if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
+  	//if(!mazani&&scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
   	pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
   	OBJEKT_akt=NULL;delete OBJEKT_akt;
 		if(PmG!=NULL)
@@ -14060,8 +14165,11 @@ void TForm1::Ulozit_soubor()
 	d.v.uloz_do_souboru(FileName);
 
 	//nastavení komponent + výpis
-	SB(ls->Strings[390]);//"Soubor uložen..."
+//	String def_setings=FormatSettings.LongTimeFormat;
+//	FormatSettings.LongTimeFormat="h:mm";
+	SB(String(ls->Strings[390]+" "+TimeToStr(TIME.CurrentTime())));//"Soubor uložen..."
 	DuvodUlozit(false);
+//	FormatSettings.LongTimeFormat=def_setings;
 
 
 
@@ -15146,7 +15254,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+	//Memo("");
+	Cvektory::TObjekt *O=d.v.OBJEKTY->dalsi;
+	while(O!=NULL)
+	{
+    Memo(O->name+"->element: "+O->element->name+"->objekt_n="+String(O->element->objekt_n));
+		O=O->dalsi;
+	}
+	delete O;O=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -16240,7 +16355,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 		log("Zavření editace, MOD=LAYOUT");
 		Timer_neaktivity->Enabled=false;//vypnutí timeru pro jistotu
 		if(Akce==GEOMETRIE)ukonceni_geometrie(mazani);//musí být invertováno, mazani==true při uložit
-		if(Akce!=NIC || Akce_temp==EDITACE_TEXTU)ESC();
+		if(Akce!=NIC || Akce_temp!=NIC)ESC();
 		//////
 		if(MOD==EDITACE&&index_kurzoru==9999||index_kurzoru==100)
 		nastav_focus();
@@ -16289,7 +16404,7 @@ void __fastcall TForm1::scGPButton_stornoClick(TObject *Sender)
 			T=NULL;delete T;
 		}
 		////
-		if(storno && scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
+		//if(storno && scGPButton_ulozit->Enabled)d.v.uprav_popisky_elementu(NULL);//volání přejmenování elementů, pouze v případě kdy je něco v kabině a bylo stisknuto pouze storno, při ulož je stisk strona volán taky
 		pom=NULL;//pom->pohon=NULL;delete pom->pohon;pom=NULL; toto nelze, odpřiřadilo by to pohon i na ostrém
 //		d.v.vymaz_elementy(OBJEKT_akt,true);
 		//if(OBJEKT_akt!=NULL){OBJEKT_akt->pohon=NULL;delete OBJEKT_akt->pohon;}
@@ -16867,13 +16982,20 @@ void TForm1::vykresli_kurzor(int index)
 	Canvas->Pen->Width=2;
 	switch ((index))//index=JID, kde a jaký kurzor vykreslit
 	{
-		case -8:case 1://editace názvu elementu, popisku teploměru
+		case -8://editace popisku teploměr
+		{
+			Canvas->Pen->Color=clBlack;
+			Canvas->Pen->Width=1;
+			Canvas->MoveTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.top-2);
+			Canvas->LineTo(pom_element_temp->citelna_oblast.rect3.right+1,pom_element_temp->citelna_oblast.rect3.bottom+2);
+			break;
+    }
+		case 1://editace názvu elementuu
 		{
 			Canvas->Pen->Color=clBlack;
 			if(pom_element_temp->eID==0)Canvas->Pen->Color=clRed;//stopka má červený text
 			Canvas->Pen->Width=1;
 			double OR=pom_element_temp->orientace;
-			if(index==-8)OR=m.Rt90(pom_element_temp->geo.orientace-pom_element_temp->geo.rotacni_uhel-90);
 			if(pom_element_temp->eID!=0&&pom_element_temp->eID!=5&&pom_element_temp->eID!=6&&pom_element_temp->eID!=100)//roboti mají vykreslován kurzor vodorovně
 			{
 				if(OR==0 || OR==180)//pro vodorovnou kabinu
@@ -17014,7 +17136,7 @@ void TForm1::smaz_kurzor()
 		if(editovany_text==""&&index_kurzoru==-14){editovany_text="";double Z=0;if(pom_element_temp->predchozi!=NULL)Z=pom_element_temp->predchozi->Z;if(Z==0)editovany_text="±";if(Z>0)editovany_text="+";editovany_text+=m.round2double(Z*1000,0);}//začátek S/K
 		switch(index_kurzoru)
 		{
-			case -8:
+			case -8://hodnota teploměru
 			{
 				if(pom_element_temp->name=="" || ms.MyToDouble(pom_element_temp->name)==0)
 				{
@@ -17022,9 +17144,9 @@ void TForm1::smaz_kurzor()
 				}
 				break;
 			}
-			case -7:if(OBJEKT_akt->short_name=="")OBJEKT_akt->short_name=nazev_puvodni;break;
-			case -6:if(OBJEKT_akt->name=="")OBJEKT_akt->name=nazev_puvodni;break;
-			case 1:
+			case -7:if(OBJEKT_akt->short_name=="")OBJEKT_akt->short_name=nazev_puvodni;break;//objekt short name
+			case -6:if(OBJEKT_akt->name=="")OBJEKT_akt->name=nazev_puvodni;break;//objekt name
+			case 1://název elementu
 			{
 				if(pom_element_temp->name=="")pom_element_temp->name=nazev_puvodni;
 				//propsání nového názvu do mGridu
@@ -17035,6 +17157,7 @@ void TForm1::smaz_kurzor()
 				if(pom_element_temp->eID!=200 && pom_element_temp->eID!=300)pom_element_temp->mGrid->MergeCells(0,0,pom_element_temp->mGrid->ColCount-1,0);
 				//aktualizace spárovaných elementů, pokud byl změněn název S&G elementu
 				if(d.v.vrat_druh_elementu(pom_element_temp)==0)d.v.aktualizuj_sparovane_ukazatele();//aktualizijue spárovnaný ukazatel všem elementům v projektu
+				duvod_validovat=2;
 			}break;
 			case -5://hodnota kót objektu (hrana objektu)
 			{
@@ -17173,6 +17296,7 @@ void TForm1::smaz_kurzor()
 				}
 			}
 			d.v.aktualizuj_cestu_teplomeru();
+			duvod_validovat=2;
 		}
 		if(index_kurzoru==-11&&OBJEKT_akt->id==3&&Akce!=GEOMETRIE&&Akce!=GEOMETRIE_LIGHT)//editace rozmeru komor v POW
 		{
@@ -17257,7 +17381,6 @@ void TForm1::smaz_kurzor()
 	pom_bod_temp=NULL; delete pom_bod_temp;
 	//pro jistotu na konec
 	if(Akce==EDITACE_TEXTU)Akce=NIC;Akce_temp=NIC;editovany_text="";index_kurzoru=0;
-	if(duvod_validovat==1)duvod_validovat=2;
 	if(Akce==GEOMETRIE || Akce==GEOMETRIE_LIGHT){d.SCENA=1111111;vytvor_statickou_scenu();}
 	else d.SCENA=0;
 	REFRESH(true);//uvolnění rastru, překreslení i tabulek (editace názvu elementu
@@ -18688,17 +18811,15 @@ void TForm1::vytvor_aktualizuj_tab_teplomeru()
 }
 //---------------------------------------------------------------------------
 //vloží záznam na samostatný řádek v tabulce teploměru, 3 možnosti: přejezd, buffer, celkem
-String TForm1::pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem)
+void TForm1::pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem)
 {
 	log(__func__);//logování
 	//načtení výchozích parametrů
 	AnsiString text=ls->Strings[486];//přejezd
-	int text_id=486;
-	if(!prejezd){text="buffer";text_id=0;}
+	if(!prejezd)text="buffer";
 	if(celkem)
 	{
 		text=ls->Strings[487];//celkem
-		text_id=487;
 		cas=0;WT=0;
 	}
 

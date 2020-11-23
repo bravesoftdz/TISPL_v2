@@ -589,7 +589,7 @@ private:
 	void set_font(int velikost=14);//nastaví komponentám aFont
 	bool pripnuti_dalsich_objektu(double citlivost=0.5);//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
 	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
-	void napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni);//provede kontrolu, zdá je možnost geometrii spojit, dotáže se a spojí geometrii pokud uživatel souhlasí
+	void napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrola_vzdalenosti=true);//provede kontrolu, zdá je možnost geometrii spojit, dotáže se a spojí geometrii pokud uživatel souhlasí
   void vypni_geometrii();//vypne akci geometrie
 	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøených souborù
 	void vytvor_obraz(bool stornoUNDO=false);//slouží k vytvoøení obrazu pro storno + undo nebo jen undo
@@ -607,6 +607,7 @@ private:
 	void smaz_seznam_pouzivanych_pohonu();//smaže seznam používaných pohonù
 	void byly_pohony_editovany();//provede kontrolu jaké pohony byly editovány
 	void nastav_combo_mGridu(TscGPComboBox *C);//nastaví barvy a chování pro combo
+  void napoj_vetev_na_geo();
 
 	////promìnné
 	ULONG_PTR gdiplusToken;
@@ -805,7 +806,7 @@ public:		// User declarations
 	double vzdalenost_meziLO(Cvektory::TElement *E,double orientace);//vrati delku v metrech mezi LO elementù
 	void design_element(Cvektory::TElement *E,bool prvni_spusteni,bool plnit_comba=true);//nadesignuje tabulky daného elementu
 	TPointD bod_vlozeni_elementu(double kontr_x=-1000,double kontr_y=-1000);//vrací bod vložení elementu, "pøilepuje" kurzor na geometrii pokud se jedná o pøímku, parametry kontr_x a y slouží ke kontrole bodu zda se nachází na pøímce (pøi posunu)
-	bool bod_na_geometrii(double X, double Y,Cvektory::TElement *Element=NULL);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element provìøí zda se tento element nachází na geometrii
+	bool bod_na_geometrii(double X, double Y,Cvektory::TElement *Element=NULL,bool posun_elementu=false);//kontroluje zde se bod nachází na geometri, vrací pouze ano/ne, pokud je do metody poslán ukazatel na element provìøí zda se tento element nachází na geometrii
 	double max_voziku(Cvektory::TElement *stopka);//vrátí maximální možný poèet vozíkù na stopce, podle geometrie pøed ní
 	void aktualizace_RT();//projde všechny elementy v aktuálnì editovaném objektu a upravím jim RT
 	void posun_na_element(unsigned long n_zpravy);//podle zprávy provede posun na daný elment
@@ -828,7 +829,7 @@ public:		// User declarations
 	void rotuj_objekt_click(double rotace);//zajistí rotaci objektu
 	void pan_create2();//vytvoøí výøez pro pan_move - velký
 	void vytvor_aktualizuj_tab_teplomeru();//vytvoøí nebo aktualizuje mGrid teplomerù pro OBJEKT_akt
-  String pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem=false);
+  void pridej_radek_tab_teplomeru(Cvektory::TElement *E,double cas,double WT,bool prejezd,bool celkem=false);
 	void START();//zapne stopky
 	void STOP(bool MB=false);//vypne stopky, pokud je parementr metody nastaven na false (což je implicitnì), je zajištìn výpis do mema, pokud na true tak do ShowMessage
 	void GetTime(short int rezim);

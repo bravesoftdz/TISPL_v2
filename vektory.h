@@ -640,6 +640,7 @@ class Cvektory
 	void vytvor_elementarni_osu(TObjekt *Original, TObjekt  *Kopie);//SMAZAT??připraví vektor provizorní osy pohonu
 	int vrat_eID_prvniho_pouziteho_robota(TObjekt *Objekt);//vratí eID prvního použitého robota, slouží na filtrování, jaké roboty v knihovně robotů zakazazovat, pokud není nic nalezeno vrátí -1
 	unsigned int vrat_poradi_elementu_do (TElement *Element=NULL);//vrátí pořadí robotů v objektu, stopek a otočí ve všech předchozích objektech, to všd do Elementu
+  unsigned int vrat_pocet_elementu_eID(TElement *Element);//vrátí počet elementu podle eID Elementu
 	unsigned int vrat_nejvetsi_ID_tabulek (TObjekt *Objekt);//vrátí největší ID napříč mGridy v objektu, používáno pro přiřazování ID novým tabulkám, řešeno takto z důvodu chyby při odmazávání a následném přidávání elementu (v kabině jsou 3 elementy druhý se odmaže, tabulky v kabině mají nyní ID 1 a 3, po přidání dalšího elementu bylo dříve přidano ID=pocet elementů, což by se v tomto případě rovnalo 3)
 	bool SGlinka();//ověří zda se jedná S&G linku z pohledu užité cesty, resp. zda obsahuje alespoň jeden S&G element včetně stopky na užité cestě, element musí být na pohonu
 	short vrat_druh_elementu(TElement *Element);//vrátí typ elementu -1 nenastaven nebo zarážka či předávací místo, 0 - S&G (včetně stopky), 1 - kontinuál
@@ -652,6 +653,7 @@ class Cvektory
 	TElement *najdi_tabulku(TObjekt *Objekt, double X, double Y);//hledá tabulku elementu pouze pro daný objekt v oblasti definované pomocí šířky a výšky tabulky (která se může nacházet v daném místě kliku), pracuje v logických/metrických souradnicich, vrátí ukazatel na daný element, který tabulku vlastní, pokud se na daných souřadnicích nachází tabulka
 	TElement *vrat_element(TObjekt *Objekt, unsigned int n);//vraťí ukazatel na element dle n elementu umístěného v daném objektu
 	TElement *vrat_element(unsigned int n);//vraťí ukazatel na element dle n elementu
+	bool je_element_ve_vetvi(TElement *Element,TElement *Vyhybka);//otestuje, zde se Element nachází ve vedlější větvi Výhybky
 	short PtInKota_elementu(TObjekt *Objekt,long X,long Y);//ověří zda se na daných fyzických souřadnicích nachází kóta elementu, pokud ne vrací -1, pokud ano 0 v celé kótě, 1 - na hodnotě kóty, 2 - na jednotkách kóty , 3 - na hodnotě LO kóty , pozn. oblast kóty se testuje až jako poslední
 	bool PtInSegment(TElement *E,double Xmys,double Ymys);//ověří zda se na dané myších souřadnice nachází v geo. segmentu elemnetu
 	bool posun_element(TElement *Element,double vzdalenost,bool pusun_dalsich_elementu=false,bool posun_kurzorem=false,bool kontrola_zmeny_poradi=true);//posune pouze Element z pomocného spojového seznamu pom_temp na parametrem uvedenou vzádlenost (v metrech) od elementu předchozího, pokud je implicitní hodnota pusun_dalsich_elementu false změněna na true, jsou o danou změnu posunu přesunuty i elementy následující Elementu (tudíž jejich vzdálenost od Elementu bude zachována, naopak v případě výchozí hodnoty false je následujícím/dalším elementům poloha zachována). Nutá rozdílná funkce při posunu z kót a při posunu korzorem, proto parametr posun_kurzorem
@@ -662,7 +664,8 @@ class Cvektory
 	void prirad_sparovany_element(TElement *Element);//přiřadí Elementu ukazatel na jeho spárovaný element, zároveň aktualizuje tomuto spárovanému elementu spárovaný element + aktualizace první - poslední S&G element
 	void aktualizuj_sparovane_ukazatele();//projde všechny stop-elementy a aktualizuje jim ukazatele na spárované elementy
 	void reserve_time(TElement *Element,TCesta *Cesta=NULL,bool highlight_bunek=false,bool refresh_mGrid=false);//vypočítá a uloží RT do elementu
-  void aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n);//přepočíta data elementů na danném pohonu
+	void aktualizuj_data_elementum_na_pohonu(unsigned long pohon_n);//přepočíta data elementů na danném pohonu
+	bool validace_duplicity_nazvu(TElement *Element);//prověří zda existuje nějaký další element s duplicitním názvem
 	TElement *vrat_posledni_element_objektu(TObjekt *Objekt);//vrátí poslední element v objektu
 	T2Element *hlavicka_seznam_VYHYBKY();
 	void uloz_vyhybku_do_seznamu(TElement *vyhybka,T2Element *VYHYBKY);
@@ -864,7 +867,7 @@ public:
 	void kontrola_vlozeni_do_mag_lasa(TElement *E);//provede kontrolu zda může být element vložen do seznamu mag. laso, pokud ano vloží ho
 	void vloz_segment_MAG_LASA(TElement *E);//vloží nový segment do magnetického lasa
 	void smaz_segment_MAG_LASA(TElement *E);//smaže segment z magnetického lasa
-	TPointD bod_na_geometrii(TElement *E);//"přilepování" souřadnic na gaometrii linky, linie i oblouky
+	TPointD bod_na_geometrii(TElement *E,double x=MaxInt, double y=MaxInt);//"přilepování" souřadnic na gaometrii linky, linie i oblouky
 	short obsahuje_MAG_LASO_element(TElement *E);//kontrola zda spoják magnetického lasa obsahuje segment s danným elementem
 	TPointD InVrata(TElement *E,bool kontrola_kurzoru=true);//zkontroloje, zda existují vrátka objektu a jestli jsem kurzorem v jejich oblasti, pokud ano vrátí bod, pokud ne vrátí [-MaxInt,-MaxInt]
 
@@ -918,6 +921,7 @@ public:
 	void kopiruj_seznam_teplomery(TObjekt *zdroj,TObjekt *cil);//kopíruje záznamy teploměrů do jiného objektu, pro účely obrazu objektu
 	Cvektory::TTeplomery *kopiruj_teplomer(TTeplomery *original);//vytvoří kopii z originálního záznamu teploměrů
 	void aktualizuj_cestu_teplomeru();//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje
+  void aktualizuj_cestu_teplomeru(TObjekt *Objekt);//pokud došlo ke změně, která může ovlivnit cestu teploměru, zkontroluje, zda je možné aktualizovat a pokud ano, aktualizuje, konkrétnímu objektu
 
 //SQL
 	AnsiString QUERY(AnsiString query);//vratí AnsiString hodnod dle zadaného dotazu v syntaxi SQL, zatím umí jen základní úroveň - asi odstranit
