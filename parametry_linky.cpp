@@ -1135,7 +1135,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
   {
     // Button_save->Enabled=true;
     // automatické vygenerování pohonù
-    if (DEBUG) {
+  //  if (DEBUG) {
 
       scGPNumericEdit_delka_podvozek->Value = 600;
       scGPNumericEdit_sirka_jig->Value = 300;
@@ -1165,7 +1165,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
         PL_mGrid->Cells[1][i].Text = F->ls->Strings[8] + " " + AnsiString(i - 1);//"nový pohon"
         if (i == 2) {
           PL_mGrid->Cells[2][i].Text = "0,2";
-          PL_mGrid->Cells[3][i].Text = "5";
+          PL_mGrid->Cells[3][i].Text = "0,8";
           PL_mGrid->Cells[4][i].Text = "0,5";
           C->ItemIndex = 0;
         }
@@ -1178,7 +1178,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
         }
 
         if (i == 4) {
-          PL_mGrid->Cells[2][i].Text = "1,5";
+          PL_mGrid->Cells[2][i].Text = "2";
           PL_mGrid->Cells[3][i].Text = "5";
           PL_mGrid->Cells[4][i].Text = "4";
           C->ItemIndex = 2;
@@ -1202,7 +1202,7 @@ void __fastcall TForm_parametry_linky::FormKeyDown(TObject *Sender, WORD &Key,
       input_state = NOTHING;
       vykresli_obdelnik_vpravo();
       Button_save->SetFocus();
-    }
+   // }
   }
 }
 // ---------------------------------------------------------------------------
