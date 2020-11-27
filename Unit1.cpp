@@ -3848,7 +3848,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				log(__func__);
 				if(Akce_temp==NIC)
 				{
-					bool puv_sek_vetev=false,sek_vetev=false;if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)puv_sek_vetev=true;
+					bool puv_sek_vetev=false,sek_vetev=false;if(posledni_editovany_element!=NULL && ((posledni_editovany_element->eID==300 && posledni_editovany_element->dalsi2==posledni_editovany_element->predchozi2) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)))puv_sek_vetev=true;
 					Cvektory::TElement *e_poslendi=posledni_editovany_element;
 					//pan_move při stisknutém levém tlačítku
 					if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
@@ -3952,7 +3952,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					//při pan_move nesmí dojít k refreshi, v ostatních případech musí
 					if(Screen->Cursor!=pan_move)REFRESH();
 					e_poslendi=NULL;delete e_poslendi;
-					if(posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)sek_vetev=true;
+					if(posledni_editovany_element!=NULL && ((posledni_editovany_element->eID==300 && posledni_editovany_element->dalsi2==posledni_editovany_element->predchozi2) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)))sek_vetev=true;
 					if(sek_vetev!=puv_sek_vetev){vytvor_statickou_scenu();REFRESH();}//změna větve, proběhne změna aktivních pohonu -> nutné překreslit
 				}
 			}break;
