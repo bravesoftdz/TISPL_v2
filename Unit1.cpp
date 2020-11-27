@@ -1144,9 +1144,9 @@ void TForm1::DesignSettings()
       case 271:text="Předávací místo";break;
       case 272:text="Operátor";break;
 			case 273:text="Otoč";break;
-      case 274:text="pohon nevybrán";break;
+			case 274:text="pohon nevybrán";break;
       case 275:text="Před";break;
-      case 276:text="Po";break;
+			case 276:text="Po";break;
 			case 277:text="Zóna otáčení před středem";break;
       case 278:text="Zóna otáčení za středem";break;
       case 279:text="vytěkání";break;
@@ -2697,7 +2697,7 @@ void __fastcall TForm1::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shif
 		//CTRL+u
 		//case 85: if(ssCtrl)ShowMessage("ctrl + u");break;
 		//CTRL+s
-		case 83:if(ssCtrl && Toolbar_Ulozit->Enabled)UlozitClick(this);break;
+		case 83:if(funkcni_klavesa==1 && Toolbar_Ulozit->Enabled)UlozitClick(this);break;
 		//+
 		case 107:if(Akce!=EDITACE_TEXTU && Akce_temp!=EDITACE_TEXTU)ZOOM_IN();break;
 		//-
@@ -2846,18 +2846,20 @@ void __fastcall TForm1::FormKeyPress(TObject *Sender, System::WideChar &Key)
 		if(index_kurzoru==1)//editace názvu elementu skrze popisek elementu
 		{
 			//2 rozdílné přistupy, u robotu a u totočí jiné
-			if(pom_element_temp->eID!=0)//roboti+otoče
+			if(pom_element_temp->eID!=0 && pom_element_temp->eID!=5 && pom_element_temp->eID!=6)//roboti+otoče
 			{
 				if(Key==8)//pokud je stisknut backspace
 					pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
 				else
 					pom_element_temp->name+=Key;//nutné Key s velkým K, toto Key neprochází numerickým filtrem
 			}
-			else//stopka
+			else//globálně číslované elementy (stop, otoč)
 			{
 				if(Key==8)//pokud je stisknut backspace
 				{
-					if(pom_element_temp->name.Length()>5)//v tomto případě povolit pouze editaci čísla, názvem "Stop " needitovatelný
+					int konec=5;
+					if(pom_element_temp->eID!=0 && pom_element_temp->name.SubString(1,1)!="O")konec=8;
+					if((pom_element_temp->eID==0 && pom_element_temp->name.Length()>konec) || ((pom_element_temp->eID==5 || pom_element_temp->eID==6) && pom_element_temp->name.Length()>konec))//v tomto případě povolit pouze editaci čísla, názvem "Stop " needitovatelný
 						pom_element_temp->name=pom_element_temp->name.SubString(1,pom_element_temp->name.Length()-1);
 					else MessageBeep(0);
 				}
@@ -3848,7 +3850,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 				log(__func__);
 				if(Akce_temp==NIC)
 				{
-					bool puv_sek_vetev=false,sek_vetev=false;if(posledni_editovany_element!=NULL && ((posledni_editovany_element->eID==300 && posledni_editovany_element->dalsi2==posledni_editovany_element->predchozi2) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)))puv_sek_vetev=true;
+					bool puv_sek_vetev=false,sek_vetev=false;if(posledni_editovany_element!=NULL && ((posledni_editovany_element->eID==300) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)))puv_sek_vetev=true;
 					Cvektory::TElement *e_poslendi=posledni_editovany_element;
 					//pan_move při stisknutém levém tlačítku
 					if(stisknute_leve_tlacitko_mysi){pan_map(Canvas,X,Y);kurzor(pan_move);}else if(Screen->Cursor==pan_move)kurzor(standard);
@@ -3952,7 +3954,7 @@ void __fastcall TForm1::FormMouseMove(TObject *Sender, TShiftState Shift, int X,
 					//při pan_move nesmí dojít k refreshi, v ostatních případech musí
 					if(Screen->Cursor!=pan_move)REFRESH();
 					e_poslendi=NULL;delete e_poslendi;
-					if(posledni_editovany_element!=NULL && ((posledni_editovany_element->eID==300 && posledni_editovany_element->dalsi2==posledni_editovany_element->predchozi2) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)))sek_vetev=true;
+					if(posledni_editovany_element!=NULL && ((posledni_editovany_element->eID==300) || (posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && posledni_editovany_element->dalsi->dalsi2!=posledni_editovany_element->dalsi->predchozi2)))sek_vetev=true;
 					if(sek_vetev!=puv_sek_vetev){vytvor_statickou_scenu();REFRESH();}//změna větve, proběhne změna aktivních pohonu -> nutné překreslit
 				}
 			}break;
@@ -15262,7 +15264,10 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Memo("");
+//	Memo("");
+	Cvektory::TElement *E=OBJEKT_akt->element->dalsi->dalsi;
+	int zacatek=5;if(E->eID!=0 && E->name.SubString(1,1)!="O")zacatek=8;
+	Memo(E->name.SubString(zacatek+1,E->name.Length()-zacatek));
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

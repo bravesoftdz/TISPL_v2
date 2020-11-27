@@ -2574,7 +2574,7 @@ unsigned int Cvektory::vrat_poradi_elementu_do(TElement *Element)
 //vrátí počet elementu podle eID Elementu
 unsigned int Cvektory::vrat_pocet_elementu_eID(TElement *Element)
 {
-  unsigned int r_pocet=0,s_pocet=0,o_pocet=0,t_pocet=0,pm_pocet=0,z_pocet=0,ret=0;//nastavení všech počtů na nulu
+	int r_pocet=0,s_pocet=(-1)*MaxInt,o_pocet=(-1)*MaxInt,t_pocet=0,z_pocet=0,ret=0;//nastavení všech počtů na nulu
 	TElement *E=ELEMENTY->dalsi;
 	T2Element *VYHYBKY=hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 
@@ -2598,16 +2598,20 @@ unsigned int Cvektory::vrat_pocet_elementu_eID(TElement *Element)
 	{
   	while(E!=NULL)
   	{
-  		//přeskočit Element
+			//přeskočit Element
   		if(Element!=E)
   		{
   	  	//zapisování nalezených elementů
   			switch(E->eID)
   			{
-  	  		case 0:s_pocet++;break;
-  	  		case 5:
-  	  		case 6:o_pocet++;break;
-  				case 200:pm_pocet++;break;
+					case 0:case 5:case 6:
+					{
+						int zacatek=5;if(E->eID!=0 && E->name.SubString(1,1)!="O")zacatek=8;
+						double n=F->ms.MyToDouble(E->name.SubString(zacatek+1,E->name.Length()-zacatek));
+						if(E->eID==0 && n>s_pocet)s_pocet=n;
+            if(E->eID!=0 && n>o_pocet)o_pocet=n;
+						break;
+          }
   	  		case MaxInt:z_pocet++;break;
   	  		default:break;
   			}
@@ -2617,15 +2621,19 @@ unsigned int Cvektory::vrat_pocet_elementu_eID(TElement *Element)
 		vymaz_seznam_VYHYBKY(VYHYBKY);//odstranění průchodového spojáku
 	}
 
+	//uprava default pokud se nic nenašlo
+	if(s_pocet<0)s_pocet=0;
+	if(o_pocet<0)o_pocet=0;
+
 	//podle eID vrátí příslušný počet elementů
 	switch(Element->eID)
 	{
-		case 0: ret=s_pocet;break;
-		case 5: case 6: ret=o_pocet;break;
-		case 100: ret=t_pocet;break;
-		case 200: ret=pm_pocet;break;
-		case MaxInt: ret=z_pocet;break;
-		default: ret=r_pocet;break;
+		case 0: 				 	ret=s_pocet;break;
+		case 5: case 6:   ret=o_pocet;break;
+		case 100: 		   	ret=t_pocet;break;
+		case 200: 		   	ret=0;break;
+		case MaxInt: 	   	ret=z_pocet;break;
+		default: 			   	ret=r_pocet;break;
 	}
 	return ret;
 }

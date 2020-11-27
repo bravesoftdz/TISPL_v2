@@ -1382,7 +1382,14 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 				korelace_tab_pohonu_elementy(E);//oznaèení v ostatních tabulkách
 			}
 			//vypisování upozornìní u používaných pohonù
-			if(Row!=0 && Row<11 && E->pohon!=NULL && E->VID==0 && F->je_pohon_pouzivan(E->pohon->n)){zadat_validaci(7,0,E);byl_refreshovan=true;}//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
+			int prvni=3,druhy=4;
+			if(F->prohodit_sloupce_PM(E)){prvni=4;druhy=3;}
+			Cvektory::TElement *e_dalsi=E->dalsi;
+			if(E->eID==300)e_dalsi=E->dalsi2;
+			else if(E->dalsi==NULL)e_dalsi=F->d.v.ELEMENTY->dalsi;
+			if(Row!=0 && Row<11 && E->VID==0 && ((Col==prvni && E->pohon!=NULL && F->je_pohon_pouzivan(E->pohon->n)) || (Col==druhy && e_dalsi!=NULL && e_dalsi->pohon!=NULL && F->je_pohon_pouzivan(e_dalsi->pohon->n))))
+			{zadat_validaci(7,0,E);byl_refreshovan=true;}//“Tato zmìna ovlivní všechny prvky na tomto pohonu.”
+      e_dalsi=NULL;delete e_dalsi;
 			break;
     }
 	}
