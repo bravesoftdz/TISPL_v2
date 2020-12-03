@@ -3380,7 +3380,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case 300://výhybka
 		case 301://spojka
 		{
-			if(F->scButton_zamek_layoutu->ImageIndex==68 && (scena==0 || scena==1))//pokud je odemčený layout jsou viditelné vyhýbky
+			if(F->scButton_zamek_layoutu->ImageIndex==68 /*&& (scena==0 || scena==1)*/)//pokud je odemčený layout jsou viditelné vyhýbky
 			{
 				/////////provizorní řešení !!!!!!!!!!!!
 				unsigned int velikost=m.round(2*F->Zoom);
@@ -3428,7 +3428,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 		case MaxInt://zarážka
 		{
 			//vykreslovat pouze zarážky kolem S/K
-			if(E->geo.HeightDepp!=0 || (E->dalsi!=NULL && E->dalsi->geo.HeightDepp!=0))
+			if(F->OBJEKT_akt!=NULL && (E->geo.HeightDepp!=0 || (E->dalsi!=NULL && E->dalsi->geo.HeightDepp!=0)))
 			{
 				if(scena==0 || scena==1)vykresli_zarazku(canv,X,Y,E->geo.orientace,E->objekt_n,name);
 			}

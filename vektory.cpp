@@ -3045,12 +3045,12 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 {
 	Cvektory::TElement *E=NULL;
 	bool RET=true;
-	if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->element!=NULL)//raději ošetření, ač by se metoda měla volat jen v případě existence OBJEKT_akt
+	//if(F->OBJEKT_akt!=NULL && F->OBJEKT_akt->element!=NULL)//raději ošetření, ač by se metoda měla volat jen v případě existence OBJEKT_akt
 	{
 		bool posun_povolit=true,error=false;
 		TPointD puv_souradnice;
 		puv_souradnice.x=Element->X;puv_souradnice.y=Element->Y;
-		if(F->OBJEKT_akt->element!=NULL && vzdalenost!=0)//musí existovat alespoň jeden element && nesmí být vzdálenost rovna nule
+		if(/*F->OBJEKT_akt->element!=NULL && */vzdalenost!=0)//musí existovat alespoň jeden element && nesmí být vzdálenost rovna nule
 		{
 			//////Načtení délky před posunem
 			double vzd=Element->geo.delka;//leze použít pouze délku elementu, nově se nevyskytují zarážky mezi fce. elementy
@@ -3078,9 +3078,9 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				if(kontrola_zmeny_poradi)
 				{
 					E=vloz_element_pred(NULL,Element);
-					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && Element->geo.HeightDepp==0 && E->geo.HeightDepp==0 && Element->objekt_n==E->objekt_n)zmen_poradi_elementu(Element,E);
+					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && Element->geo.HeightDepp==0 && E->geo.HeightDepp==0 && ((/*F->OBJEKT_akt!=NULL && */Element->objekt_n==E->objekt_n)/* || F->OBJEKT_akt==NULL*/))zmen_poradi_elementu(Element,E);
 					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && (Element->geo.HeightDepp!=0 || E->geo.HeightDepp!=0))error=true;//pokud by mělo ojít ke změně pořadí, nedovolit
-					if(E!=NULL && Element->objekt_n!=E->objekt_n)error=true;//posun mimo kabinu
+					if(E!=NULL && /*F->OBJEKT_akt!=NULL &&*/ Element->objekt_n!=E->objekt_n)error=true;//posun mimo kabinu
 				}
 				//aktualizace posouvaného elementu
 				if(!error)
@@ -3102,7 +3102,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 			else
 			{Element->X=puv_souradnice.x;Element->Y=puv_souradnice.y;posun_povolit=false;}
 			//////Posun dalsích elementů
-			if(pusun_dalsich_elementu && posun_povolit)
+			if(pusun_dalsich_elementu && posun_povolit && F->OBJEKT_akt!=NULL)
 			{
 				TElement *E=Element->dalsi;
 				while(E!=NULL && E->dalsi!=NULL && E->dalsi->objekt_n==F->OBJEKT_akt->n)
@@ -9735,7 +9735,7 @@ void Cvektory::nacti_z_obrazu_DATA(bool storno)
 			O=OBJEKTY->dalsi;
 			while(O!=NULL)
 			{
-				O->element=vrat_element(O->element_n);
+				O->element=vrat_element(O->element_n); // F->Sv(O->name+"->element: "+O->element->name);
 				O=O->dalsi;
 			}
       delete O;O=NULL;
@@ -10717,11 +10717,12 @@ void Cvektory::posun_teplomeru(TElement *teplomer)
 	//kontrola zda existuje teploměr
 	if(teplomer!=NULL && F->OBJEKT_akt!=NULL && F->OBJEKT_akt->teplomery!=NULL)
 	{
+		F->akt_souradnice_kurzoru=F->pocatek_mereni;//načtení přichycených souřadnic do souřadnic kurzoru
 		//načtení elementu v jehož segmentu se nachází kurzor
-		TCesta *CE=ZAKAZKA_akt->cesta->dalsi;
+		TCesta *CE=ZAKAZKA_akt->cesta->dalsi;//vrat_segment_cesty(ZAKAZKA_akt,teplomer->sparovany);
 		while(CE!=NULL)
 		{
-      //kontrola přichicení na element
+			//kontrola přichicení na element
 			if(F->prichytavat_k_mrizce==1 && (CE->Element->eID!=MaxInt || (CE->Element->eID==MaxInt && CE->Element->dalsi==NULL)) && m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,CE->Element->geo.X4,CE->Element->geo.Y4,F->velikost_citelne_oblasti_elementu))
 			{
 				teplomer->X=CE->Element->geo.X4;

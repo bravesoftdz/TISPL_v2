@@ -1400,37 +1400,39 @@ void TFormX::korelace_v_elementech(long ID,long Col,long Row)
 //odstraní highlight na všech tabulkách
 void TFormX::odstranit_korelaci(bool predat_focus)
 {
-	//pøedávání focusu
-	if(predat_focus)
-		F->DrawGrid_knihovna->SetFocus();//po kliku mimo zùstával focus poøád na editu
-
-	//pohonová tabulka
-	if(F->PmG!=NULL)
+	if(F->OBJEKT_akt!=NULL)
 	{
-		F->PmG->unHighlightAll();
-		if(F->PmG_VID==7){F->PmG_VID=0;F->PmG_VID_value=0;}//"Tato zmìna ovlivní všechny prvky na tomto pohonu."
-	}
+  	//pøedávání focusu
+  	if(predat_focus)F->nastav_focus();//po kliku mimo zùstával focus poøád na editu
 
-	//elementy v objektu
-	Cvektory::TElement *E=F->OBJEKT_akt->element;
-	Cvektory::T2Element *VYH=F->d.v.hlavicka_seznam_VYHYBKY();
-	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
-	{
-		if(E->n>0)
-		{
-			E->mGrid->unHighlightAll();
-			if(E->VID==7){E->VID=0;E->VID_value=0;}//"Tato zmìna ovlivní všechny prvky na tomto pohonu."
-		}
-		E=E->dalsi;
-	}
-	F->d.v.vymaz_seznam_VYHYBKY(VYH);
-	E=NULL;delete E;
+  	//pohonová tabulka
+  	if(F->PmG!=NULL)
+  	{
+  		F->PmG->unHighlightAll();
+  		if(F->PmG_VID==7){F->PmG_VID=0;F->PmG_VID_value=0;}//"Tato zmìna ovlivní všechny prvky na tomto pohonu."
+  	}
 
-	//pøedchozí PM
-	if(F->predchozi_PM!=NULL)
-	{
-		F->predchozi_PM->mGrid->unHighlightAll();
-		if(F->predchozi_PM->VID==7){F->predchozi_PM->VID=0;F->predchozi_PM->VID_value=0;}//"Tato zmìna ovlivní všechny prvky na tomto pohonu."
+  	//elementy v objektu
+  	Cvektory::TElement *E=F->OBJEKT_akt->element;
+  	Cvektory::T2Element *VYH=F->d.v.hlavicka_seznam_VYHYBKY();
+  	while(E!=NULL && E->objekt_n==F->OBJEKT_akt->n)
+  	{
+  		if(E->n>0)
+  		{
+  			E->mGrid->unHighlightAll();
+  			if(E->VID==7){E->VID=0;E->VID_value=0;}//"Tato zmìna ovlivní všechny prvky na tomto pohonu."
+  		}
+  		E=E->dalsi;
+  	}
+  	F->d.v.vymaz_seznam_VYHYBKY(VYH);
+  	E=NULL;delete E;
+
+  	//pøedchozí PM
+  	if(F->predchozi_PM!=NULL)
+  	{
+  		F->predchozi_PM->mGrid->unHighlightAll();
+  		if(F->predchozi_PM->VID==7){F->predchozi_PM->VID=0;F->predchozi_PM->VID_value=0;}//"Tato zmìna ovlivní všechny prvky na tomto pohonu."
+  	}
 	}
 }
 //---------------------------------------------------------------------------
