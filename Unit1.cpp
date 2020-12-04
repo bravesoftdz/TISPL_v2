@@ -6509,7 +6509,7 @@ void TForm1::napoj_vetev_na_geo()
 		Akce=BLOK;
 		//deklarace
 		bool nalezeno=false;
-		double X=posledni_editovany_element->geo.X4,Y=posledni_editovany_element->geo.Y4,citlivost=1.0;
+		double X=posledni_editovany_element->geo.X4,Y=posledni_editovany_element->geo.Y4,citlivost=0.5;
 		Cvektory::TElement *E_break=posledni_editovany_element->dalsi->dalsi2;//výhybka z aktuálně kreslené větve
 		Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
 		Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
@@ -6571,7 +6571,7 @@ void TForm1::napoj_vetev_na_geo()
 				d.v.aktualizuj_cestu_teplomeru(O);//došlo k přesunu elementů
 				O=NULL;delete O;
 			}
-      //napojení vedlejší větve + kontrola zda proběhlo správně
+			//napojení vedlejší větve + kontrola zda proběhlo správně
 			if(!napojeni_vedlejsi_vetve(posledni_editovany_element,false))TIP=ls->Strings[518];//"Nepovedlo se automaticky dopojit geometrii."
 			//přeindexování elementů
 			S=d.v.ELEMENTY->dalsi;
@@ -6604,14 +6604,15 @@ void TForm1::napoj_vetev_na_geo()
 bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrola_vzdalenosti)
 {
 	log(__func__);
-	double citlivost=1.5;if(!kontrola_vzdalenosti)citlivost=9999999.0;
+	double citlivost=0.5;if(!kontrola_vzdalenosti)citlivost=9999999.0;
 	bool jeOK=true;
 	//kontrola, zda se orientace vetve == orientaci spojky, pokud ne vloží oblouk
 	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && (m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)!=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) || e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel!=m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=citlivost)
 	{
 		double orientace=m.a360(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel);
 		double rotacni_uhel=orientace-e_posledni->dalsi->geo.orientace;
-		if(d.v.hodnota_v_katalogu(d.v.PP.katalog,m.abs_d(rotacni_uhel)))
+		if(e_posledni->geo.typ!=0 && e_posledni->geo.rotacni_uhel!=rotacni_uhel)jeOK=false;//pokud napojuji odlišný oblouk na oblouk, nepovolit
+		if(jeOK && d.v.hodnota_v_katalogu(d.v.PP.katalog,m.abs_d(rotacni_uhel)))
 		{
 			//parametry geometrie
 			d.geoTemp.typ=1;
@@ -6634,8 +6635,9 @@ bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 	  	d.v.vyhybka_pom=NULL;
 		}
 	}
+	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->geo.delka!=0 && e_posledni->geo.typ==0)jeOK=false;//nelze napojit linii na linii
 	//e_posledni == poslední element ve vedlejší větvi
-	if(e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=citlivost)
+	if(jeOK && e_posledni!=NULL && e_posledni->dalsi!=NULL && e_posledni->dalsi->eID==301 && e_posledni->dalsi->predchozi2==e_posledni && m.Rt90(e_posledni->geo.orientace-e_posledni->geo.rotacni_uhel)==m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel) && m.delka(e_posledni->dalsi->geo.X4,e_posledni->dalsi->geo.Y4,e_posledni->geo.X4,e_posledni->geo.Y4)<=citlivost)
 	{
 		double posun_x,posun_y;
 		short orientace=m.Rt90(e_posledni->dalsi->geo.orientace-e_posledni->dalsi->geo.rotacni_uhel);
@@ -6669,14 +6671,14 @@ bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 		  	}
 		  	if(E!=NULL)
 				{
-					if(E->geo.typ==0 && m.round2double(m.delka(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4-posun_y),0)==0)jeOK=false;
+					if(E->geo.typ==0 && m.round2double(E->geo.delka-posun_y,2)<=0)jeOK=false;
 					else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4-posun_y,E->geo.orientace,E->geo.rotacni_uhel);
 		  		E->Y-=posun_y;
 		  		E=E->dalsi;
 					while(!(E->eID==301 && E->identifikator_vyhybka_spojka==e_posledni->dalsi->identifikator_vyhybka_spojka) && jeOK)
 					{
 						if(E->eID==301 && E->identifikator_vyhybka_spojka==e_posledni->dalsi->identifikator_vyhybka_spojka)break;
-            if(E->geo.typ==0 && m.round2double(m.delka(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4-posun_y),0)==0)jeOK=false;
+						if(E->geo.typ==0 && m.round2double(E->geo.delka-posun_y,2)<=0)jeOK=false;
 						else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1-posun_y,E->geo.X2,E->geo.Y2-posun_y,E->geo.X3,E->geo.Y3-posun_y,E->geo.X4,E->geo.Y4-posun_y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
 		  			E->Y-=posun_y;
 						E=E->dalsi;
@@ -6696,7 +6698,7 @@ bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 		  	if(E!=NULL)
 				{
 					posun_x*=-1;
-					if(E->geo.typ==0 && m.round2double(m.delka(E->geo.X1,E->geo.Y1,E->geo.X4+posun_x,E->geo.Y4),0)==0)jeOK=false;
+					if(E->geo.typ==0 && m.round2double(E->geo.delka+posun_x,2)<=0)jeOK=false;
 					else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4+posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel);
 					E->X+=posun_x;
 		  		E=E->dalsi;
@@ -6704,7 +6706,7 @@ bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 		  		{
 						//kontrola, zda nejsem na spojce
 						if(E->eID==301 && E->identifikator_vyhybka_spojka==e_posledni->dalsi->identifikator_vyhybka_spojka)break;
-						if(E->geo.typ==0 && m.round2double(m.delka(E->geo.X1,E->geo.Y1,E->geo.X4-posun_x,E->geo.Y4),0)==0)jeOK=false;
+						if(E->geo.typ==0 && m.round2double(E->geo.delka-posun_x,2)<=0)jeOK=false;
 						else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1+posun_x,E->geo.Y1,E->geo.X2+posun_x,E->geo.Y2,E->geo.X3+posun_x,E->geo.Y3,E->geo.X4+posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
 		  			E->X+=posun_x;
 						//posun na další element
@@ -6736,13 +6738,13 @@ bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 				}
 		  	if(E!=NULL)
 				{
-					if(E->geo.typ==0 && m.round2double(m.delka(E->geo.X1,E->geo.Y1,E->geo.X4-posun_x,E->geo.Y4),0)==0)jeOK=false;
+					if(E->geo.typ==0 && m.round2double(E->geo.delka-posun_x,2)<=0)jeOK=false;
 					else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel);
 					E->X-=posun_x;
 					E=E->dalsi;
 					while(!(E->eID==301 && E->identifikator_vyhybka_spojka==e_posledni->dalsi->identifikator_vyhybka_spojka) && jeOK)
 					{
-						if(E->geo.typ==0 && m.round2double(m.delka(E->geo.X1,E->geo.Y1,E->geo.X4-posun_x,E->geo.Y4),0)==0)jeOK=false;
+						if(E->geo.typ==0 && m.round2double(E->geo.delka-posun_x,2)<=0)jeOK=false;
 						else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1-posun_x,E->geo.Y1,E->geo.X2-posun_x,E->geo.Y2,E->geo.X3-posun_x,E->geo.Y3,E->geo.X4-posun_x,E->geo.Y4,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
 						E->X-=posun_x;
 						E=E->dalsi;
@@ -6762,14 +6764,14 @@ bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 		  	if(E!=NULL)
 				{
 					posun_y*=-1;
-					if(E->geo.typ==0 && m.round2double(m.delka(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4+posun_y),0)==0)jeOK=false;
+					if(E->geo.typ==0 && m.round2double(E->geo.delka+posun_y,2)<=0)jeOK=false;
 					else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1,0,0,0,0,E->geo.X4,E->geo.Y4+posun_y,E->geo.orientace,E->geo.rotacni_uhel);
 		  		E->Y+=posun_y;
 					E=E->dalsi;
 					while(E!=NULL && jeOK)
 					{
 						if(E->eID==301 && E->identifikator_vyhybka_spojka==e_posledni->dalsi->identifikator_vyhybka_spojka)break;
-						if(E->geo.typ==0 && m.round2double(m.delka(E->geo.X1,E->geo.Y1,E->geo.X4,E->geo.Y4+posun_y),0)==0)jeOK=false;
+						if(E->geo.typ==0 && m.round2double(E->geo.delka+posun_y,2)<=0)jeOK=false;
 						else d.v.vloz_G_element(E,E->geo.typ,E->geo.X1,E->geo.Y1+posun_y,E->geo.X2,E->geo.Y2+posun_y,E->geo.X3,E->geo.Y3+posun_y,E->geo.X4,E->geo.Y4+posun_y,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,E->geo.delka);
 						E->Y+=posun_y;
 		  			//posun na další element
@@ -6782,27 +6784,31 @@ bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 	}
 	else jeOK=false;
 	//ukončení editace geometrie
-	vypni_geometrii();
-	Akce=NIC;Akce_temp=NIC;
-	//aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
-	Cvektory::TElement *E=OBJEKT_akt->element;
-	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-	while(E!=NULL)
+	Akce=BLOK;
+	if(jeOK)
 	{
-		if(E->eID==300)napln_comba_mGridu(E);
-  	E->mGrid->Refresh();
-		E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
+		vypni_geometrii();
+		Akce=NIC;Akce_temp=NIC;
+  	//aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
+  	Cvektory::TElement *E=OBJEKT_akt->element;
+  	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+  	while(E!=NULL)
+  	{
+  		if(E->eID==300)napln_comba_mGridu(E);
+  		E->mGrid->Refresh();
+  		E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
+  	}
+  	E=NULL;delete E;
+  	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+  	//refresh ostatních tabulek
+  	if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
+  	Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+  	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
+  	Tep=NULL;delete Tep;
+  	d.SCENA=0;
+  	REFRESH(true);
+		d.nabuffrovat_mGridy();//nutné pro zprávné zobrazení, pokud mGridy nebyly vykresleny před zahájením geometrie
 	}
-	E=NULL;delete E;
-	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-  //refresh ostatních tabulek
-	if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
-	Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
-	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
-	Tep=NULL;delete Tep;
-	d.SCENA=0;
-	REFRESH(true);
-	d.nabuffrovat_mGridy();//nutné pro zprávné zobrazení, pokud mGridy nebyly vykresleny před zahájením geometrie
 	//return zda bylo vše OK
   return jeOK;
 }
@@ -15261,14 +15267,13 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	Memo("");
 	Memo_testy->Clear();
 	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
 	while(E!=NULL)
 	{
-		Memo(E->name+"->n: "+String(E->n));
-    E=d.v.dalsi_krok(VYH,E);
+		if(E->eID==301 && E->identifikator_vyhybka_spojka==2)break;
+		E=E->dalsi;
 	}
-	d.v.vymaz_seznam_VYHYBKY(VYH);
-	delete E;E=NULL;
+	Memo(E->name+"->geo.typ: "+String(E->geo.typ)+"; ->geo.delka: "+String(E->geo.delka));
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
