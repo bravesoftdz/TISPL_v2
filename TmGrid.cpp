@@ -724,7 +724,7 @@ void TmGrid::DrawNote(TCanvas *C)
 		}                                                      //zpětná korekce, takže +
 		FontLink=NULL;delete FontLink;FontActiveLink=NULL;delete FontActiveLink;
 		helpBUTTON->Visible=true;
-		helpBUTTON->Left=Note.NoteArea.Left+m.round(W/3.0)-helpBUTTON->Width-helpBUTTON->Options->FrameWidth;helpBUTTON->Top=Note.NoteArea.Top+m.round(Note.NoteArea.Height()/3.0)-helpBUTTON->Height-helpBUTTON->Options->FrameWidth;
+		helpBUTTON->Left=Note.NoteArea.Left+m.round(W/3.0)-helpBUTTON->Width-helpBUTTON->Options->FrameWidth;helpBUTTON->Top=Note.NoteArea.Top+m.round(Note.NoteArea.Height()/3.0)-helpBUTTON->Height+helpBUTTON->Options->FrameWidth;
 	}
 	else
 	{
@@ -757,7 +757,7 @@ void TmGrid::ShowNote(UnicodeString Text,TColor Color,short FontSize)
 			short W=m.round(Note.NoteArea.Width()/3.0);
 			short H=m.round(Note.NoteArea.Height()/3.0);
 			InvalidateRect(Form->Handle,&TRect(Note.NoteArea.Left,Note.NoteArea.Top,Note.NoteArea.Left+W,Note.NoteArea.Top+H),true);//slouží pro první zobrazení resp. zinvalidování dané poznámky
-			helpBUTTON->Left=Note.NoteArea.Left+W-helpBUTTON->Width-helpBUTTON->Options->FrameWidth;helpBUTTON->Top=Note.NoteArea.Top+H-helpBUTTON->Height-helpBUTTON->Options->FrameWidth;
+			helpBUTTON->Left=Note.NoteArea.Left+W-helpBUTTON->Width-helpBUTTON->Options->FrameWidth;helpBUTTON->Top=Note.NoteArea.Top+H-helpBUTTON->Height+helpBUTTON->Options->FrameWidth;
 			helpBUTTON->Visible=true;
 		}
 		else
@@ -3153,6 +3153,7 @@ void TmGrid::SetVisibleComponents(bool state)
 		}
 	}
 	if(exBUTTONVisible)exBUTTON->Visible=state;
+	if(helpBUTTON->Visible && state==false)helpBUTTON->Visible=false;
 }
 //---------------------------------------------------------------------------
 //podle stavu state buď zobrazí nebo skryje komponentu neurčitého typu v dané buňce

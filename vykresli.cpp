@@ -5094,19 +5094,20 @@ void Cvykresli::polygon(TCanvas *canv,Cvektory::TBod *body,TColor barva,short si
 				vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
 				else
 				{
+					bool AAsize=true; if(F->OBJEKT_akt!=NULL)AAsize=false;//WA pro eliminaci vykreslovací chyby popisku kóty, provizorně do aplikace GDI+
 					//určení nové vzdálenosti
 					delka_koty=m.round2double(m.delka(B->predchozi->X,B->predchozi->Y,B->X,B->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->OBJEKT_akt->pohon->aRD;
 					//vykreslení jedné kóty pro obdelník/čtverec
-					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B);
+					vykresli_kotu(canv,m.L2Px(B->predchozi->X),m.L2Py(B->predchozi->Y),m.L2Px(B->X),m.L2Py(B->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B,AAsize);
 					if(kota_od->dalsi!=NULL)//ošetření
 					{
-				  	//zjištění highlightu pro druhou kótu obdelníku/čtverce
-				  	if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->dalsi->n)highlight=2;
+						//zjištění highlightu pro druhou kótu obdelníku/čtverce
+						if(F->pom_bod!=NULL && F->JID==oblast_koty&&F->pom_bod->n==B->dalsi->n)highlight=2;
 						else if(F->pom_bod!=NULL && F->JID==hodnota_koty&&F->pom_bod->n==B->dalsi->n)highlight=1;else highlight=0;
-				  	//délka
-				  	delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->OBJEKT_akt->pohon->aRD;
-				  	//vykreslení
-						vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B->dalsi);
+						//délka
+						delka_koty=m.round2double(m.delka(B->X,B->Y,B->dalsi->X,B->dalsi->Y),3);if(F->DKunit==2 || F->DKunit==3)delka_koty=delka_koty/F->OBJEKT_akt->pohon->aRD;
+						//vykreslení
+						vykresli_kotu(canv,m.L2Px(B->X),m.L2Py(B->Y),m.L2Px(B->dalsi->X),m.L2Py(B->dalsi->Y),m.round2double(F->outDK(delka_koty),3),NULL,B->dalsi->kota_offset*F->Zoom/AA,highlight,width,clGray,false,NULL,B->dalsi,AAsize);
 					}
 					break;
 				}
@@ -5722,13 +5723,11 @@ void Cvykresli::vykresli_kotu(TCanvas *canv,long X1,long Y1,long X2,long Y2,Ansi
 	}
 	else canv->Font->Style = TFontStyles();//vypnutí tučného písma
 
-//test opravy
-	if(!AAsize)
-	{
-		canv->Font->Size=m.round(canv->Font->Size/1.2);
-		F->Memo(Text);
-	}
-///
+	//WA opravy velikosti textu, provizorně než bude nasazeno GDI+
+	if(!AAsize && F->Zoom<=4)canv->Font->Size=m.round(canv->Font->Size*2/3.0);
+	if(!AAsize && (F->Zoom==8 || F->Zoom==9))canv->Font->Size=m.round(canv->Font->Size*2/3.0*1.3);
+	if(!AAsize && (F->Zoom==7 || F->Zoom==6))canv->Font->Size=m.round(canv->Font->Size*3/2.0*0.9);
+
 
 	SetBkMode(canv->Handle,OPAQUE);//nastvení netransparentního pozadí kóty
 	canv->Brush->Color=clWhite;//nastvení netransparentního pozadí popisku kóty
