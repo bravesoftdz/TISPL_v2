@@ -5595,8 +5595,8 @@ void TForm1::ZOOM_OUT()
 	{
 		Uloz_predchozi_pohled();
 		if(Zoom>10) Zoom-=5.0;
-		else if(Zoom>5) Zoom-=2*1.0;//zvětšení skoku
-		else Zoom-=2*0.5;
+		else if(Zoom>5) Zoom-=1.0;//zvětšení skoku
+		else Zoom-=0.5;
 		ZOOM();
 	}
 	else
@@ -6503,7 +6503,7 @@ void TForm1::napoj_vetev_na_geo()
 {
 	log(__func__);
 	//počáteční kontrola, zda jsem v geometrii a edituju vedlejší větev před spojkou
-	if(Akce==GEOMETRIE && posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && m.delka(posledni_editovany_element->dalsi->dalsi2->geo.X4,posledni_editovany_element->dalsi->dalsi2->geo.Y4,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4)>2.0)
+	if(/*Akce==GEOMETRIE && */posledni_editovany_element!=NULL && posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301 && m.delka(posledni_editovany_element->dalsi->dalsi2->geo.X4,posledni_editovany_element->dalsi->dalsi2->geo.Y4,posledni_editovany_element->geo.X4,posledni_editovany_element->geo.Y4)>2.0)
 	{
 		//blokování akce, nutné nastavit před zobrazením MB
 		Akce=BLOK;
@@ -6595,7 +6595,7 @@ void TForm1::napoj_vetev_na_geo()
 		if(Akce==BLOK)
 		{
 			JID=-1;stisknute_leve_tlacitko_mysi=false;
-			Akce=GEOMETRIE;//WA pro zobrazení MB
+			//Akce=GEOMETRIE;//WA pro zobrazení MB
 		}
 	}
 }
@@ -6785,30 +6785,30 @@ bool TForm1::napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrol
 	else jeOK=false;
 	//ukončení editace geometrie
 	Akce=BLOK;
-	if(jeOK)
-	{
-		vypni_geometrii();
-		Akce=NIC;Akce_temp=NIC;
-  	//aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
-  	Cvektory::TElement *E=OBJEKT_akt->element;
-  	Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
-  	while(E!=NULL)
-  	{
-  		if(E->eID==300)napln_comba_mGridu(E);
-  		E->mGrid->Refresh();
-  		E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
-  	}
-  	E=NULL;delete E;
-  	d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
-  	//refresh ostatních tabulek
-  	if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
-  	Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
-  	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
-  	Tep=NULL;delete Tep;
-  	d.SCENA=0;
-  	REFRESH(true);
-		d.nabuffrovat_mGridy();//nutné pro zprávné zobrazení, pokud mGridy nebyly vykresleny před zahájením geometrie
-	}
+//	if(jeOK)
+//	{
+//		vypni_geometrii();
+//		Akce=NIC;Akce_temp=NIC;
+//		//aktualizace comb ve výhybkách + refreshování všech tabulek, musí být, aby nedošlo k chybnému vykreslení mgridů, způsobuje zobrazení MB
+//		Cvektory::TElement *E=OBJEKT_akt->element;
+//		Cvektory::T2Element *VYHYBKY=d.v.hlavicka_seznam_VYHYBKY();
+//  	while(E!=NULL)
+//  	{
+//			if(E->eID==300)napln_comba_mGridu(E);
+//			E->mGrid->Refresh();
+//  		E=d.v.dalsi_krok(VYHYBKY,E,OBJEKT_akt);
+//		}
+//  	E=NULL;delete E;
+//		d.v.vymaz_seznam_VYHYBKY(VYHYBKY);
+//  	//refresh ostatních tabulek
+//		if(predchozi_PM!=NULL)predchozi_PM->mGrid->Refresh();
+//		Cvektory::TTeplomery *Tep=d.v.vrat_teplomery_podle_zakazky(OBJEKT_akt,d.v.ZAKAZKA_akt);
+//  	if(Tep!=NULL)Tep->posledni->mGrid->Refresh();
+//		Tep=NULL;delete Tep;
+//		d.SCENA=0;
+//		REFRESH(true);
+//		d.nabuffrovat_mGridy();//nutné pro zprávné zobrazení, pokud mGridy nebyly vykresleny před zahájením geometrie
+//	}
 	//return zda bylo vše OK
   return jeOK;
 }
@@ -7771,7 +7771,7 @@ void TForm1::vlozeni_editace_geometrie()
 	//vytvoření obrazu pro UNDO a REDO, nelze načíst obrazi při editaci geometrie ... pam. chyba
 	vytvor_obraz();
 	vytvor_statickou_scenu();
-  napoj_vetev_na_geo();//test pozice
+	//napoj_vetev_na_geo();//test pozice
 }
 //---------------------------------------------------------------------------
 //vymaže aktuální usek geometrie
@@ -7834,7 +7834,17 @@ void TForm1::ukonceni_geometrie(bool kontrola)
 	Akce=NIC;
 	if(Akce_temp!=EDITACE_TEXTU)Akce_temp=NIC;//musí být ještě před refresh
 
-  ////připnutí objektů
+	////kontrola větví
+	posledni_editovany_element=OBJEKT_akt->element;
+	Cvektory::T2Element *VYH=d.v.hlavicka_seznam_VYHYBKY();
+	while(posledni_editovany_element!=NULL)
+	{
+		if(posledni_editovany_element->dalsi!=NULL && posledni_editovany_element->dalsi->eID==301){napoj_vetev_na_geo();break;}
+		posledni_editovany_element=d.v.dalsi_krok(VYH,posledni_editovany_element,OBJEKT_akt);
+	}
+	d.v.vymaz_seznam_VYHYBKY(VYH);
+  posledni_editovany_element=NULL;delete posledni_editovany_element;
+	////připnutí objektů
 	if(kontrola)
 	{
 		bool zmena=pripnuti_dalsich_objektu();
@@ -15600,7 +15610,7 @@ void __fastcall TForm1::scGPGlyphButton_ZOOM_MINUSClick(TObject *Sender)
    		else Zoom-=0.5;
    		ZOOM();
    	}
-   	else
+		else
    	{
    		if(Zoom==0.5)//pro přechod z 0.5 na 0.25
    		{
