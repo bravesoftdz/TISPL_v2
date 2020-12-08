@@ -221,7 +221,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 				{
 					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->geo.X4;bod.y=pom->geo.Y4;if(F->Akce==F->Takce::GEOMETRIE || F->Akce==F->Takce::GEOMETRIE_LIGHT){bod.x=E->geo.X4;bod.y=E->geo.Y4;}}
 					else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-					if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
+					if(!m.DisD(E->geo.X4,bod.x) || !m.DisD(E->geo.Y4,bod.y))
 					{
 						canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 						canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
@@ -230,7 +230,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 				}
 				else if(pom==NULL && v.OBJEKTY->predchozi->n>2)//vykreslení pouze v případě pokdud existjují více jak 2
 				{
-					if(m.round2double(E->geo.X4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.X1,2) || m.round2double(E->geo.Y4,2)!=m.round2double(v.ELEMENTY->dalsi->geo.Y1,2))
+					if(!m.DisD(E->geo.X4,v.ELEMENTY->dalsi->geo.X1) || !m.DisD(E->geo.Y4,v.ELEMENTY->dalsi->geo.Y1))
 					{
 						canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 						canv->LineTo(m.L2Px(v.ELEMENTY->dalsi->geo.X1),m.L2Py(v.ELEMENTY->dalsi->geo.Y1));
@@ -243,7 +243,7 @@ void Cvykresli::vykresli_elementy(TCanvas *canv,short scena)
 				{
 					if(pom->eID==301 && pom->predchozi2==E){bod.x=pom->X;bod.y=pom->Y;}
 					else {bod.x=pom->geo.X1;bod.y=pom->geo.Y1;}
-					if(m.round2double(E->geo.X4,2)!=m.round2double(bod.x,2) || m.round2double(E->geo.Y4,2)!=m.round2double(bod.y,2))
+					if(!m.DisD(E->geo.X4,bod.x) || !m.DisD(E->geo.Y4,bod.y))
 					{
 						canv->MoveTo(m.L2Px(E->geo.X4),m.L2Py(E->geo.Y4));
 						canv->LineTo(m.L2Px(bod.x),m.L2Py(bod.y));
@@ -1097,7 +1097,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 		E=NULL;delete E;
 
 		//kontrola bodů vozíků
-		if(bod.x==MaxInt && bod.y==MaxInt)
+		if(F->zobrazit_rozmisteni_voziku==1 && bod.x==MaxInt && bod.y==MaxInt)
 		{
 			Cvektory::TVozik *V=v.VOZIKY->dalsi;
 			while(V!=NULL)
@@ -1153,7 +1153,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 			bool pokracovat=true;
 			//kontrola bodů vozíků
 			Cvektory::TVozik *V=v.VOZIKY->dalsi;
-			while(V!=NULL)
+			while(V!=NULL && F->zobrazit_rozmisteni_voziku==1)
 			{
 	  		if(m.PtInCircle(F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y,V->X,V->Y,F->velikost_citelne_oblasti_elementu))
 				{
@@ -1282,6 +1282,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 						if(C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL)cas+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);
 					}
 				}
+				//if(!(F->scGPCheckBox_meridlo_casy->Checked==false && C->Element==v.MAG_LASO->sparovany && m.round2double(v.MAG_LASO->Element->geo.X1,3)==m.round2double(v.MAG_LASO->sparovany->geo.X4,3) && m.round2double(v.MAG_LASO->Element->geo.Y1,3)==m.round2double(v.MAG_LASO->sparovany->geo.Y4,3)))
 				if((!F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))) || (F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))))
 				{
 					double buf=0;
@@ -1294,11 +1295,17 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 							{
 								buf=(C->Element->data.pocet_voziku-1)*v.PP.delka_podvozek-v.PP.uchyt_pozice;
 								cas+=C->Element->data.WTstop-v.PP.TT;
-								cas_pom+=C->Element->data.WTstop-v.PP.TT;
+								cas_pom+=C->Element->data.WTstop-v.PP.TT;        //F->Memo("d: "+String(d)+"; buf: "+String(buf),true);
 								if(d>=buf)
 								{
 									cas-=buf/C->Element->pohon->aRD;
 									cas_pom-=buf/C->Element->pohon->aRD;
+								}
+								else//pokud je vzdálenost menší než buffer odečíst d
+								{           //F->Memo("else větev, vozíků: "+String(m.V2WT(ceil((buf-d)/v.PP.delka_podvozek),v.PP.TT)));
+									cas-=d/C->Element->pohon->aRD;//+m.V2WT(ceil((buf-d)/v.PP.delka_podvozek)-1,v.PP.TT);
+									cas_pom-=d/C->Element->pohon->aRD;//+m.V2WT(ceil((buf-d)/v.PP.delka_podvozek)-1,v.PP.TT);
+
 								}
 							}
 						}
@@ -1316,6 +1323,11 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 						{
 							cas-=buf/C->Element->pohon->aRD;
 							cas_pom-=buf/C->Element->pohon->aRD;
+						}
+						else//pokud je vzdálenost menší než buffer odečíst d
+						{
+							cas-=d/C->Element->pohon->aRD;
+              cas_pom-=d/C->Element->pohon->aRD;
 						}
 						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas=ceil(cas/v.PP.TT)*v.PP.TT;
 						if(!prichyceno || (prichyceno && C->Element!=F->pom_element))cas_pom=ceil(cas_pom/v.PP.TT)*v.PP.TT;
@@ -1345,7 +1357,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			if(prichyceno && F->pom_element==v.MAG_LASO->predchozi->Element && C->dalsi==NULL)
 			{
 				t1=String(m.round2double(delka*1000,2))+" [mm]";
-				if(cas_pom!=cas && v.vrat_druh_elementu(F->pom_element)==0)t2="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+				if(/*cas_pom!=cas &&*/ v.vrat_druh_elementu(F->pom_element)==0)t2="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 				else t2=String(m.round2double(cas,2))+" [s]";
 				typ=2;if(C->n==1)typ=3;
 			}
@@ -1389,7 +1401,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0/* && cas_pom!=cas*/)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,uhel,R,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2,(TColor)NULL,gdiplus);//vykreslení měřícího kurzoru, popisek není nutné používat, metodu ještě vylepším
 		}
@@ -1439,7 +1451,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			}
 
 			//vykreslovací část
-			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 /*&& cas_pom!=cas*/)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,OR,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,2,(TColor)NULL,gdiplus);
 		}
@@ -1484,7 +1496,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			cas_pom+=delka/F->pom_element->pohon->aRD;
 			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)cas_pom=ceil(cas/v.PP.TT)*v.PP.TT;
 			//vykreslení
-			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 && cas_pom!=cas)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0 /*&& cas_pom!=cas*/)popisek="IN "+String(m.round2double(cas,2))+" [s]  OUT "+String(m.round2double(cas_pom,2))+" [s]";
 			else popisek=String(m.round2double(cas,2))+" [s]";
 			vykresli_Gelement(canv,X,Y,azimut,0,delka_Pud,clMeridlo,2,String(m.round2double(d*1000,2))+" [mm]",popisek,3);
       delka=d;
@@ -3385,7 +3397,7 @@ void Cvykresli::vykresli_element(TCanvas *canv,short scena,long X,long Y,AnsiStr
 				/////////provizorní řešení !!!!!!!!!!!!
 				unsigned int velikost=m.round(2*F->Zoom);
 				TColor barva=clRed;if(eID==301)barva=clBlue;
-				if((E->eID==300 && E->dalsi2==E->predchozi2 && ((F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT) || ((F->Akce==F->Takce::GEOMETRIE || F->Akce==F->Takce::GEOMETRIE_LIGHT) && E->objekt_n==F->OBJEKT_akt->n))) || (E->eID==301 && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && (E->geo.X4!=E->predchozi2->geo.X4 || E->geo.Y4!=E->predchozi2->geo.Y4)))
+				if((E->eID==300 && E->dalsi2==E->predchozi2 && ((F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT) || ((F->Akce==F->Takce::GEOMETRIE || F->Akce==F->Takce::GEOMETRIE_LIGHT) && E->objekt_n==F->OBJEKT_akt->n))) || (E->eID==301 && F->Akce!=F->Takce::GEOMETRIE && F->Akce!=F->Takce::GEOMETRIE_LIGHT && (!m.DisD(E->geo.X4,E->predchozi2->geo.X4) || m.DisD(E->geo.Y4,E->predchozi2->geo.Y4))))
 				{
 					////vykreslní čtverce
 					canv->Pen->Color=barva;

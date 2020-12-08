@@ -4458,7 +4458,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			  	el=NULL;delete el;
 			  	//kontrola přichycení na vozík
 			  	Cvektory::TVozik *V=d.v.VOZIKY->dalsi;
-					while(!prichiceno && V!=NULL)
+					while(!prichiceno && V!=NULL && zobrazit_rozmisteni_voziku==1)
 					{
 						if(m.PtInCircle(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,V->X,V->Y,velikost_citelne_oblasti_elementu))
 			  		{
@@ -5037,7 +5037,7 @@ void TForm1::getJobID(int X, int Y)
 			if(prichytavat_k_mrizce==1)konec_mereni.x=d.v.prichytit_cas_SIM(V);
 			konec_mereni.y=V;
 		}
-
+    //testovací výpis obsahu mag. lasa
 //		Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;Memo_testy->Clear();     int pocet=0;
 //		if(d.v.MAG_LASO->sparovany!=NULL)Memo("sparovany0: "+d.v.MAG_LASO->sparovany->name);
 //		while(C!=NULL)
@@ -15274,16 +15274,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-//	Memo("");
-	Memo_testy->Clear();
-	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
-	while(E!=NULL)
-	{
-		if(E->eID==301 && E->identifikator_vyhybka_spojka==2)break;
-		E=E->dalsi;
-	}
-	Memo(E->name+"->geo.typ: "+String(E->geo.typ)+"; ->geo.delka: "+String(E->geo.delka));
-	E=NULL;delete E;
+	Memo("");
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

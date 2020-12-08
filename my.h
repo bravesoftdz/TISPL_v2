@@ -129,7 +129,8 @@ class Cmy
   Gdiplus::Color aRGB(TColor color,short alfa=255);//převede RGB do ARGB, pokud se alfa neuvede, použije se implicitně 255 tj. výstupem bude totožná hodnota
 	short getValueFromPosition(long GlobalValue,short Position);//vrátí číslici dle pozice z daného celkového čísla
 	double RAND(double MIN, double MAX,unsigned short precision=0,bool MINin=true,bool MAXin=true);//vrátí náhodné číslo v daném rozsahu o požadované přesnosti, MIN a MAX mohou být součástí navrácených hodnot (jedná se o oboustranně uzavřený interval - implicitně), pokud není nastaveno jinak posledními dvěma parametry, které umožňují nastavení z jedne či obou stran otevřený interval//srand(time(NULL)); v knihovně ktéré se tato metoda volá je nutno volat jako úplně první toto (nejvýše v kódu knihovny)
-  double getZoomValue(double Zoom);//vrátí Zoom upravený na používané stupnici
+	double getZoomValue(double Zoom);//vrátí Zoom upravený na používané stupnici
+  bool DisD(double A,double B);//vrátí zda se A==B
 	protected:
 };
 #endif

@@ -620,7 +620,7 @@ long Cmy::LeziVblizkostiUsecky(double x, double y, double X1, double Y1, double 
 	double b=X1-X2;
 	double c=-a*X1-b*Y1;
 
-  if(X2==X1)//pokud jsou v jedné "linii" tj. je abs. svislá
+	if(X2==X1)//pokud jsou v jedné "linii" tj. je abs. svislá
   {
 		if((Y1<=y && y<=Y2 && Y1<Y2) || (Y2<=y && y<=Y1 && Y2<Y1))
 			return round(fabs((a*x + b*y + c) / sqrt(fabs(a*a + b*b))));
@@ -1512,23 +1512,16 @@ double Cmy::getZoomValue(double Zoom)
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-//Zoom=0.25;
-//Zoom=0.5;
-//Zoom=1;
-//Zoom=1.5;
-//Zoom=2;
-//Zoom=2.5;
-//Zoom=3;
-//Zoom=3.5;
-//Zoom=4;
-//Zoom=4.5;
-//Zoom=5;
-//Zoom=6;
-//Zoom=7;
-//Zoom=8;
-//Zoom=9;
-//Zoom=10;
-//Zoom=15;
-//Zoom=20;
-//Zoom=25;
-//Zoom=30;
+//vrátí zda se A==B
+bool Cmy::DisD(double A,double B)
+{
+	//deklarace
+	bool ret=false;
+	unsigned int citlivost=4;
+	//kontrola zda se čísla rovnají + zaokrouhlení na dannou citlivost
+	if(round2double(A,citlivost)==round2double(B,citlivost))ret=true;
+  //navrácení výsledku
+	return ret;
+}
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////

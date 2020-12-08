@@ -10095,6 +10095,7 @@ void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 		if(segment==0 && E->predchozi->n==0 && ((E->predchozi->predchozi==MAG_LASO->predchozi->sparovany) || (E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)))
 			vloz_segment_MAG_LASA(E->predchozi->predchozi);
 
+    //překlenutí skrze počátek - konec linky
 		if(segment==0 && E->predchozi->predchozi->n==0 && E->predchozi->predchozi->predchozi==MAG_LASO->predchozi->Element)
       vloz_segment_MAG_LASA(E->predchozi);
 
@@ -10125,6 +10126,13 @@ void Cvektory::kontrola_vlozeni_do_mag_lasa(TElement *E)
 		if(segment==0 && E->predchozi->geo.delka==0 && E->predchozi->n>1 && E->predchozi->predchozi==MAG_LASO->predchozi->sparovany)
 		{
 			vloz_segment_MAG_LASA(MAG_LASO->predchozi->sparovany);
+			vloz_segment_MAG_LASA(E->predchozi);
+		}
+
+    //přeskočení krátkého liniového úseku, např. problém před obloukem  (stopka, 0.015 linie, oblouk)
+		if(segment==0 && E->predchozi!=NULL && E->predchozi->n>0 && E->predchozi->geo.typ==0 && E->predchozi->geo.delka<=0.1 && (MAG_LASO->predchozi->sparovany==E->predchozi->predchozi || (E->n>=4 && MAG_LASO->predchozi->Element==E->predchozi->predchozi->predchozi)))
+		{
+			vloz_segment_MAG_LASA(E->predchozi->predchozi);
 			vloz_segment_MAG_LASA(E->predchozi);
 		}
 
