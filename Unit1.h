@@ -587,8 +587,8 @@ private:
   TRect oblast_prekryti_mGridu(Cvektory::TElement *E=NULL);//vrátí oblast pro kontrolu pøekrytí mGridù
 	void mGrid_puvodni_stav(Cvektory::TElement *E=NULL);//nadesingnuje tabulky elementù nebo tabulku pohonu na pùvodní stav, obnový komponenty, naplní comba, provede Update() mGridu
 	void set_font(int velikost=14);//nastaví komponentám aFont
-	bool pripnuti_dalsich_objektu(double citlivost=0.5);//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
-	void spojeni_prvni_posledni(double citlivost=0.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
+	bool pripnuti_dalsich_objektu(double citlivost=1.5);//pokud pøi uložení editovaného objektu je detekováno, že konec objketu nenavazuje na zaèátek následujísího objektu je položen dotaz a po potvrzení dojde ke spojení
+	void spojeni_prvni_posledni(double citlivost=1.5);//kontrola zda na sebe první a polední objekt navazují, pokud jsou blízko u sebe, ale nenavazují - naváže je
 	bool napojeni_vedlejsi_vetve(Cvektory::TElement *e_posledni,bool kontrola_vzdalenosti=true);//provede kontrolu, zdá je možnost geometrii spojit, dotáže se a spojí geometrii pokud uživatel souhlasí
   void vypni_geometrii();//vypne akci geometrie
 	void Otevri_posledni_ulozeny(UnicodeString soubor);//otevøe jeden z posledních otevøených souborù

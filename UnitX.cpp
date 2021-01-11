@@ -2684,6 +2684,7 @@ void TFormX::aktualizace_teplomeru()
 {
 	if(F->OBJEKT_akt->teplomery!=NULL)
 	{
+		bool Pvstoupeno_poh=vstoupeno_poh,Pvstoupeno_elm=vstoupeno_elm;
 		Cvektory::TTeplomery *T=F->d.v.vrat_teplomery_podle_zakazky(F->OBJEKT_akt,F->d.v.ZAKAZKA_akt);
 		if(T!=NULL)
 		{
@@ -2821,6 +2822,9 @@ void TFormX::aktualizace_teplomeru()
 
 		//ukazatelové záležitosti
 		T=NULL;delete T;
+
+    //navrácení stavù, dùležité pro obnovení fce. OnChange
+		vstoupeno_poh=Pvstoupeno_poh,vstoupeno_elm=Pvstoupeno_elm;
 	}
 }
 //---------------------------------------------------------------------------
