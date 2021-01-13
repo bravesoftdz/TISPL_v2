@@ -1276,6 +1276,8 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 					{
 						//WT - pouze do druhé složky IN
 						in.y+=C->Element->WT;
+						//odečtení záporného RT = přičtení RT
+						if(C->Element->data.RT<0){in.x-=C->Element->data.RT;in.y-=C->Element->data.RT;out.x-=C->Element->data.RT;out.y-=C->Element->data.RT;}
 						//latence, pokud je nastaveno
 						//if(F->scGPCheckBox_meridlo_casy->Checked && C->Element->eID==0 && C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);out.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);out.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);}
 					}
@@ -1288,7 +1290,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 					{
 						in.y=ceil(in.x/v.PP.TT)*v.PP.TT;in.x=in.y-C->Element->WT;
 						out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-C->Element->WT;
-						if(C->Element->data.RT<0){in.x-=C->Element->data.RT;in.y-=C->Element->data.RT;out.x-=C->Element->data.RT;out.y-=C->Element->data.RT;}
+						if(C->Element->data.RT<0){in.x-=C->Element->data.RT;in.y-=C->Element->data.RT;out.x-=C->Element->data.RT;out.y-=C->Element->data.RT;}//odečtení záporného RT = přičtení RT
 					}
 					//jedná se o poslední (pokud jsem kurzorem na tomto elementu)
 					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0){out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-F->pom_element->WT;if(F->pom_element->data.RT<0){out.x-=F->pom_element->data.RT;out.y-=F->pom_element->data.RT;}}//odečítání záporného RT = přičítání RT
@@ -1459,8 +1461,9 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
       //přichyceno na první a délka == 0 (začátek měření)
       if(delka==0 && F->prichytavat_k_mrizce==1 && v.MAG_LASO!=NULL && v.MAG_LASO->sparovany!=NULL && v.vrat_druh_elementu(v.MAG_LASO->sparovany)==0 && v.MAG_LASO->Element->geo.X2==v.MAG_LASO->Element->geo.X3)
 	  	{
-	  		in.x=0;in.y=v.MAG_LASO->sparovany->WT;
-	  		//if(F->scGPCheckBox_meridlo_casy->Checked && v.MAG_LASO->sparovany->eID==0 && v.MAG_LASO->sparovany->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);}
+				in.x=0;in.y=v.MAG_LASO->sparovany->WT;
+				if(v.MAG_LASO->sparovany->data.RT<0){in.x-=v.MAG_LASO->sparovany->data.RT;in.y-=v.MAG_LASO->sparovany->data.RT;}//odečtení záporného RT = přičtení RT
+				//if(F->scGPCheckBox_meridlo_casy->Checked && v.MAG_LASO->sparovany->eID==0 && v.MAG_LASO->sparovany->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);}
 	  		popisek="OUT "+String(m.round2double(in.x,2))+" - "+String(m.round2double(in.y,2))+" [s]";//pokud je delka 0 a zárověn jsem přichycen na S&G elementu, zobrazit rozmezí času 0 až WT
 			}
       //vykreslení
@@ -1492,6 +1495,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 		{
       TPointD in;
 			in.x=0;in.y=v.MAG_LASO->sparovany->WT;
+      if(v.MAG_LASO->sparovany->data.RT<0){in.x-=v.MAG_LASO->sparovany->data.RT;in.y-=v.MAG_LASO->sparovany->data.RT;}//odečtení záporného RT = přičtení RT
 			//if(F->scGPCheckBox_meridlo_casy->Checked && v.MAG_LASO->sparovany->eID==0 && v.MAG_LASO->sparovany->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);}
 			popisek="OUT "+String(m.round2double(in.x,2))+" - "+String(m.round2double(in.y,2))+" [s]";//pokud je delka 0 a zárověn jsem přichycen na S&G elementu, zobrazit rozmezí času 0 až WT
 		}

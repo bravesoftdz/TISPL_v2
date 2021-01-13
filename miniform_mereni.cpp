@@ -32,9 +32,8 @@ void __fastcall TForm_mereni::FormShow(TObject *Sender)
 	scGPButton_OK->Left=Width/2.0-scGPButton_OK->Width/2.0;
 	closing=false;
 	scGPGlyphButton_pripnout->Visible=false;
-  pocet_radku=0;
+	pocet_radku=0;
 	data_tabulky="";
-
 }
 //---------------------------------------------------------------------------
 //vytvoøí tabulku s hodnotami mìøení
@@ -70,8 +69,8 @@ void TForm_mereni::vytvor_napln_mGrid()
 	//šíøky a sluèováníbuòek
   mGrid->SetColumnAutoFit(-4);
 	mGrid->Columns[1].Width=150;
-	mGrid->Columns[2].Width=130;
-	mGrid->Columns[3].Width=130;
+	mGrid->Columns[2].Width=150;
+	mGrid->Columns[3].Width=150;
 	mGrid->MergeCells(0,0,3,0);
 
 	napln_data_tabulky();
@@ -95,6 +94,15 @@ void TForm_mereni::vytvor_napln_mGrid()
 			data_tabulky.Delete(1,oddelovac);//smazání hodnoty z øetìzce
 			mGrid->Cells[j][i].Text=hodnota;
 		}
+	}
+
+	//ohranièení
+	if(pocet_radku>0)
+	{
+		mGrid->Cells[0][2].TopBorder->Width=2;
+		mGrid->Cells[1][2].TopBorder->Width=2;
+		mGrid->Cells[2][2].TopBorder->Width=2;
+		mGrid->Cells[3][2].TopBorder->Width=2;
 	}
 }
 //---------------------------------------------------------------------------
@@ -232,7 +240,7 @@ void TForm_mereni::napln_data_tabulky()
 void __fastcall TForm_mereni::SkrytClick(TObject *Sender)
 {
 	closing=true;
-	mGrid->Delete();
+	if(mGrid!=NULL)mGrid->Delete();
 	mGrid=NULL;
 	Close();
 }
@@ -253,6 +261,6 @@ void __fastcall TForm_mereni::scGPGlyphButton_pripnoutClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TForm_mereni::FormPaint(TObject *Sender)
 {
-	mGrid->Show(Canvas);
+	if(mGrid!=NULL)mGrid->Show(Canvas);
 }
 //---------------------------------------------------------------------------
