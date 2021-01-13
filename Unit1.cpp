@@ -4206,7 +4206,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 					d.v.posun_objekt(puv_souradnice.x-pom->element->geo.X1,puv_souradnice.y-pom->element->geo.Y1,pom,false,false);
 					if(pom->orientace!=predchozi_orientace)d.v.rotuj_objekt(pom,pom->orientace-predchozi_orientace);
 				}
-				else if((predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1)) || pom->orientace!=predchozi_orientace){d.v.vytvor_default_c_teplomery(pom);vytvor_obraz();}
+				else if((predchozi_souradnice_kurzoru.x!=m.L2Px(pom->element->geo.X1) && predchozi_souradnice_kurzoru.y!=m.L2Px(pom->element->geo.Y1)) || pom->orientace!=predchozi_orientace){if(pom->teplomery!=NULL)d.v.vytvor_default_c_teplomery(pom);vytvor_obraz();}
 				duvod_validovat=1;//pozor vyvolává na závěr metody ještě REFRESH(); ale docela byl přínosný
 				Akce=NIC;kurzor(standard);if(OBJEKT_akt!=NULL){scGPImage_zamek_posunu->ClipFrameFillColor=clWhite;scGPImage_zamek_posunu->ImageIndex=28;}//zamčen posun
 			}break;//posun objektu
@@ -6237,7 +6237,7 @@ Cvektory::TObjekt *TForm1::add_objekt(int X, int Y)
 		REFRESH();
 		vytvor_obraz();
 		DuvodUlozit(true);
-    e_posledni_pom=NULL;delete e_posledni_pom;
+		e_posledni_pom=NULL;delete e_posledni_pom;
 		e_posledni=NULL;delete e_posledni;
 	}
 	return ret;
