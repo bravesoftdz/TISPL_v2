@@ -6434,7 +6434,7 @@ object Form1: TForm1
     end
     object scExPanel_vrstvy: TscExPanel
       Left = 1
-      Top = 571
+      Top = 538
       Width = 249
       Height = 264
       Margins.Left = 5
@@ -6472,6 +6472,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Vrstvy'
+      ExplicitTop = 571
       object scGPCheckBox_zobrazit_koleje: TscGPCheckBox
         AlignWithMargins = True
         Left = 7
@@ -7212,7 +7213,7 @@ object Form1: TForm1
     end
     object scExPanel_podklad: TscExPanel
       Left = 1
-      Top = 265
+      Top = 232
       Width = 249
       Height = 238
       Align = alTop
@@ -7249,6 +7250,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  Podklad'
+      ExplicitTop = 265
       object scGPButton_adjustace: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -7932,7 +7934,7 @@ object Form1: TForm1
       Left = 1
       Top = 34
       Width = 249
-      Height = 231
+      Height = 198
       Margins.Left = 5
       Align = alTop
       Font.Charset = DEFAULT_CHARSET
@@ -8076,7 +8078,7 @@ object Form1: TForm1
       object scGPSwitch_grid: TscGPSwitch
         AlignWithMargins = True
         Left = 5
-        Top = 130
+        Top = 97
         Width = 42
         Height = 20
         Enabled = False
@@ -8106,7 +8108,7 @@ object Form1: TForm1
       end
       object scGPSwitch_meritko: TscGPSwitch
         Left = 5
-        Top = 160
+        Top = 127
         Width = 42
         Height = 20
         Align = alCustom
@@ -8137,7 +8139,7 @@ object Form1: TForm1
       object scLabel16: TscLabel
         AlignWithMargins = True
         Left = 57
-        Top = 130
+        Top = 97
         Width = 52
         Height = 20
         Margins.Left = 6
@@ -8165,7 +8167,7 @@ object Form1: TForm1
       object scLabel5: TscLabel
         AlignWithMargins = True
         Left = 57
-        Top = 160
+        Top = 127
         Width = 59
         Height = 20
         Margins.Left = 6
@@ -8193,7 +8195,7 @@ object Form1: TForm1
       object scLabel1_intenzita: TscLabel
         AlignWithMargins = True
         Left = 5
-        Top = 100
+        Top = 67
         Width = 164
         Height = 19
         Margins.Top = 0
@@ -8223,7 +8225,7 @@ object Form1: TForm1
       object scGPTrackBar_intenzita: TscGPTrackBar
         AlignWithMargins = True
         Left = 172
-        Top = 100
+        Top = 67
         Width = 73
         Height = 20
         Hint = 'Nastaven'#237' intenzity needitovan'#253'ch objekt'#367
@@ -8264,7 +8266,7 @@ object Form1: TForm1
       end
       object scGPSwitch1: TscGPSwitch
         Left = 35
-        Top = 197
+        Top = 164
         Width = 42
         Height = 20
         Align = alCustom
@@ -8295,7 +8297,7 @@ object Form1: TForm1
       object scLabel_CZ: TscLabel
         AlignWithMargins = True
         Left = 87
-        Top = 197
+        Top = 164
         Width = 21
         Height = 20
         Margins.Left = 6
@@ -8323,7 +8325,7 @@ object Form1: TForm1
       object scLabel_EN: TscLabel
         AlignWithMargins = True
         Left = 8
-        Top = 197
+        Top = 164
         Width = 21
         Height = 20
         Margins.Left = 6
@@ -8367,6 +8369,7 @@ object Form1: TForm1
         FluentUIOpaque = False
         TabOrder = 10
         TabStop = True
+        Visible = False
         OnClick = scGPCheckBox_meridlo_casyClick
         Animation = False
         Caption = 'P'#345'ipo'#269#237't'#225'vat '#269'as prvn'#237'ho el.'
@@ -8456,7 +8459,7 @@ object Form1: TForm1
     end
     object scExPanel1: TscExPanel
       Left = 1
-      Top = 503
+      Top = 470
       Width = 249
       Height = 68
       Margins.Left = 5
@@ -8495,6 +8498,7 @@ object Form1: TForm1
       HideControlsInRollUpState = True
       StorePaintBuffer = False
       Caption = '                  N'#225'stroje'
+      ExplicitTop = 503
       object scGPButton_mereni_vzdalenost: TscGPButton
         AlignWithMargins = True
         Left = 3
@@ -9351,6 +9355,7 @@ object Form1: TForm1
     CustomBackgroundImageHotIndex = -1
     CustomBackgroundImageDisabledIndex = -1
     PromptTextColor = clNone
+    HideMaskWithEmptyText = False
     HidePromptTextIfFocused = False
     WallpaperIndex = -1
     LeftButton.ComboButton = False

@@ -927,7 +927,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 0:
 				{
 					//pøepoèty
-					E->WT=F->m.cekani_na_palec(0,F->OBJEKT_akt->pohon->roztec,F->OBJEKT_akt->pohon->aRD,3);
+					E->WT=F->m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
 					E->mGrid->Cells[2][4].Text=F->m.round2double(F->outPT(E->WT),3);
 					F->d.v.reserve_time(E);
 				}
@@ -944,7 +944,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 2:case 8:case 12:case 16:case 102:case 106://robot se stop stanicí
 				{
 					//pøepoèty
-					E->WT=F->m.cekani_na_palec(0,F->OBJEKT_akt->pohon->roztec,F->OBJEKT_akt->pohon->aRD,3);
+					E->WT=F->m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
 					E->mGrid->Cells[1][3].Text=F->m.round2double(F->outPT(E->WT),3);
 					F->d.v.reserve_time(E);
 				}
@@ -952,7 +952,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 3:case 9:case 13:case 17:case 103:case 107://robot s pasivní otoèí
 				{
 					//naètení hodnot z pohonu
-					double aRD=F->OBJEKT_akt->pohon->aRD;
+					double aRD=E->pohon->aRD;
 					//pøepoèty
 					double CT1,CT2;
 					CT1=F->m.CT(E->data.LO1,aRD);
@@ -968,7 +968,7 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				case 4:case 10:case 14:case 18:case 104:case 108://robot s aktivní otoèí
 				{
 					//pøepoèty
-					E->WT=F->m.cekani_na_palec(0,F->OBJEKT_akt->pohon->roztec,F->OBJEKT_akt->pohon->aRD,3);
+					E->WT=F->m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
 					E->mGrid->Cells[1][6].Text=F->m.round2double(F->outPT(E->WT),3);
 					F->d.v.reserve_time(E);
 				}break;
@@ -982,11 +982,9 @@ void TFormX::aktualizace_tab_elementu (Cvektory::TElement *mimo_element)
 				}break;
 				case 6://otoè aktivní
 				{
-					//naètení hodnot z pohonu
-					double aRD=F->OBJEKT_akt->pohon->aRD,roztec=F->OBJEKT_akt->pohon->roztec;
 					//pøepoèty
-					E->WT=F->m.cekani_na_palec(0,roztec,aRD,3);//dùleité pro vıpoèet RT, nezobrazuje se
-					E->PTotoc=F->m.PT(E->OTOC_delka,F->OBJEKT_akt->pohon->aRD);
+					E->WT=F->m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);//dùleité pro vıpoèet RT, nezobrazuje se
+					E->PTotoc=F->m.PT(E->OTOC_delka,E->pohon->aRD);
 					E->mGrid->Cells[1][3].Text = F->m.round2double(F->outPT(E->PTotoc),3);
 					F->d.v.reserve_time(E);
 				}break;

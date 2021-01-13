@@ -1050,7 +1050,7 @@ bool Cvykresli::vykresli_cit_oblasti_lasa(TCanvas *canv)
 	{
 		//hledání v elementech pro přichycení
 		Cvektory::TElement *E=v.ELEMENTY->dalsi;
-    Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
+		Cvektory::T2Element *VYHYBKY=v.hlavicka_seznam_VYHYBKY();//vytvoření průchodového spojáku
 		while(E!=NULL)
 		{
       //nulování stavu
@@ -1277,7 +1277,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 						//WT - pouze do druhé složky IN
 						in.y+=C->Element->WT;
 						//latence, pokud je nastaveno
-						if(F->scGPCheckBox_meridlo_casy->Checked && C->Element->eID==0 && C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);out.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);out.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);}
+						//if(F->scGPCheckBox_meridlo_casy->Checked && C->Element->eID==0 && C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);out.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);out.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);}
 					}
 				}
 				//zaokrouhlení času na takt
@@ -1343,6 +1343,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 
 			//výpočetní část, mělo by být volané v případě úspěchu podmínky if(m.PtInSegment....
 			uhel=m.uhelObloukuVsMys(X,Y,OR,RA,R,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+			if(uhel==0)uhel=1;//úhel 0 nelze dobře vykreslit
 			d=m.R2Larc(R,uhel);//požadovaná délka na oblouku vybraná myší, vracení délky dané výseče, tj. k na(při)počítání měřené délky
 			delka+=d;
 			delka_pom+=d;
@@ -1406,7 +1407,7 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)
 				{
 					out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-F->pom_element->WT;
-          if(F->pom_element->data.RT<0){out.x-=F->pom_element->data.RT;out.y-=F->pom_element->data.RT;}//odečítání záporného RT = přičítání RT
+					if(F->pom_element->data.RT<0){out.x-=F->pom_element->data.RT;out.y-=F->pom_element->data.RT;}//odečítání záporného RT = přičítání RT
 				}
 			}
 
@@ -1455,6 +1456,13 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			{
 				if(in.x!=in.y)popisek=String(m.round2double(in.x,2))+" - "+String(m.round2double(in.y,2))+" [s]";else popisek=String(m.round2double(in.x,2))+" [s]";
 			}
+      //přichyceno na první a délka == 0 (začátek měření)
+      if(delka==0 && F->prichytavat_k_mrizce==1 && v.MAG_LASO!=NULL && v.MAG_LASO->sparovany!=NULL && v.vrat_druh_elementu(v.MAG_LASO->sparovany)==0 && v.MAG_LASO->Element->geo.X2==v.MAG_LASO->Element->geo.X3)
+	  	{
+	  		in.x=0;in.y=v.MAG_LASO->sparovany->WT;
+	  		//if(F->scGPCheckBox_meridlo_casy->Checked && v.MAG_LASO->sparovany->eID==0 && v.MAG_LASO->sparovany->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);}
+	  		popisek="OUT "+String(m.round2double(in.x,2))+" - "+String(m.round2double(in.y,2))+" [s]";//pokud je delka 0 a zárověn jsem přichycen na S&G elementu, zobrazit rozmezí času 0 až WT
+			}
       //vykreslení
 			vykresli_Gelement(canv,X,Y,azimut,0,delka_Pud,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek,3);
 		}
@@ -1484,7 +1492,7 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 		{
       TPointD in;
 			in.x=0;in.y=v.MAG_LASO->sparovany->WT;
-			if(F->scGPCheckBox_meridlo_casy->Checked && v.MAG_LASO->sparovany->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);}
+			//if(F->scGPCheckBox_meridlo_casy->Checked && v.MAG_LASO->sparovany->eID==0 && v.MAG_LASO->sparovany->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);}
 			popisek="OUT "+String(m.round2double(in.x,2))+" - "+String(m.round2double(in.y,2))+" [s]";//pokud je delka 0 a zárověn jsem přichycen na S&G elementu, zobrazit rozmezí času 0 až WT
 		}
 		vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek);

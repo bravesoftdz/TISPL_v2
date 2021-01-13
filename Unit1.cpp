@@ -10319,7 +10319,7 @@ void TForm1::prvni_vytvoreni_tab_elementu (Cvektory::TElement *E,short sirka_0,s
 			E->mGrid->Cells[2][3].Text=outPT(E->data.WTstop);
 			E->mGrid->Cells[0][4].Text=ls->Strings[224]+" "+cas;//"WT palec "
 			////temp odemknutí editace max WT
-			if(E->WT==0)E->WT=m.cekani_na_palec(0,F->OBJEKT_akt->pohon->roztec,F->OBJEKT_akt->pohon->aRD,3);
+			if(E->WT==0 && E->pohon!=NULL)E->WT=m.cekani_na_palec(0,E->pohon->roztec,E->pohon->aRD,3);
       ////konec temp
 			E->mGrid->Cells[2][4].Text=outPT(m.round2double(E->WT,3));
 			E->mGrid->Cells[0][5].Font->Orientation=900;E->mGrid->Cells[0][5].Valign=TmGrid::MIDDLE;
@@ -15290,7 +15290,14 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Form_mereni->ShowModal();
+	//Form_mereni->ShowModal();
+	Cvektory::TElement *E=OBJEKT_akt->element;
+	while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
+	{
+    Memo(E->name+"->pohon: "+E->pohon->name);
+		E=E->dalsi;
+	}
+	E=NULL;delete E;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

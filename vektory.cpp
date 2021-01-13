@@ -3144,7 +3144,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 ////---------------------------------------------------------------------------
 //řeší změnu pořadí při posuvu elementů, dojde k novému ukazatelovému propojení, přejmenování a přeindexování elementů
 void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
-{             	                          //E = posouvaný element, Ed = další element
+{            	                          //E = posouvaný element, Ed = další element
 	//////přesun elementu před
 	if(E->n>Ed->n)
 	{
@@ -10251,8 +10251,12 @@ TPointD Cvektory::bod_na_geometrii(TElement *E,double x,double y)
   	if(E->geo.typ!=0)
 		{
   		double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,x,y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
-  		TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,uhel,E->geo.radius);
-  		ret=souradnice[3];
+			if(uhel!=0)
+			{
+				TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,uhel,E->geo.radius);
+				ret=souradnice[3];
+			}
+			else {ret.x=E->geo.X1;ret.y=E->geo.Y1;}
 		}
 	}
 
