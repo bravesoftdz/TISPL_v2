@@ -58,6 +58,9 @@ void __fastcall TForm_zpravy::FormShow(TObject *Sender)
 	update_zpravy(pocet_zprav.x,pocet_zprav.y);
 	POCET_ERRORU = pocet_zprav.x;
 	POCET_WARNINGU= pocet_zprav.y;
+	//centrování popiskù a pøedelu
+  scLabel_varovani->Left=scLabel_chyby->Left+scLabel_chyby->Width+17;
+	scGPGlyphButton1->Left=scLabel_varovani->Left-10;
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_zpravy::scGPListBox_zpravyMouseMove(TObject *Sender, TShiftState Shift,
@@ -161,9 +164,9 @@ void  TForm_zpravy::update_zpravy(long pocet_erroru, long pocet_warningu)
 				delete Z;
 				//naplnìní do statusbaru miniformu
 				//RzStatusPane_pocet_chyb_value->Caption=pocet_erroru;
-        scLabel_chyby->Caption="Poèet chyb "+AnsiString(pocet_erroru);
+        scLabel_chyby->Caption=F->ls->Strings[414]+" "+AnsiString(pocet_erroru);
 			 //	RzStatusPane_pocet_var_value->Caption=pocet_warningu;
-        scLabel_varovani->Caption= "Poèet varování "+AnsiString(pocet_warningu);
+        scLabel_varovani->Caption= F->ls->Strings[415]+" "+AnsiString(pocet_warningu);
 			  if(custom_size==false)	Form_zpravy->Height = (pocet_erroru+pocet_warningu) *  scGPListBox_zpravy->ItemHeight + scLabel_header->Height + scGPPanel_statusbar->Height + 5;   //5px rezervnich
         if(Form_zpravy->Height > F->ClientHeight)   Form_zpravy->Height =  F->ClientHeight  -  scGPPanel_statusbar->Height - scLabel_header->Height - F->scLabel_titulek->Height;
 			}

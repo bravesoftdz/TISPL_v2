@@ -29,6 +29,7 @@
 #include "TmGrid.h"
 #include "katalog_dopravniku.h"
 #include "miniform_zpravy.h"
+#include "miniform_mereni.h"
 #include "help.h"
 #include "MyString.h"
 #include "konzole.h"
@@ -866,7 +867,7 @@ void TForm1::DesignSettings()
 	////default plnění ls
 	ls=new TStringList;
 	UnicodeString text="";
-	for(unsigned short i=0;i<=519;i++)
+	for(unsigned short i=0;i<=522;i++)
 	{
 		switch(i)
 		{
@@ -1390,6 +1391,9 @@ void TForm1::DesignSettings()
 			case 517:text="Duplicitní název.";break;
 			case 518:text="Nepovedlo se automaticky dopojit geometrii.";break;
 			case 519:text="Přichyceno k pohonu";break;
+			case 520:text="Skrýt";break;
+			case 521:text="Měření";break;
+			case 522:text="Zprávy o lince";break;
 			default:text="";break;
 		}
 		ls->Insert(i,text);//vyčištění řetězců, ale hlavně založení pro default! proto nelze použít  ls->Clear();
@@ -1750,7 +1754,7 @@ bool TForm1::ttr(UnicodeString Text)
 void TForm1::startUP()
 {
 	log(__func__);//logování
-	if(!Form_zpravy->closing && !Form_zpravy->Showing && !PopUPmenu->Showing && !PopUPmenu->closing && !myMessageBox->Showing && !myMessageBox->closing && !Form_definice_zakazek->Showing && !Form_definice_zakazek->closing)//pozn. dole ještě větev else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
+	if(!Form_mereni->closing && !Form_mereni->Showing &&!Form_zpravy->closing && !Form_zpravy->Showing && !PopUPmenu->Showing && !PopUPmenu->closing && !myMessageBox->Showing && !myMessageBox->closing && !Form_definice_zakazek->Showing && !Form_definice_zakazek->closing)//pozn. dole ještě větev else if(PopUPmenu->Showing || PopUPmenu->closing)PopUPmenu->Close();//pokud je spuštěné pop-up menu, tak ho vypne
 	{
     //načtení jazykové mutace, nemůže být v konstruktoru, protože ještě neexistují všechny dílčí formuláře = nelze k nim přistoupit
 		//language=(TForm1::Tlanguage)load_language(language,false);//aktivovani jazyk mutaci, problém s přepnutím jazyka při nenalezení souboru, proto metoda varací zvolený jazyk
@@ -4377,7 +4381,8 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 				{
 					if(pom_element!=NULL)akt_souradnice_kurzoru=d.v.bod_na_geometrii(pom_element);
 			  	Cvektory::TElement *E=new Cvektory::TElement;
-			  	E->n=MaxInt;
+					E->n=MaxInt;
+          E->pohon=NULL;
 			  	E->geo.rotacni_uhel=0;
 			  	E->geo.orientace=0;
 			  	E->geo.radius=0;
@@ -4429,7 +4434,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 							}
 						}
 						//kontrola přichycení na hranu objektu
-						if(prichytavat_k_mrizce==1)
+						if(prichytavat_k_mrizce==1 && el->geo.typ==0 && m.LeziVblizkostiUsecky(akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y,el->geo.X1,el->geo.Y1,el->geo.X4,el->geo.Y4)<=0.5)
 						{
 							//kontrola zda jsem na hraně objektu
 							TPointD P;
@@ -4482,15 +4487,16 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
 			  	}
 			  	//vkládání počátečního bodu pro měření
 			  	if(d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->Element==NULL)
-			  	{
-			  		E->geo.X1=akt_souradnice_kurzoru.x;
+					{
+						E->geo.X1=akt_souradnice_kurzoru.x;
 			  		E->geo.Y1=akt_souradnice_kurzoru.y;
-			  		E->geo.X4=E->geo.X1;
-			  		E->geo.Y4=E->geo.Y1;
+						E->geo.X4=E->geo.X1;
+						E->geo.Y4=E->geo.Y1;
 			  		d.v.MAG_LASO->Element=E;
 			  		d.v.MAG_LASO->sparovany=NULL;
-			  		//ukládání počátečního elementu pokud jsem začal na geometrii
-			  		if(pom_element!=NULL)d.v.MAG_LASO->sparovany=pom_element;
+						//ukládání počátečního elementu pokud jsem začal na geometrii
+						if(pom_element!=NULL)d.v.MAG_LASO->sparovany=pom_element;
+            REFRESH();//slouží pro okamžité zobrazení měřidla
 			  	}
 			  	//vkládání koncového bodu a ukončení měření
 			  	else
@@ -15284,6 +15290,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
+	Form_mereni->ShowModal();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17614,9 +17621,6 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		scGPButton_zmerit_vzdalenost->Options->FrameNormalColor=(TColor)RGB(86,120,173);
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=(TColor)RGB(86,120,173);
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
-		d.SCENA=1111111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
-		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
-		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 		Akce=MAGNETICKE_LASO;//až po refresh
 		count_memo=0;//ukazatel kolikrát proběhl cyklus načtení dat ze zakázky, pouze jednou
 		mereni_delka.x=0;
@@ -17624,7 +17628,10 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		mereni_cas.x=0;
 		mereni_cas.y=0;
 		pocatek_mereni.x=-1;pocatek_mereni.y=-1;
-    konec_mereni.x=-1;konec_mereni.y=-1;
+		konec_mereni.x=-1;konec_mereni.y=-1;
+    d.SCENA=1111111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
+		vytvor_statickou_scenu();//vypnutí vrstvy errorů a nastavení zbytku na statickou scénu
+		zobraz_tip(ls->Strings[483]);//má v sobě REFRESH(), je nutné volat až po vytvořeni statické scény
 	}
   ////vypnutí akce
 	else
@@ -17634,20 +17641,21 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		//zjištění délky a času, první a poslední segment cesty jsou fiktivní elementy
 		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
 		{
+			Form_mereni->ShowModal();
 			//měření
-			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
-			String popisek1="",popisek2="";//slouží pro rozšíření MB o
-			if(mereni_cas.x!=0)popisek2="; Čas = "+String(m.round2double(mereni_cas.x,2))+" [s]";
-			if(mereni_cas.x!=mereni_cas.y)popisek2+="; Čas = "+String(m.round2double(mereni_cas.y,2))+" [s]";
-			popisek1="Délka = "+String(m.round2double(mereni_delka.x*1000,2))+" [mm]";
-			if(mereni_delka.x!=mereni_delka.y)popisek1+="; DélkaPud = "+String(m.round2double(mereni_delka.y*1000,2))+" [mm]";
-			//kontrola přichycení
-			if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->Element->geo.X2==d.v.MAG_LASO->Element->geo.X3 && d.v.MAG_LASO->Element->geo.X3==d.v.MAG_LASO->Element->geo.X4)
-				popisek2+=", "+d.v.MAG_LASO->Element->name;
-			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
-				popisek2+=", "+d.v.MAG_LASO->predchozi->Element->name;
-			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,popisek1+popisek2,"",MB_OK,true,false,366,true,true);
-			C=NULL;delete C;
+//			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
+//			String popisek1="",popisek2="";//slouží pro rozšíření MB o
+//			if(mereni_cas.x!=0)popisek2="; Čas = "+String(m.round2double(mereni_cas.x,2))+" [s]";
+//			if(mereni_cas.x!=mereni_cas.y)popisek2+="; Čas = "+String(m.round2double(mereni_cas.y,2))+" [s]";
+//			popisek1="Délka = "+String(m.round2double(mereni_delka.x*1000,2))+" [mm]";
+//			if(mereni_delka.x!=mereni_delka.y)popisek1+="; DélkaPud = "+String(m.round2double(mereni_delka.y*1000,2))+" [mm]";
+//			//kontrola přichycení
+//			if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->Element->geo.X2==d.v.MAG_LASO->Element->geo.X3 && d.v.MAG_LASO->Element->geo.X3==d.v.MAG_LASO->Element->geo.X4)
+//				popisek2+=", "+d.v.MAG_LASO->Element->name;
+//			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
+//				popisek2+=", "+d.v.MAG_LASO->predchozi->Element->name;
+//			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,popisek1+popisek2,"",MB_OK,true,false,366,true,true);
+//			C=NULL;delete C;
 		}
 		//měření v časových osách
 		if(pocatek_mereni.x!=-1 && pocatek_mereni.y!=-1)
@@ -17989,8 +17997,12 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		scGPCheckBox_rozmisteni_voziku->Caption=ls->Strings[445];
 		Form_zpravy->scLabel_header->Caption=ls->Strings[412];
 		Form_zpravy->scGPGlyphButton_pripnout->Hint=ls->Strings[413];
-		Form_zpravy->scLabel_chyby->Caption=ls->Strings[414];
-		Form_zpravy->scLabel_varovani->Caption=ls->Strings[415];
+		//Form_zpravy->scLabel_chyby->Caption=ls->Strings[414];
+		//Form_zpravy->scLabel_varovani->Caption=ls->Strings[415];
+		Form_zpravy->Skryt->Hint=ls->Strings[520];
+		Form_mereni->scLabel_header->Caption=ls->Strings[521];
+		Form_mereni->scGPGlyphButton_pripnout->Hint=ls->Strings[413];
+		Form_mereni->Skryt->Hint=ls->Strings[520];
 		Form_parametry_linky->scHTMLLabel_posuvnik->Caption=ls->Strings[427];
 		scGPButton_smazat->Caption=ls->Strings[428];
 		scGPButton_geometrie->Hint=ls->Strings[443];
@@ -17998,6 +18010,8 @@ unsigned short TForm1::load_language(Tlanguage language,bool akt_mGrid)
 		scGPGlyphButton_redo->Hint=ls->Strings[450];
 		scGPButton_bug_report->Caption=ls->Strings[458];
 		scGPCheckBox_popisek_pohonu->Caption=ls->Strings[461];
+		scGPButton_error->Hint=ls->Strings[522];
+		scGPButton_warning->Hint=ls->Strings[522];
 
     //změna zarovnání
 		scGPComboBox_prepinacKot->Left=scGPLabel_prepinacKot->Left+scGPLabel_prepinacKot->Width;//nutné!!

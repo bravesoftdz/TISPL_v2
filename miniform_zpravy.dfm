@@ -61,6 +61,7 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    WordWrap = False
     object Skryt: TscGPGlyphButton
       AlignWithMargins = True
       Left = 310
@@ -183,6 +184,7 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scLabel_header: TscLabel
       Left = 0
@@ -344,6 +346,7 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scGPImage_warning: TscGPImage
       Left = 34
@@ -371,6 +374,7 @@ object Form_zpravy: TForm_zpravy
       Color = clBtnFace
       Caption = 'scGPImage_warning'
       StorePaintBuffer = False
+      WordWrap = False
       ImageIndex = -1
       InterpolationMode = scgppimDefault
       ClipFrame = scgpcfNone
@@ -485,6 +489,7 @@ object Form_zpravy: TForm_zpravy
       Color = clBtnFace
       Caption = 'scGPImage1'
       StorePaintBuffer = False
+      WordWrap = False
       ImageIndex = -1
       InterpolationMode = scgppimDefault
       ClipFrame = scgpcfNone
@@ -709,6 +714,7 @@ object Form_zpravy: TForm_zpravy
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    WordWrap = False
     object scGPSizeBox: TscGPSizeBox
       Left = 334
       Top = 0
@@ -848,6 +854,7 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scLabel_varovani: TscLabel
       Left = 112
@@ -1019,6 +1026,7 @@ object Form_zpravy: TForm_zpravy
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
   end
 end
