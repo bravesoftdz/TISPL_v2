@@ -1272,12 +1272,12 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				//pokud mám načítat dat z prvního elementu, načítám pouze WT a latenci
 				if(C->n==1 && v.MAG_LASO->Element->geo.X1==C->Element->geo.X4 && v.MAG_LASO->Element->geo.Y1==C->Element->geo.Y4)
 				{
-          if(C->Element->eID==0)
+					if(v.vrat_druh_elementu(C->Element)==0)
 					{
 						//WT - pouze do druhé složky IN
 						in.y+=C->Element->WT;
 						//latence, pokud je nastaveno
-						if(F->scGPCheckBox_meridlo_casy->Checked && C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);}
+						if(F->scGPCheckBox_meridlo_casy->Checked && C->Element->eID==0 && C->Element->dalsi!=NULL && C->Element->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);out.x+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);out.y+=m.latence_mezi_stopkami(C->Element->dalsi->pohon->aRD);}
 					}
 				}
 				//zaokrouhlení času na takt
@@ -1460,20 +1460,13 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 		}
 		else vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]");
 	}
-
-	//uložení naměřených hodnot
-	F->mereni_delka.x=delka;
-	F->mereni_delka.y=delka_pom;
-	F->mereni_cas.x=cas;
-	if(prichyceno && v.vrat_druh_elementu(F->pom_element)!=0)cas_pom=cas;//pokud jsem přichycený na elementu (např. zarážka) srovnat pro jistotu cas a cas_pom
-	F->mereni_cas.y=cas_pom;
 }
 ////---------------------------------------------------------------------------
 //vykreslí měření proti trendu linky
 void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 {
 	////deklarace
-	double R,RA,OR,X,Y,uhel=0,delka=0,azimut,cas=0,cas_pom=0,d=0;
+	double X=0,Y=0,uhel=0,delka=0,azimut=0;
 	String popisek="";
 
 	////lineární měření
@@ -1487,13 +1480,15 @@ void Cvykresli::vykresli_meridlo_proti_trendu(TCanvas *canv,bool prichyceno)
 		azimut=m.azimut(X,Y,F->akt_souradnice_kurzoru.x,F->akt_souradnice_kurzoru.y);
 		//vykreslení linie bez pohonu
 		if(delka==0)popisek="0 [s]";//pokud je délka nulová přidat popisek času
-		if(delka==0 && F->prichytavat_k_mrizce==1 && v.MAG_LASO!=NULL && v.MAG_LASO->sparovany!=NULL && v.vrat_druh_elementu(v.MAG_LASO->sparovany)==0 && v.MAG_LASO->Element->geo.X2==v.MAG_LASO->Element->geo.X3)popisek="0 - "+String(m.round2double(v.MAG_LASO->sparovany->WT,2))+" [s]";//pokud je delka 0 a zárověn jsem přichycen na S&G elementu, zobrazit rozmezí času 0 až WT
+		if(delka==0 && F->prichytavat_k_mrizce==1 && v.MAG_LASO!=NULL && v.MAG_LASO->sparovany!=NULL && v.vrat_druh_elementu(v.MAG_LASO->sparovany)==0 && v.MAG_LASO->Element->geo.X2==v.MAG_LASO->Element->geo.X3)
+		{
+      TPointD in;
+			in.x=0;in.y=v.MAG_LASO->sparovany->WT;
+			if(F->scGPCheckBox_meridlo_casy->Checked && v.MAG_LASO->sparovany->dalsi->pohon!=NULL){in.x+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);in.y+=m.latence_mezi_stopkami(v.MAG_LASO->sparovany->dalsi->pohon->aRD);}
+			popisek="OUT "+String(m.round2double(in.x,2))+" - "+String(m.round2double(in.y,2))+" [s]";//pokud je delka 0 a zárověn jsem přichycen na S&G elementu, zobrazit rozmezí času 0 až WT
+		}
 		vykresli_Gelement(canv,X,Y,azimut,0,delka,clMeridlo,2,String(m.round2double(delka*1000,2))+" [mm]",popisek);
 	}
-
-  //uložení naměřených hodnot
-	F->mereni_delka.x=delka;
-	F->mereni_cas.x=F->mereni_cas.y=0;//cas;
 }
 ////---------------------------------------------------------------------------
 //vykreslí teploměry a cestu mezi nimi

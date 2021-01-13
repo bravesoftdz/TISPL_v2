@@ -17623,10 +17623,6 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		Timer_getjobid->Enabled=false;//odstavení timeru, není potřeba
 		Akce=MAGNETICKE_LASO;//až po refresh
 		count_memo=0;//ukazatel kolikrát proběhl cyklus načtení dat ze zakázky, pouze jednou
-		mereni_delka.x=0;
-    mereni_delka.y=0;
-		mereni_cas.x=0;
-		mereni_cas.y=0;
 		pocatek_mereni.x=-1;pocatek_mereni.y=-1;
 		konec_mereni.x=-1;konec_mereni.y=-1;
     d.SCENA=1111111;//ZprVozEledElesDopObjHal - vozíky nutno nechat v dynamické (jinak budou překresleny bufferem)
@@ -17642,20 +17638,6 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		if(d.v.MAG_LASO->dalsi!=NULL && d.v.MAG_LASO->predchozi->Element->n==MaxInt)
 		{
 			Form_mereni->ShowModal();
-			//měření
-//			Cvektory::TCesta *C=d.v.MAG_LASO->dalsi;
-//			String popisek1="",popisek2="";//slouží pro rozšíření MB o
-//			if(mereni_cas.x!=0)popisek2="; Čas = "+String(m.round2double(mereni_cas.x,2))+" [s]";
-//			if(mereni_cas.x!=mereni_cas.y)popisek2+="; Čas = "+String(m.round2double(mereni_cas.y,2))+" [s]";
-//			popisek1="Délka = "+String(m.round2double(mereni_delka.x*1000,2))+" [mm]";
-//			if(mereni_delka.x!=mereni_delka.y)popisek1+="; DélkaPud = "+String(m.round2double(mereni_delka.y*1000,2))+" [mm]";
-//			//kontrola přichycení
-//			if(d.v.MAG_LASO->sparovany!=NULL && d.v.MAG_LASO->Element->geo.X2==d.v.MAG_LASO->Element->geo.X3 && d.v.MAG_LASO->Element->geo.X3==d.v.MAG_LASO->Element->geo.X4)
-//				popisek2+=", "+d.v.MAG_LASO->Element->name;
-//			if(d.v.MAG_LASO->predchozi->sparovany!=NULL && d.v.MAG_LASO->predchozi->Element->geo.X2==d.v.MAG_LASO->predchozi->Element->geo.X3 && d.v.MAG_LASO->predchozi->Element->geo.X3==d.v.MAG_LASO->predchozi->Element->geo.X4)
-//				popisek2+=", "+d.v.MAG_LASO->predchozi->Element->name;
-//			MB(akt_souradnice_kurzoru_PX.x,akt_souradnice_kurzoru_PX.y,popisek1+popisek2,"",MB_OK,true,false,366,true,true);
-//			C=NULL;delete C;
 		}
 		//měření v časových osách
 		if(pocatek_mereni.x!=-1 && pocatek_mereni.y!=-1)

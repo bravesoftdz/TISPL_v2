@@ -746,8 +746,6 @@ public:		// User declarations
 	Tvlakno_obraz *vlakno_obraz;
 	//bool vlakno_PanCreateState;
 	bool zobrazit_upozorneni_teplomery;
-	TPointD mereni_delka;//uchovává v sobì namìøenou délku (x) a pùdorysnou délku (y)
-	TPointD mereni_cas;//uchovává v sobì namìøený èas bez èasù v elementech (x) a s èasem elemntù (y)
 	double CAS;
 	bool CASOVEOSY;
 	TPointD pocatek_mereni;//ukládá .x - X souøadnici zaèátku mìøení a .y - Vozík -> n

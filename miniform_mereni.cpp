@@ -70,8 +70,8 @@ void TForm_mereni::vytvor_napln_mGrid()
 	//šíøky a sluèováníbuòek
   mGrid->SetColumnAutoFit(-4);
 	mGrid->Columns[1].Width=150;
-	mGrid->Columns[2].Width=110;
-	mGrid->Columns[3].Width=110;
+	mGrid->Columns[2].Width=130;
+	mGrid->Columns[3].Width=130;
 	mGrid->MergeCells(0,0,3,0);
 
 	napln_data_tabulky();
