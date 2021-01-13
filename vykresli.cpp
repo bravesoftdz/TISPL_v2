@@ -1268,11 +1268,6 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				//čas přejezdu
 				in.x+=d/C->Element->pohon->aRD;in.y+=d/C->Element->pohon->aRD;
 				out.x+=d/C->Element->pohon->aRD;out.y+=d/C->Element->pohon->aRD;
-//				if(v.vrat_druh_elementu(C->Element)!=0 && (!prichyceno || (prichyceno && C->Element!=F->pom_element)))
-//				{
-//					in.x+=C->Element->WT;in.y+=C->Element->WT;
-//					out.x+=C->Element->WT;out.y+=C->Element->WT;
-//        }
 				//připočítávat casy prvního
 				//pokud mám načítat dat z prvního elementu, načítám pouze WT a latenci
 				if(C->n==1 && v.MAG_LASO->Element->geo.X1==C->Element->geo.X4 && v.MAG_LASO->Element->geo.Y1==C->Element->geo.Y4)
@@ -1288,11 +1283,15 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 				//zaokrouhlení času na takt
 				if((!F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))) || (F->scGPCheckBox_meridlo_casy->Checked && C->n>1) || (F->scGPCheckBox_meridlo_casy->Checked && (C->Element!=v.MAG_LASO->sparovany || (C->Element==v.MAG_LASO->sparovany && v.MAG_LASO->sparovany!=NULL && v.MAG_LASO->Element->geo.X1!=v.MAG_LASO->sparovany->geo.X4))))
 				{
-					//jedná se o element uvnitř seznamu (následuje další)
-					if((!prichyceno || (prichyceno && C->Element!=F->pom_element)) && v.vrat_druh_elementu(C->Element)==0){in.y=ceil(in.x/v.PP.TT)*v.PP.TT;in.x=in.y-C->Element->WT;}
-					if((!prichyceno || (prichyceno && C->Element!=F->pom_element)) && v.vrat_druh_elementu(C->Element)==0){out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-C->Element->WT;}
-					//jedná se o poslední
-					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0){out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-F->pom_element->WT;}
+					//jedná se o element uvnitř seznamu (následuje další, již v seznamu, není na něm kurzor)
+					if((!prichyceno || (prichyceno && C->Element!=F->pom_element)) && v.vrat_druh_elementu(C->Element)==0)
+					{
+						in.y=ceil(in.x/v.PP.TT)*v.PP.TT;in.x=in.y-C->Element->WT;
+						out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-C->Element->WT;
+						if(C->Element->data.RT<0){in.x-=C->Element->data.RT;in.y-=C->Element->data.RT;out.x-=C->Element->data.RT;out.y-=C->Element->data.RT;}
+					}
+					//jedná se o poslední (pokud jsem kurzorem na tomto elementu)
+					if(prichyceno && C->dalsi==NULL && C->Element==F->pom_element && v.vrat_druh_elementu(F->pom_element)==0){out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-F->pom_element->WT;if(F->pom_element->data.RT<0){out.x-=F->pom_element->data.RT;out.y-=F->pom_element->data.RT;}}//odečítání záporného RT = přičítání RT
 				}
 			}
 			//nastavení typu vykreslení, zarážka na konci || zarážka na začátku || bez zarážky
@@ -1403,7 +1402,12 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 					in.x+=d/F->pom_element->pohon->aRD;in.y+=d/F->pom_element->pohon->aRD;
 					out.x+=d/F->pom_element->pohon->aRD;out.y+=d/F->pom_element->pohon->aRD;
 				}
-				if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0){out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-F->pom_element->WT;}
+        //přichycení na S&G element
+				if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)
+				{
+					out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-F->pom_element->WT;
+          if(F->pom_element->data.RT<0){out.x-=F->pom_element->data.RT;out.y-=F->pom_element->data.RT;}//odečítání záporného RT = přičítání RT
+				}
 			}
 
 			//vytvoření popisku času
@@ -1436,7 +1440,11 @@ void Cvykresli::vykresli_meridlo_po_trendu(TCanvas *canv,bool prichyceno)
 			//vypočet času přejezdu
 			in.x+=delka/F->pom_element->pohon->aRD;in.y+=delka/F->pom_element->pohon->aRD;
 			out.x+=delka/F->pom_element->pohon->aRD;out.y+=delka/F->pom_element->pohon->aRD;
-			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0){out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-F->pom_element->WT;}
+			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)
+			{
+				out.y=ceil(out.x/v.PP.TT)*v.PP.TT;out.x=out.y-F->pom_element->WT;
+        if(F->pom_element->data.RT<0){out.x-=F->pom_element->data.RT;out.y-=F->pom_element->data.RT;}//odečítání záporného RT = přičítání RT
+			}
 			//vytvoření popisku času
 			if(prichyceno && v.vrat_druh_elementu(F->pom_element)==0)
 			{
