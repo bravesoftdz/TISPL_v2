@@ -4479,6 +4479,7 @@ void __fastcall TForm1::FormMouseUp(TObject *Sender, TMouseButton Button, TShift
           //uložení parametrů geometrie z úseku, stoupání, typ atd.
 			  	if(pom_element!=NULL)
 					{
+            E->eID=pom_element->eID;
 						E->geo.typ=pom_element->geo.typ;
 			  		E->geo.radius=pom_element->geo.radius;
 			  		E->geo.delka=pom_element->geo.delka;
@@ -15290,14 +15291,7 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	//Form_mereni->ShowModal();
-	Cvektory::TElement *E=OBJEKT_akt->element;
-	while(E!=NULL && E->objekt_n==OBJEKT_akt->n)
-	{
-    Memo(E->name+"->pohon: "+E->pohon->name);
-		E=E->dalsi;
-	}
-	E=NULL;delete E;
+	Form_mereni->ShowModal();
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------

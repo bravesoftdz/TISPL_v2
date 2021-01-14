@@ -13,6 +13,7 @@
 #include "parametry_linky.h"
 #include "katalog_dopravniku.h"
 #include "superform.h"
+#include "miniform_mereni.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 TmGrid *mGrid;
@@ -1835,6 +1836,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 		}
 		//ShowMessage(((TComponent*)(Sender))->Name);
 																					 //pozor metody musí mít i znamenkové longové Col, Row , kvůli -2 exBUTTON
+    if(AnsiString(Tag).SubString(1,1)=="1")Form_mereni->OnClick(Tag,ID,Col,Row);
 //		if(AnsiString(Tag).SubString(1,1)=="1")F_gapoTT->OnClick(Tag,Col,Row); R 21.1.2020 - ODEBRÁNO Z PROJEKTU
 //		if(AnsiString(Tag).SubString(1,1)=="2")F_gapoV->OnClick(Tag,Col,Row);  R 21.1.2020 - ODEBRÁNO Z PROJEKTU
 //		if(AnsiString(Tag).SubString(1,1)=="3")F_gapoR->OnClick(Tag,Col,Row);  R 21.1.2020 - ODEBRÁNO Z PROJEKTU
@@ -1843,7 +1845,7 @@ void __fastcall TmGrid::getTagOnClick(TObject *Sender)
 		if(AnsiString(Tag).SubString(1,1)=="6")FormX->OnClick(Tag,ID,Col,Row);   //z unit1 do unitX
 		if(AnsiString(Tag).SubString(1,1)=="7")Form_parametry_linky->OnClick(Tag,ID,Col,Row);
     if(AnsiString(Tag).SubString(1,1)=="8")Form_katalog->OnClick(Tag,ID,Col,Row);
-    if(AnsiString(Tag).SubString(1,1)=="9")Form_definice_zakazek->OnClick(Tag,ID,Col,Row);
+		if(AnsiString(Tag).SubString(1,1)=="9")Form_definice_zakazek->OnClick(Tag,ID,Col,Row);
 	}
 }
 //---------------------------------------------------------------------------
@@ -1945,6 +1947,12 @@ void __fastcall TmGrid::getTagOnKeyPress(TObject *Sender,System::WideChar &Key)
 //---------------------------------------------------------------------------
 void __fastcall TmGrid::getTagMouseMove(TObject *Sender, TShiftState Shift, int X, int Y)
 {
+  if(AnsiString(Tag).SubString(1,1)=="1")
+	{
+		Col=getColFromTag(((TComponent*)(Sender))->Tag);
+		Row=getRowFromTag(((TComponent*)(Sender))->Tag);
+		Form_mereni->OnMouseMove(Tag,ID,X,Y,Col,Row);
+	}
 	if(AnsiString(Tag).SubString(1,1)=="6")
 	{
     Col=getColFromTag(((TComponent*)(Sender))->Tag);
