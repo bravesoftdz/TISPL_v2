@@ -152,6 +152,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+    ToggleMode = False
   end
   object Button_storno: TscGPButton
     Left = 356
@@ -282,6 +283,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+    ToggleMode = False
   end
   object scGPPanel2: TscGPPanel
     Left = 0
@@ -328,6 +330,7 @@ object Form_parametry_linky: TForm_parametry_linky
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    WordWrap = False
     object Konec: TscGPGlyphButton
       AlignWithMargins = True
       Left = 918
@@ -447,6 +450,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scLabel1: TscLabel
       Left = 0
@@ -601,6 +605,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
   end
   object scGPButton_vozik: TscGPButton
@@ -728,6 +733,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = True
     GroupIndex = 0
     AllowAllUp = False
+    ToggleMode = False
   end
   object scGPButton_pohon: TscGPButton
     Left = 8
@@ -854,6 +860,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = True
     GroupIndex = 0
     AllowAllUp = False
+    ToggleMode = False
   end
   object PopUPmenu: TscGPPanel
     Left = 600
@@ -899,6 +906,7 @@ object Form_parametry_linky: TForm_parametry_linky
     StorePaintBuffer = True
     Sizeable = False
     WallpaperIndex = -1
+    WordWrap = False
     object Item_zobrazit_parametry: TscGPPanel
       Left = 0
       Top = 34
@@ -945,6 +953,7 @@ object Form_parametry_linky: TForm_parametry_linky
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
+      WordWrap = False
       object scLabel_zobrazit_parametry: TscLabel
         Left = 37
         Top = 0
@@ -1097,6 +1106,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ToggleMode = False
       end
     end
     object Item_smazat: TscGPPanel
@@ -1144,6 +1154,7 @@ object Form_parametry_linky: TForm_parametry_linky
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
+      WordWrap = False
       object GlyphButton_smazat: TscGPGlyphButton
         Left = 0
         Top = 0
@@ -1263,6 +1274,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ToggleMode = False
       end
       object scLabel_smazat: TscLabel
         Left = 37
@@ -1348,6 +1360,7 @@ object Form_parametry_linky: TForm_parametry_linky
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
+      WordWrap = False
       object scLabel_smazat_nepouzite: TscLabel
         Left = 37
         Top = 0
@@ -1500,6 +1513,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ToggleMode = False
       end
     end
     object Item_kopirovat: TscGPPanel
@@ -1547,6 +1561,7 @@ object Form_parametry_linky: TForm_parametry_linky
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
+      WordWrap = False
       object scLabel_kopirovat: TscLabel
         Left = 37
         Top = 0
@@ -1705,6 +1720,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ToggleMode = False
       end
     end
     object Item_nastavit_parametry: TscGPPanel
@@ -1754,6 +1770,7 @@ object Form_parametry_linky: TForm_parametry_linky
       StorePaintBuffer = True
       Sizeable = False
       WallpaperIndex = -1
+      WordWrap = False
       object scLabel_nastavit_parametry: TscLabel
         Left = 37
         Top = 0
@@ -1908,6 +1925,7 @@ object Form_parametry_linky: TForm_parametry_linky
         Down = False
         GroupIndex = 0
         AllowAllUp = False
+        ToggleMode = False
       end
     end
     object GlyphButton_close: TscGPGlyphButton
@@ -2038,6 +2056,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = True
+      ToggleMode = False
     end
   end
   object scGPGlyphButton_ADD: TscGPGlyphButton
@@ -2161,6 +2180,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+    ToggleMode = False
   end
   object scPanel_takt: TscPanel
     Left = 14
@@ -2188,6 +2208,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Color = clWhite
     Caption = 'scPanel_takt'
     StorePaintBuffer = False
+    WordWrap = False
     object rEditNum_takt: TscGPNumericEdit
       Left = 169
       Top = 35
@@ -2224,6 +2245,7 @@ object Form_parametry_linky: TForm_parametry_linky
       ContentMarginRight = 5
       ContentMarginTop = 5
       ContentMarginBottom = 5
+      HideMaskWithEmptyText = False
       HidePromptTextIfFocused = False
       PromptTextColor = clNone
       Transparent = True
@@ -2307,6 +2329,7 @@ object Form_parametry_linky: TForm_parametry_linky
       Color = clWhite
       Caption = 'scImage1'
       StorePaintBuffer = False
+      WordWrap = False
       Picture.Data = {
         0954506E67496D61676589504E470D0A1A0A0000000D49484452000000640000
         00640804000000DAEB5DDF000000097048597300000DD700000DD70142289B78
@@ -2567,6 +2590,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = True
     GroupIndex = 0
     AllowAllUp = False
+    ToggleMode = False
   end
   object scPanel_vozik: TscPanel
     Left = 450
@@ -2594,6 +2618,7 @@ object Form_parametry_linky: TForm_parametry_linky
     Color = clWhite
     Caption = 'scPanel_vozik'
     StorePaintBuffer = False
+    WordWrap = False
     object ImageEx_jig_podvesny: TImage
       Left = 135
       Top = 18
@@ -5813,6 +5838,7 @@ object Form_parametry_linky: TForm_parametry_linky
       ContentMarginRight = 1
       ContentMarginTop = 1
       ContentMarginBottom = 1
+      HideMaskWithEmptyText = False
       HidePromptTextIfFocused = False
       PromptTextColor = clNone
       Transparent = True
@@ -5910,6 +5936,7 @@ object Form_parametry_linky: TForm_parametry_linky
       ContentMarginRight = 0
       ContentMarginTop = 0
       ContentMarginBottom = 0
+      HideMaskWithEmptyText = False
       HidePromptTextIfFocused = False
       PromptTextColor = clNone
       Transparent = True
@@ -6008,6 +6035,7 @@ object Form_parametry_linky: TForm_parametry_linky
       ContentMarginRight = 1
       ContentMarginTop = 1
       ContentMarginBottom = 1
+      HideMaskWithEmptyText = False
       HidePromptTextIfFocused = False
       PromptTextColor = clNone
       Transparent = True
@@ -6105,6 +6133,7 @@ object Form_parametry_linky: TForm_parametry_linky
       ContentMarginRight = 1
       ContentMarginTop = 1
       ContentMarginBottom = 1
+      HideMaskWithEmptyText = False
       HidePromptTextIfFocused = False
       PromptTextColor = clNone
       Transparent = True
@@ -6164,7 +6193,7 @@ object Form_parametry_linky: TForm_parametry_linky
     end
     object scHTMLLabel_jig_info: TscHTMLLabel
       Left = 2
-      Top = 4
+      Top = 18
       Width = 153
       Height = 26
       Margins.Left = 0
@@ -6195,8 +6224,8 @@ object Form_parametry_linky: TForm_parametry_linky
       TextAlignment = taLeftJustify
     end
     object scGPGlyphButton_ADD_old: TscGPGlyphButton
-      Left = 98
-      Top = 17
+      Left = 90
+      Top = 32
       Width = 17
       Height = 18
       Hint = 'v'#253'choz'#237' sm'#283'r linky, kter'#253' lze v Layoutu m'#283'nit'
@@ -6318,10 +6347,11 @@ object Form_parametry_linky: TForm_parametry_linky
       Down = False
       GroupIndex = 0
       AllowAllUp = False
+      ToggleMode = False
     end
     object scHTMLLabel1: TscHTMLLabel
       Left = 2
-      Top = 178
+      Top = 4
       Width = 153
       Height = 13
       Margins.Left = 0
@@ -6511,11 +6541,178 @@ object Form_parametry_linky: TForm_parametry_linky
       MaxWidth = 0
       TextAlignment = taLeftJustify
     end
+    object scEdit_platle: TscEdit
+      Left = 0
+      Top = 175
+      Width = 30
+      Height = 20
+      FluentUIOpaque = False
+      UseFontColorToStyleColor = False
+      ContentMarginLeft = 0
+      ContentMarginRight = 0
+      ContentMarginTop = 0
+      ContentMarginBottom = 0
+      CustomBackgroundImageNormalIndex = -1
+      CustomBackgroundImageHotIndex = -1
+      CustomBackgroundImageDisabledIndex = -1
+      PromptTextColor = clNone
+      HideMaskWithEmptyText = False
+      HidePromptTextIfFocused = False
+      WallpaperIndex = -1
+      LeftButton.ComboButton = False
+      LeftButton.Enabled = True
+      LeftButton.Visible = False
+      LeftButton.ShowHint = False
+      LeftButton.ShowEllipses = False
+      LeftButton.StyleKind = scbsPushButton
+      LeftButton.Width = 18
+      LeftButton.ImageIndex = -1
+      LeftButton.ImageHotIndex = -1
+      LeftButton.ImagePressedIndex = -1
+      LeftButton.RepeatClick = False
+      LeftButton.RepeatClickInterval = 200
+      LeftButton.CustomImageNormalIndex = -1
+      LeftButton.CustomImageHotIndex = -1
+      LeftButton.CustomImagePressedIndex = -1
+      LeftButton.CustomImageDisabledIndex = -1
+      RightButton.ComboButton = False
+      RightButton.Enabled = True
+      RightButton.Visible = False
+      RightButton.ShowHint = False
+      RightButton.ShowEllipses = False
+      RightButton.StyleKind = scbsPushButton
+      RightButton.Width = 18
+      RightButton.ImageIndex = -1
+      RightButton.ImageHotIndex = -1
+      RightButton.ImagePressedIndex = -1
+      RightButton.RepeatClick = False
+      RightButton.RepeatClickInterval = 200
+      RightButton.CustomImageNormalIndex = -1
+      RightButton.CustomImageHotIndex = -1
+      RightButton.CustomImagePressedIndex = -1
+      RightButton.CustomImageDisabledIndex = -1
+      Transparent = True
+      BorderKind = scebColorFrame
+      CustomDraw = False
+      FrameColor = clWhite
+      FrameActiveColor = clHighlight
+      Text = '150'
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      TabOrder = 12
+    end
+    object scHTMLLabel_platle: TscHTMLLabel
+      Left = 28
+      Top = 179
+      Width = 121
+      Height = 14
+      Hint = 'vzd'#225'lenost pr'#367'jezdn'#237'ho '#269'idla od STOP stanice. '
+      Margins.Left = 0
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -12
+      Font.Name = 'Roboto Cn'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      ParentShowHint = False
+      FluentUIOpaque = False
+      ShowHint = True
+      TabOrder = 13
+      AutoSizeHeight = False
+      AutoSizeWidth = False
+      AutoExecuteURL = True
+      Caption = '[mm] vzd. '#269'idla od STOP'
+      LinkFontNormal.Charset = DEFAULT_CHARSET
+      LinkFontNormal.Color = clHighlight
+      LinkFontNormal.Height = -11
+      LinkFontNormal.Name = 'Tahoma'
+      LinkFontNormal.Style = []
+      LinkFontHover.Charset = DEFAULT_CHARSET
+      LinkFontHover.Color = clHighlight
+      LinkFontHover.Height = -11
+      LinkFontHover.Name = 'Tahoma'
+      LinkFontHover.Style = [fsUnderline]
+      MaxWidth = 0
+      TextAlignment = taLeftJustify
+    end
+    object scEdit_uchyt: TscEdit
+      Left = 128
+      Top = 124
+      Width = 22
+      Height = 19
+      FluentUIOpaque = False
+      UseFontColorToStyleColor = False
+      ContentMarginLeft = 0
+      ContentMarginRight = 0
+      ContentMarginTop = 0
+      ContentMarginBottom = 0
+      CustomBackgroundImageNormalIndex = -1
+      CustomBackgroundImageHotIndex = -1
+      CustomBackgroundImageDisabledIndex = -1
+      PromptTextColor = clNone
+      HideMaskWithEmptyText = False
+      HidePromptTextIfFocused = False
+      WallpaperIndex = -1
+      LeftButton.ComboButton = False
+      LeftButton.Enabled = True
+      LeftButton.Visible = False
+      LeftButton.ShowHint = False
+      LeftButton.ShowEllipses = False
+      LeftButton.StyleKind = scbsPushButton
+      LeftButton.Width = 18
+      LeftButton.ImageIndex = -1
+      LeftButton.ImageHotIndex = -1
+      LeftButton.ImagePressedIndex = -1
+      LeftButton.RepeatClick = False
+      LeftButton.RepeatClickInterval = 200
+      LeftButton.CustomImageNormalIndex = -1
+      LeftButton.CustomImageHotIndex = -1
+      LeftButton.CustomImagePressedIndex = -1
+      LeftButton.CustomImageDisabledIndex = -1
+      RightButton.ComboButton = False
+      RightButton.Enabled = True
+      RightButton.Visible = False
+      RightButton.ShowHint = False
+      RightButton.ShowEllipses = False
+      RightButton.StyleKind = scbsPushButton
+      RightButton.Width = 18
+      RightButton.ImageIndex = -1
+      RightButton.ImageHotIndex = -1
+      RightButton.ImagePressedIndex = -1
+      RightButton.RepeatClick = False
+      RightButton.RepeatClickInterval = 200
+      RightButton.CustomImageNormalIndex = -1
+      RightButton.CustomImageHotIndex = -1
+      RightButton.CustomImagePressedIndex = -1
+      RightButton.CustomImageDisabledIndex = -1
+      Transparent = True
+      BorderKind = scebColorFrame
+      CustomDraw = False
+      FrameColor = clWhite
+      FrameActiveColor = clHighlight
+      Text = '0'
+      BorderStyle = bsNone
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      Font.Quality = fqClearType
+      ParentFont = False
+      TabOrder = 14
+    end
   end
   object scGPGlyphButton_OPTIONS: TscGPGearActivityIndicator
     AlignWithMargins = True
-    Left = 10448
-    Top = 16784
+    Left = 10985
+    Top = 17679
     Width = 127
     Height = 127
     Hint = 'Nastaven'#237' aplikace'
@@ -6541,6 +6738,8 @@ object Form_parametry_linky: TForm_parametry_linky
     GlyphThickness = 1
     Kind = scgpgkOneGear
     TransparentBackground = True
+    ExplicitLeft = 10457
+    ExplicitTop = 16799
   end
   object scGPSwitch: TscGPSwitch
     Left = 762
@@ -6709,12 +6908,13 @@ object Form_parametry_linky: TForm_parametry_linky
     Down = False
     GroupIndex = 0
     AllowAllUp = False
+    ToggleMode = False
   end
   object scGPTrackBar_uchyceni: TscGPTrackBar
-    Left = 604
-    Top = 202
-    Width = 101
-    Height = 20
+    Left = 600
+    Top = 205
+    Width = 105
+    Height = 18
     Hint = 'pozice palce '
     Margins.Left = 1
     Margins.Right = 1
@@ -6740,17 +6940,17 @@ object Form_parametry_linky: TForm_parametry_linky
     Value = 0
     Vertical = False
     ReadOnly = False
-    Color = clBlack
-    DrawTextMode = scdtmGDI
-    FocusFrameColor = clNone
-    TrackColor = clWhite
-    TrackProgressColor = clWhite
+    Color = clWhite
+    DrawTextMode = scdtmGDIPlus
+    FocusFrameColor = clWhite
+    TrackColor = clBlack
+    TrackProgressColor = clBlack
     TrackSize = 1
-    TrackAlpha = 100
+    TrackAlpha = 255
     TrackProgressAlpha = 255
-    ThumbColor = clWhite
-    ThumbHotColor = clWhite
-    ThumbPressedColor = clWhite
+    ThumbColor = clRed
+    ThumbHotColor = clBlack
+    ThumbPressedColor = clBlack
     ThumbDisabledColor = clBtnShadow
     ThumbShapeStyle = scgptssRoundRect
     ThumbCursor = crDefault

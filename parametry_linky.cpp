@@ -473,12 +473,8 @@ void __fastcall TForm_parametry_linky::FormShow(TObject *Sender) {
   scGPGlyphButton_katalog->Left = scGPButton_pohon->Left +
       scGPButton_pohon->Width;
   // pozicování popisku posuvníku pro úchop palce
-  scHTMLLabel_posuvnik->Top =
-      (scGPTrackBar_uchyceni->Top + scGPTrackBar_uchyceni->Height / 2.0 -
-      scHTMLLabel_posuvnik->Height / 2.0) - scPanel_vozik->Top;
-  scHTMLLabel_posuvnik->Left =
-      (scGPTrackBar_uchyceni->Left + scGPTrackBar_uchyceni->Width + 10) -
-      scPanel_vozik->Left;
+  scHTMLLabel_posuvnik->Top = (scGPTrackBar_uchyceni->Top + scGPTrackBar_uchyceni->Height / 2.0 - scHTMLLabel_posuvnik->Height / 2.0) - scPanel_vozik->Top;
+  scHTMLLabel_posuvnik->Left =(scGPTrackBar_uchyceni->Left + scGPTrackBar_uchyceni->Width + 10) - scPanel_vozik->Left;
 
 
 
@@ -2455,6 +2451,7 @@ void TForm_parametry_linky::getROtherValues(Tm_mm Runit, int Row) {
 void __fastcall TForm_parametry_linky::scGPTrackBar_uchyceniMouseMove
     (TObject *Sender, TShiftState Shift, int X, int Y) {
   scGPTrackBar_uchyceni->Hint = scGPTrackBar_uchyceni->Value;
+  scEdit_uchyt->Text = scGPTrackBar_uchyceni->Value;
 }
 // ---------------------------------------------------------------------------
 
