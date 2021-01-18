@@ -18,6 +18,7 @@ class Cmy
 	double abs_d(double number);//fce vrátí absolutní hodnotu z double čísla, možno nahradit mocí fabs z math
 	double ToRad(double number);
 	double ToDeg(double number);
+  short Rt15(double number);//zaokrouhlí na násobky 15tky, 360° převede na 0°, větší než 360° vratí za 0°
 	short Rt90(double number);//zaokrouhlí na násobky 90tky, 360° převede na 0°, větší než 360° vratí za 0°
 	double a360(double number);//záporné stupně převede do kladných v rámci 360°
 	double r2o(double number);//převede hodnotu rotace (proti směru hodinových ručiček a vpravo naležato jako výchozí pozice) na orientaci dle světových stran

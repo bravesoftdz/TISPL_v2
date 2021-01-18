@@ -3079,7 +3079,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 				{
 					E=vloz_element_pred(NULL,Element);
 					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && Element->geo.HeightDepp==0 && E->geo.HeightDepp==0 && ((/*F->OBJEKT_akt!=NULL && */Element->objekt_n==E->objekt_n)/* || F->OBJEKT_akt==NULL*/))zmen_poradi_elementu(Element,E);
-					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && (Element->geo.HeightDepp!=0 || E->geo.HeightDepp!=0))error=true;//pokud by mělo ojít ke změně pořadí, nedovolit
+					if(E!=NULL && Element->dalsi!=NULL && E!=Element->dalsi && (Element->geo.HeightDepp!=0 || E->geo.HeightDepp!=0))error=true;//pokud by mělo dojít ke změně pořadí, nedovolit
 					if(E!=NULL && /*F->OBJEKT_akt!=NULL &&*/ Element->objekt_n!=E->objekt_n)error=true;//posun mimo kabinu
 				}
 				//aktualizace posouvaného elementu
@@ -3144,7 +3144,7 @@ bool Cvektory::posun_element(TElement *Element,double vzdalenost,bool pusun_dals
 ////---------------------------------------------------------------------------
 //řeší změnu pořadí při posuvu elementů, dojde k novému ukazatelovému propojení, přejmenování a přeindexování elementů
 void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
-{            	                          //E = posouvaný element, Ed = další element
+{           	                          //E = posouvaný element, Ed = další element
 	//////přesun elementu před
 	if(E->n>Ed->n)
 	{
@@ -3168,6 +3168,21 @@ void Cvektory::zmen_poradi_elementu(TElement *E,TElement *Ed)
 	//////přesun elementu za
 	else
 	{
+//		Ed=E->dalsi;
+//		E->predchozi->dalsi=Ed;
+//		Ed->predchozi=E->predchozi;
+//		Ed->dalsi->predchozi=E;
+//		E->dalsi=Ed->dalsi;
+//		Ed->dalsi=E;
+//		E->predchozi=Ed;
+//		//
+//		TObjekt *O=vrat_objekt(E->objekt_n);
+//		if(E==O->element)O->element=Ed;
+//		O=NULL;delete E;
+//		//
+//		vloz_G_element(Ed,0,Ed->predchozi->geo.X4,Ed->predchozi->geo.Y4,0,0,0,0,Ed->geo.X4,Ed->geo.Y4,Ed->geo.orientace);
+//		vloz_G_element(E,0,Ed->geo.X4,Ed->geo.Y4,0,0,0,0,F->d.Rxy(E).x,F->d.Rxy(E).y,E->geo.orientace);
+//		vloz_G_element(E->dalsi,0,E->geo.X4,E->geo.Y4,0,0,0,0,E->dalsi->geo.X4,E->dalsi->geo.Y4,E->dalsi->geo.orientace);
 		//ukazatelové záležitosti
 		E->dalsi->predchozi=E->predchozi;
 		E->predchozi->dalsi=E->dalsi;
@@ -10240,7 +10255,7 @@ TPointD Cvektory::bod_na_geometrii(TElement *E,double x,double y)
 	if(E!=NULL)
 	{
   	//přichytávání bodu na linii
-  	if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
+		if(E->geo.typ==0 && (E->geo.orientace==m.Rt90(E->geo.orientace) || E->geo.orientace==360))//jen pro přímky 0,90,180,270°
 		{
   		//přiřazení souřadnic pro vložení
 			if(E->geo.orientace==90 || E->geo.orientace==270){ret.x=x;ret.y=E->geo.Y1;}
@@ -10248,9 +10263,9 @@ TPointD Cvektory::bod_na_geometrii(TElement *E,double x,double y)
 		}
 
   	//přichytávání bodu na oblouk
-  	if(E->geo.typ!=0)
+		else if(E->geo.typ!=0)
 		{
-  		double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,x,y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
+			double uhel=m.uhelObloukuVsMys(E->geo.X1,E->geo.Y1,E->geo.orientace,E->geo.rotacni_uhel,E->geo.radius,x,y);//úhel, mezi souřadnicemi myši, středem kružnice z které je tvořen oblouk a výchozím bodem oblouku, což je úhel i výstupní
 			if(uhel!=0)
 			{
 				TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,uhel,E->geo.radius);
@@ -10258,6 +10273,13 @@ TPointD Cvektory::bod_na_geometrii(TElement *E,double x,double y)
 			}
 			else {ret.x=E->geo.X1;ret.y=E->geo.Y1;}
 		}
+
+    //linie pod sklonem (ne 0,90,180,360)
+		else
+		{
+			TPointD *souradnice=m.getArcLine(E->geo.X1,E->geo.Y1,E->geo.orientace,0,m.delka(E->geo.X1,E->geo.Y1,x,y));
+			ret=souradnice[3];
+    }
 	}
 
 	//navracení souřadnic

@@ -5011,7 +5011,7 @@ void TForm1::getJobID(int X, int Y)
 				//kontrola zda jsem na segmentu
 				if(d.v.PtInSegment(E,akt_souradnice_kurzoru.x,akt_souradnice_kurzoru.y))
 				{
-          //pokud se změnit pom_element nebo je nulový ulož
+					//pokud se změnit pom_element nebo je nulový ulož
 					if(!(pom_element!=NULL && (pom_element->predchozi==d.v.MAG_LASO->predchozi->Element || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi2==d.v.MAG_LASO->predchozi->Element) || (pom_element->predchozi->eID==301 && pom_element->predchozi->predchozi==d.v.MAG_LASO->predchozi->Element))) &&
 						 !(pom_element!=NULL && (pom_element->dalsi==d.v.MAG_LASO->predchozi->Element || pom_element->dalsi2==d.v.MAG_LASO->predchozi->Element || (d.v.MAG_LASO->dalsi==NULL && d.v.MAG_LASO->sparovany==pom_element) || (pom_element->dalsi!=NULL && pom_element->dalsi->dalsi==d.v.MAG_LASO->predchozi->Element))))
 					{
@@ -15291,7 +15291,13 @@ void __fastcall TForm1::ButtonMaVlClick(TObject *Sender)
 //	vytvor_statickou_scenu();
 //	REFRESH();
 //  e_posledni=NULL;delete e_posledni;
-	Form_mereni->ShowModal();
+	Cvektory::TElement *E=d.v.ELEMENTY->dalsi;
+	while(E!=NULL)
+	{
+    Memo("Orientace: "+String(E->geo.orientace)+"; Rt: "+String(m.round(E->geo.orientace/15.0)*15));
+		E=E->dalsi;
+	}
+	delete E;E=NULL;
 }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
@@ -17650,7 +17656,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		scGPButton_zmerit_vzdalenost->Options->NormalColor=scGPButton_zmerit_vzdalenost->Options->HotColor;
 		//odstranění stavů
 		if(d.v.MAG_LASO->sparovany!=NULL)d.v.MAG_LASO->sparovany->stav=1;
-		if(d.v.MAG_LASO->predchozi->sparovany!=NULL)d.v.MAG_LASO->predchozi->sparovany->stav=1;
+		if(d.v.MAG_LASO->predchozi!=NULL && d.v.MAG_LASO->predchozi->sparovany!=NULL)d.v.MAG_LASO->predchozi->sparovany->stav=1;
 		//smazání seznamu MAG_LASO
 		d.v.vymaz_seznam_MAG_LASO();
 		d.v.hlavicka_MAG_LASO();
@@ -17665,7 +17671,7 @@ void __fastcall TForm1::scGPImage_mereni_vzdalenostClick(TObject *Sender)
 		{
       vytvor_statickou_scenu();//navracení vykreslení errorů
 			REFRESH();
-    }
+		}
 	}
 	//vrátí focus na form
 	nastav_focus();

@@ -67,6 +67,17 @@ double Cmy::ToDeg(double number)
 	return number*180/M_PI;
 }
 /////////////////////////////////////////////////////////////////////////////
+//převede na násobky 15tky, 360° převede na 0°, větší než 360° vratí za 0°
+short Cmy::Rt15(double number)
+{
+	short RET=round(number/15.0)*15;
+	if(RET>=360)RET-=360;     //případně: RET=fmod(number,360.0);
+	if(RET>=360)RET=Rt15(RET);//rekurzce pro případy, že se bude jednát o několikanásobnou rotaci či kvůlip převodu z 360° na 0°
+	if(RET<0)RET+=360;//pro záporné hodnoty
+	if(RET<0)RET=Rt15(RET);//rekurzce pro případy, že se bude jednát o několikanásobnou rotaci
+	return RET;
+}
+/////////////////////////////////////////////////////////////////////////////
 //převede na násobky 90tky, 360° převede na 0°, větší než 360° vratí za 0°
 short Cmy::Rt90(double number)
 {
